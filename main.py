@@ -3,16 +3,19 @@ from spacy.matcher import Matcher
 import os
 import fitz  # PyMuPDF
 import easyocr
+from specializationData import specializationData
 
 # easyocr setup
 reader = easyocr.Reader(['en'])  # Load English model
 results = reader.readtext('resumes/imageResume.jpg')
 
+"""
 for bbox, text, confidence in results:
     print(f"{text} (Confidence: {confidence:.2f})")
 
     print("...............................................")
-
+"""
+    
 # tesseract for optical parsing
 # pillow is an off-sheet of the python imaging library that lets us process images for tesseract to get text from
 
@@ -103,10 +106,40 @@ def split_into_sections(text):
 
 
 # Example usage
-# resume_text = open("resumes/resumeBbrim.txt", encoding="utf-8").read()
-resume_text = parseFileToText("resumes/Brett Brimmer (U Arizona).pdf")
+resume_text = open("resumes/resumeBbrim.txt", encoding="utf-8").read()
+# resume_text = parseFileToText("resumes/Brett Brimmer (U Arizona).pdf")
 parsed = split_into_sections(resume_text)
 for sec, body in parsed.items():
     print(f"===== {sec} =====\n{body}\n")
 
+def list_keywords():
+    for specialization, keywords in specializationData.items():
+        print(f"Specialization: {specializationData}")
+        for kw in keywords:
+            print(f" - {kw.phrase} (weight: {kw.weight})")
 
+def score_resume(resume_text, specialization):
+    keywords = specializationData[specialization]
+
+    # first_kw = keywords[0]
+    # print(first_kw.phrase)  # "Artificial Intelligence"
+    # print(first_kw.weight)  # 1.0
+
+    resume_weight = 0.0
+    specialization_weight = 0.0
+
+    for kw in keywords:
+        specialization_weight += kw.weight
+
+        if kw.phrase in resume_text:
+            resume_weight += kw.weight
+
+    return resume_weight / specialization_weight
+
+if __name__ == "__main__":
+    list_keywords()
+
+    print(".................")
+
+    for specialization in specializationData:
+        print(f"Score for {specialization} is {score_resume(resume_text,specialization)}")
