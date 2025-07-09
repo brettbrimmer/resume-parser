@@ -2,6 +2,29 @@ import spacy
 from spacy.matcher import Matcher
 import os
 import fitz  # PyMuPDF
+import easyocr
+
+# easyocr setup
+reader = easyocr.Reader(['en'])  # Load English model
+results = reader.readtext('resumes/imageResume.jpg')
+
+for bbox, text, confidence in results:
+    print(f"{text} (Confidence: {confidence:.2f})")
+
+    print("...............................................")
+
+# tesseract for optical parsing
+# pillow is an off-sheet of the python imaging library that lets us process images for tesseract to get text from
+
+"""
+SPECIALIZATIONS:
+
+Software Engineering
+Web Development
+Cyber Security
+Machine Learning
+Artificial Intelligence
+"""
 
 # Load the English model
 nlp = spacy.load("en_core_web_sm")
@@ -31,6 +54,11 @@ def parseFileToText(fileName):
             result_text += page.get_text()  # Extract text from each page
     elif (extension == ".txt"):
         result_text = open("resumes/resumeBbrim.txt", encoding="utf-8").read()
+    elif(extension == ".jpg" or extension == ".png"):
+        results = reader.readtext(fileName)
+            
+        for bbox, text, confidence in results:
+            print(f"{text} (Confidence: {confidence:.2f})")
     
     return result_text
 
