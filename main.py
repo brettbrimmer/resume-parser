@@ -7,7 +7,7 @@ from specializationData import specializationData
 
 # easyocr setup
 reader = easyocr.Reader(['en'])  # Load English model
-results = reader.readtext('resumes/imageResume.jpg')
+# results = reader.readtext('resumes/imageResume.jpg')
 
 """
 for bbox, text, confidence in results:
@@ -58,10 +58,17 @@ def parseFileToText(fileName):
     elif (extension == ".txt"):
         result_text = open("resumes/resumeBbrim.txt", encoding="utf-8").read()
     elif(extension == ".jpg" or extension == ".png"):
-        results = reader.readtext(fileName)
-            
-        for bbox, text, confidence in results:
-            print(f"{text} (Confidence: {confidence:.2f})")
+        # parse with OCR
+        ocr_results = reader.readtext(fileName)
+
+        # Grab recognized strings
+        texts = [text for _, text, _ in ocr_results]
+
+        # Combine all parsed strings
+        result_text = " ".join(texts)
+
+        # for bbox, text, confidence in results:
+            # print(f"{text} (Confidence: {confidence:.2f})")
     
     return result_text
 
@@ -74,7 +81,6 @@ for sec in sections:
 # Register each pattern with a unique ID
 for sec, pat in zip(sections, patterns):
     matcher.add(sec.upper(), [pat])
-
 
 def find_headings(text):
     doc = nlp(text)
@@ -106,38 +112,33 @@ def split_into_sections(text):
 
 
 # Example usage
-resume_text = open("resumes/resumeBbrim.txt", encoding="utf-8").read()
+# resume_text = open("resumes/resumeBbrim.txt", encoding="utf-8").read()
 # resume_text = parseFileToText("resumes/Brett Brimmer (U Arizona).pdf")
+resume_text = parseFileToText("resumes/imageResume.jpg")
+
 parsed = split_into_sections(resume_text)
+
 for sec, body in parsed.items():
     print(f"===== {sec} =====\n{body}\n")
-
-def list_keywords():
-    for specialization, keywords in specializationData.items():
-        print(f"Specialization: {specializationData}")
-        for kw in keywords:
-            print(f" - {kw.phrase} (weight: {kw.weight})")
 
 def score_resume(resume_text, specialization):
     keywords = specializationData[specialization]
 
-    # first_kw = keywords[0]
-    # print(first_kw.phrase)  # "Artificial Intelligence"
-    # print(first_kw.weight)  # 1.0
+    resume_weight = 0.0 # this resume's weight
+    specialization_weight = 0.0 # this specialization's overall weight
 
-    resume_weight = 0.0
-    specialization_weight = 0.0
-
+    # keyword search
     for kw in keywords:
         specialization_weight += kw.weight
 
+        # keyword found in resume
         if kw.phrase in resume_text:
             resume_weight += kw.weight
 
     return resume_weight / specialization_weight
 
 if __name__ == "__main__":
-    list_keywords()
+    # list_keywords()
 
     print(".................")
 
