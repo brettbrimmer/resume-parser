@@ -1,6 +1,7 @@
 import spacy
 from spacy.matcher import Matcher
-
+import os
+import fitz  # PyMuPDF
 
 # Load the English model
 nlp = spacy.load("en_core_web_sm")
@@ -12,6 +13,26 @@ matcher = Matcher(nlp.vocab)
 # List of section names you expect
 sections = ["education", "experience", "skills", "projects", "certifications", "publications"]
 
+def getExt(file_name):
+    file_path = "resumes/Brett Brimmer (U Arizona).pdf"
+    name, extension = os.path.splitext(file_name)
+    # print(extension)  # Output: .pdf
+    return extension
+
+
+def parseFileToText(fileName):
+    extension = getExt(fileName)
+    result_text = ""
+
+    if(extension == ".pdf"):
+        doc = fitz.open(fileName)  # Load the PDF
+        # text = ""
+        for page in doc:
+            result_text += page.get_text()  # Extract text from each page
+    elif (extension == ".txt"):
+        result_text = open("resumes/resumeBbrim.txt", encoding="utf-8").read()
+    
+    return result_text
 
 # Build case-insensitive patterns
 patterns = []
@@ -54,7 +75,10 @@ def split_into_sections(text):
 
 
 # Example usage
-resume_text = open("resumeBbrim.txt", encoding="utf-8").read()
+# resume_text = open("resumes/resumeBbrim.txt", encoding="utf-8").read()
+resume_text = parseFileToText("resumes/Brett Brimmer (U Arizona).pdf")
 parsed = split_into_sections(resume_text)
 for sec, body in parsed.items():
     print(f"===== {sec} =====\n{body}\n")
+
+
