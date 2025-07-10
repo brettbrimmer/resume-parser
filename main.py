@@ -1,5 +1,7 @@
 from resume_parser import parseFileToText, split_into_sections
 from specializationData import specializationData
+from resume_parser import split_projects_by_bullets
+# from resume_parser import printProjects_from_sections
 
 # easyocr setup
 # reader = easyocr.Reader(['en'])  # Load English model
@@ -28,10 +30,13 @@ Artificial Intelligence
 resume_text = ""
 
 def score_resume(resume_text, specialization):
-    keywords = specializationData[specialization]
+    """Calculate and assign a score for a resume regarding a specific specialization"""
 
     resume_weight = 0.0 # this resume's weight
-    specialization_weight = 0.0 # this specialization's overall weight
+    specialization_weight = 0.0 # the specialization's overall weight
+
+    # Grab all keyword data for this specialization
+    keywords = specializationData[specialization]
 
     # keyword search
     for kw in keywords:
@@ -43,25 +48,51 @@ def score_resume(resume_text, specialization):
 
     return resume_weight / specialization_weight
 
-def parseResume(file_path):
+def parseAndPrintResume(file_path):
+    """Parse and print resume data"""
+
     # Example usage
-    # resultText = open("resumes/resumeBbrim.txt", encoding="utf-8").read()
+    resultText = open("resumes/resumeBbrim.txt", encoding="utf-8").read()
     # resume_text = parseFileToText("resumes/Brett Brimmer (U Arizona).pdf")
     # resume_text = parseFileToText("resumes/imageResume.jpg")
-    resultText = parseFileToText(file_path)
+    # resultText = parseFileToText(file_path)
 
     parsed = split_into_sections(resultText)
 
+    """
     for sec, body in parsed.items():
         print(f"===== {sec} =====\n{body}\n")
+
+        print(".................")
+        print(".................")
+    """
+
+    raw_projects = parsed.get("PROJECTS", "")
+    print(f"raw_projects is: {raw_projects}")
+    print(".................")
+    print(".................")
+    print(".................")
+    print(".................")
+
+    project_list = split_projects_by_bullets(raw_projects)
+    for i, proj in enumerate(project_list, 1):
+        print(f"── Project #{i} ──")
+        print(proj)
+        print()
 
     return resultText;
 
 if __name__ == "__main__":
     
-    resume_text = parseResume("resumes/imageResume.jpg")
+    resume_text = parseAndPrintResume("resumes/imageResume.jpg")
+
+    # printProjects_from_sections("resumes/imageResume.jpg")
 
     # list_keywords()
+
+    
+
+    
 
     print(".................")
 
