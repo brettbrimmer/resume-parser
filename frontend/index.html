@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Resume Parser Frontend</title>
+
+  <!-- 1) React + ReactDOM from CDN -->
+  <script
+    crossorigin
+    src="https://unpkg.com/react@18/umd/react.development.js"
+  ></script>
+  <script
+    crossorigin
+    src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"
+  ></script>
+
+  <!-- 2) Babel standalone for JSX transformation in the browser -->
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+  <!-- 3) Basic styling -->
+  <style>
+    body, html { margin: 0; padding: 0; height: 100%; font-family: Arial, sans-serif; }
+    .app-container { display: flex; height: 100vh; }
+    .sidebar { width: 280px; padding: 16px; border-right: 1px solid #ddd; box-sizing: border-box; }
+    .main { flex: 1; padding: 16px; box-sizing: border-box; display: flex; flex-direction: column; }
+    .toolbar { margin-bottom: 16px; display: flex; gap: 8px; }
+    .toolbar button { padding: 6px 12px; border: 1px solid #888; background: #f0f0f0; cursor: pointer; }
+    .toolbar button:hover { background: #e0e0e0; }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { padding: 8px; border: 1px solid #ddd; }
+    th { background: #f9f9f9; }
+  </style>
+</head>
+<body>
+  <!-- This is where our React app will mount -->
+  <div id="root"></div>
+
+  <!-- Our React code (JSX) -->
+  <script type="text/babel">
+    const { useState } = React;
+
+    function App() {
+      // FILTER STATES
+      const [searchTerm, setSearchTerm] = useState('');
+      const [requireAll, setRequireAll] = useState(false);
+      const [filters, setFilters] = useState({ AI: false, ML: false, SE: false });
+      const [minGPA, setMinGPA] = useState('2.0');
+      const [distance, setDistance] = useState('10');
+      const [location, setLocation] = useState('Tempe, AZ');
+
+      // SAMPLE CANDIDATES
+      const initialCandidates = [
+        { id: 1, date: '2025-07-09', score: 85, starred: false },
+        { id: 2, date: '2025-07-08', score: 92, starred: true },
+        { id: 3, date: '2025-07-07', score: 78, starred: false },
+      ];
+      const [candidates, setCandidates] = useState(initialCandidates);
+
+      // Toggle star on a candidate
+      const toggleStar = (id) => {
+        setCandidates(prev =>
+          prev.map(c => c.id === id ? { ...c, starred: !c.starred } : c)
+        );
+      };
+
+      return (
+        <div className="app-container">
+          {/* Sidebar Filters */}
+          <div className="sidebar">
+            <h3>Filters</h3>
+
+            {/* Search */}
+            <div style={{ marginBottom: 12 }}>
+              <label>Search Resumes:</label><br/>
+              <input
+                type="text"
+                value={searchTerm}
+                onChange={e => setSearchTerm(e.target.value)}
+                placeholder="e.g. React, Python..."
+                style={{ width: '100%' }}
+              />
+            </div>
+
+            {/* Require All Toggle */}
+            <div style={{ marginBottom: 12 }}>
+              <input
+                type="checkbox"
+                id="requireAll"
+                checked={requireAll}
+                onChange={e => setRequireAll(e.target.checked)}
+              />
+              <label htmlFor="requireAll"> Require all search terms</label>
+            </div>
+
+            {/* Topic Checkboxes */}
+            <div style={{ marginBottom: 12 }}>
+              {['AI','ML','SE'].map(key => (
+                <div key={key}>
+                  <input
+                    type="checkbox"
+                    id={key}
+                    checked={filters[key]}
+                    onChange={e =>
+                      setFilters(f => ({ ...f, [key]: e.target.checked }))
+                    }
+                  />
+                  <label htmlFor={key}>
+                    {key === 'AI' ? ' AI' : key === 'ML' ? ' Machine Learning' : ' Software Engineer'}
+                  </label>
+                </div>
+              ))}
+            </div>
+
+            {/* GPA Filter */}
+            <div style={{ marginBottom: 12 }}>
+              <label>GPA at least</label><br/>
+              <select value={minGPA} onChange={e => setMinGPA(e.target.value)}>
+                <option>2.0</option>
+                <option>3.0</option>
+                <option>4.0</option>
+              </select>
+            </div>
+
+            {/* Distance & Location */}
+            <div style={{ marginBottom: 12 }}>
+              <label>Within</label><br/>
+              <select value={distance} onChange={e => setDistance(e.target.value)}>
+                <option>10</option><option>25</option><option>50</option><option>100</option>
+              </select>
+              <span> miles of </span>
+              <select value={location} onChange={e => setLocation(e.target.value)}>
+                <option>Tempe, AZ</option>
+                <option>Phoenix, AZ</option>
+                <option>Chicago, IL</option>
+              </select>
+            </div>
+          </div>
+
+          {/* Main Panel */}
+          <div className="main">
+            {/* Toolbar */}
+            <div className="toolbar">
+              <button onClick={() => alert('Upload clicked')}>Upload Resumes</button>
+              <button onClick={() => alert('Export clicked')}>Export Starred</button>
+              <button onClick={() => alert('Add Candidate clicked')}>Add Candidate</button>
+            </div>
+
+            {/* Candidates Table */}
+            <table>
+              <thead>
+                <tr>
+                  <th>Star</th>
+                  <th>Applicant ID</th>
+                  <th>Application Date</th>
+                  <th>Score</th>
+                </tr>
+              </thead>
+              <tbody>
+                {candidates.map(c => (
+                  <tr key={c.id}>
+                    <td style={{ textAlign: 'center', cursor: 'pointer' }}
+                        onClick={() => toggleStar(c.id)}>
+                      {c.starred ? '★' : '☆'}
+                    </td>
+                    <td>{c.id}</td>
+                    <td>{c.date}</td>
+                    <td>{c.score}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      );
+    }
+
+    // Render App into #root
+    ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+  </script>
+</body>
+</html>
