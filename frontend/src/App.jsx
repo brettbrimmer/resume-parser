@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
-import './App.css';      // make sure you have this file too
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import './App.css';
 
 function App() {
-  // FILTER STATES
+  // --- Filter States (unchanged) ---
   const [searchTerm, setSearchTerm] = useState('');
   const [requireAll, setRequireAll] = useState(false);
   const [filters, setFilters] = useState({ AI: false, ML: false, SE: false });
@@ -10,108 +11,88 @@ function App() {
   const [distance, setDistance] = useState('10');
   const [location, setLocation] = useState('Tempe, AZ');
 
-  // SAMPLE CANDIDATES
-  const initialCandidates = [
-    { id: 1, date: '2025-07-09', score: 85, starred: false },
-    { id: 2, date: '2025-07-08', score: 92, starred: true },
-    { id: 3, date: '2025-07-07', score: 78, starred: false },
-  ];
-  const [candidates, setCandidates] = useState(initialCandidates);
+  // --- Upload & Data States ---
+  const [files, setFiles] = useState([]);
+  const [candidates, setCandidates] = useState([]);
 
-  // Toggle star on a candidate
-  const toggleStar = (id) => {
-    setCandidates(prev =>
-      prev.map(c => (c.id === id ? { ...c, starred: !c.starred } : c))
-    );
+  // Fetch parsed candidates on load
+  useEffect(() => {
+    fetchCandidates();
+  }, []);
+
+  const fetchCandidates = async () => {
+    try {
+      const res = await axios.get('/api/candidates');
+      setCandidates(res.data);
+    } catch (err) {
+      console.error('Error fetching candidates:', err);
+    }
   };
+
+  // File selection handler
+  const onFileChange = e => setFiles(e.target.files);
+
+  // Upload to backend, then refresh list
+  const uploadResumes = async () => {
+    if (!files.length) return alert('Select at least one file!');
+    const form = new FormData();
+    Array.from(files).forEach(f => form.append('files', f));
+    try {
+      await axios.post('/api/upload', form);
+      fetchCandidates();
+    } catch (err) {
+      console.error('Upload failed:', err);
+    }
+  };
+
+  // (Optional) Client‐side filtering
+  const displayed = candidates.filter(c => {
+    // You can hook in searchTerm, filters, GPA, etc.
+    return true;
+  });
 
   return (
     <div className="app-container">
       {/* Sidebar Filters */}
       <div className="sidebar">
         <h3>Filters</h3>
-
-        <div>
-          <label>Search Resumes:</label><br/>
-          <input
-            type="text"
-            value={searchTerm}
-            onChange={e => setSearchTerm(e.target.value)}
-            placeholder="e.g. React, Python..."
-          />
-        </div>
-
-        <div>
-          <input
-            type="checkbox" id="requireAll"
-            checked={requireAll}
-            onChange={e => setRequireAll(e.target.checked)}
-          />
-          <label htmlFor="requireAll"> Require all search terms</label>
-        </div>
-
-        {['AI','ML','SE'].map(key => (
-          <div key={key}>
-            <input
-              type="checkbox" id={key}
-              checked={filters[key]}
-              onChange={e => setFilters(f => ({ ...f, [key]: e.target.checked }))}
-            />
-            <label htmlFor={key}>
-              {key === 'AI' ? ' AI'
-                : key === 'ML' ? ' Machine Learning'
-                : ' Software Engineer'}
-            </label>
-          </div>
-        ))}
-
-        <div>
-          <label>GPA at least</label><br/>
-          <select value={minGPA} onChange={e => setMinGPA(e.target.value)}>
-            <option>2.0</option><option>3.0</option><option>4.0</option>
-          </select>
-        </div>
-
-        <div>
-          <label>Within</label><br/>
-          <select value={distance} onChange={e => setDistance(e.target.value)}>
-            <option>10</option><option>25</option><option>50</option><option>100</option>
-          </select>
-          <span> miles of </span>
-          <select value={location} onChange={e => setLocation(e.target.value)}>
-            <option>Tempe, AZ</option>
-            <option>Phoenix, AZ</option>
-            <option>Chicago, IL</option>
-          </select>
-        </div>
+        {/* …your existing filter UI here… */}
       </div>
 
       {/* Main Panel */}
       <div className="main">
+        {/* Upload Toolbar */}
         <div className="toolbar">
-          <button onClick={() => alert('Upload clicked')}>Upload Resumes</button>
-          <button onClick={() => alert('Export clicked')}>Export Starred</button>
-          <button onClick={() => alert('Add clicked')}>Add Candidate</button>
+          <input type="file" multiple onChange={onFileChange} />
+          <button onClick={uploadResumes}>Upload Resumes</button>
+          <button onClick={() => window.alert('Export not implemented yet')}>
+            Export Starred
+          </button>
         </div>
 
+        {/* Candidates Table */}
         <table className="candidates-table">
           <thead>
             <tr>
-              <th>Star</th>
-              <th>Applicant ID</th>
-              <th>Application Date</th>
-              <th>Score</th>
+              <th>ID</th>
+              <th>Filename</th>
+              <th>Size (bytes)</th>
+              <th>Actions</th>
             </tr>
           </thead>
           <tbody>
-            {candidates.map(c => (
+            {displayed.map(c => (
               <tr key={c.id}>
-                <td onClick={() => toggleStar(c.id)} style={{ cursor: 'pointer', textAlign: 'center' }}>
-                  {c.starred ? '★' : '☆'}
-                </td>
                 <td>{c.id}</td>
-                <td>{c.date}</td>
-                <td>{c.score}</td>
+                <td>{c.filename}</td>
+                <td>{c.size}</td>
+                <td>
+                  <button
+                    onClick={() => window.open(`/api/candidates/${c.id}`, '_blank')}
+                  >
+                    View Candidate
+                  </button>
+                </td>
               </tr>
             ))}
           </tbody>
