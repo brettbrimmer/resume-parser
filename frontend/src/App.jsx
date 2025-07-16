@@ -1,17 +1,21 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import './App.css';
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import "./App.css";
 
 function App() {
-  // ─── Filter States ──────────────────────────────────────────────────────────
-  const [searchTerm, setSearchTerm] = useState('');
+  // ─── Filter & Requirements States ────────────────────────────────────────
+  const [searchTerm, setSearchTerm] = useState("");
   const [requireAll, setRequireAll] = useState(false);
   const [filters, setFilters] = useState({ AI: false, ML: false, SE: false });
-  const [minGPA, setMinGPA] = useState('2.0');
-  const [distance, setDistance] = useState('10');
-  const [location, setLocation] = useState('Tempe, AZ');
+  const [minGPA, setMinGPA] = useState("2.0");
+  const [distance, setDistance] = useState("10");
+  const [location, setLocation] = useState("Tempe, AZ");
 
-  // ─── Upload & Data States ───────────────────────────────────────────────────
+  // NEW: requirements input & nicknames
+  const [reqText, setReqText] = useState("");
+  const [nicknames, setNicknames] = useState([]);
+
+  // ─── Upload & Data States ────────────────────────────────────────────────
   const [files, setFiles] = useState([]);
   const [candidates, setCandidates] = useState([]);
 
@@ -22,137 +26,190 @@ function App() {
 
   const fetchCandidates = async () => {
     try {
-      const res = await axios.get('/api/candidates');
-      // Initialize `starred` flag on each record
-      setCandidates(res.data.map(c => ({ ...c, starred: false })));
+      const res = await axios.get("/api/candidates");
+      setCandidates(
+        res.data.map((c) => ({ ...c, starred: false, scores: {} }))
+      );
     } catch (err) {
-      console.error('Error fetching candidates:', err);
+      console.error("Error fetching candidates:", err);
     }
   };
 
-  // File selection handler
-  const onFileChange = e => setFiles(e.target.files);
-
   // Upload to backend, then refresh list
   const uploadResumes = async () => {
-    if (!files.length) return alert('Select at least one file!');
+    if (!files.length) return alert("Select at least one file!");
     const form = new FormData();
-    Array.from(files).forEach(f => form.append('files', f));
+    Array.from(files).forEach((f) => form.append("files", f));
 
     try {
-      await axios.post('/api/upload', form);
+      await axios.post("/api/upload", form);
       fetchCandidates();
     } catch (err) {
-      console.error('Upload failed:', err);
-      alert('Upload failed. Check console.');
+      console.error("Upload failed:", err);
+      alert("Upload failed. Check console.");
+    }
+  };
+
+  // ─── Requirements → OpenAI Scoring ───────────────────────────────────────
+  const applyRequirements = async () => {
+    const lines = reqText
+      .split("\n")
+      .map((l) => l.trim())
+      .filter(Boolean);
+
+    if (!lines.length) {
+      return alert("Enter at least one requirement.");
+    }
+
+    try {
+      //const { data } = await axios.post("/api/requirements", {
+      const { data } = await axios.post(
+        "http://localhost:8000/api/requirements",
+        {
+          requirements: lines,
+        }
+      );
+
+      // 1) update column nicknames
+      const newNames = Object.values(data.mapping);
+      setNicknames(newNames);
+
+      // 2) merge new scores into candidates
+      setCandidates((prev) =>
+        prev.map((c) => {
+          const scored = data.candidates.find((x) => x.id === c.id);
+          return {
+            ...c,
+            scores: scored?.scores || {},
+          };
+        })
+      );
+    } catch (err) {
+      console.error("Error applying requirements:", err);
+      alert("Failed to apply requirements.");
     }
   };
 
   // Toggle star on a candidate
-  const toggleStar = id => {
-    setCandidates(prev =>
-      prev.map(c => (c.id === id ? { ...c, starred: !c.starred } : c))
+  const toggleStar = (id) => {
+    setCandidates((prev) =>
+      prev.map((c) => (c.id === id ? { ...c, starred: !c.starred } : c))
     );
   };
 
-  // Client-side filtering (basic example)
-  const displayed = candidates.filter(c => {
-    // 1) Search term on filename
+  // Apply client‐side filters (search + checkboxes)
+  const displayed = candidates.filter((c) => {
     if (searchTerm) {
       const match = c.filename.toLowerCase().includes(searchTerm.toLowerCase());
       if (!match) return false;
     }
-
-    // 2) Specialization filters (stubbed as always true for now)
-    if (requireAll && Object.values(filters).some(v => v)) {
-      // TODO: implement “must match all checked filters”
-    } else if (Object.values(filters).some(v => v)) {
-      // TODO: implement “match any checked filter”
-    }
-
-    // 3) GPA, distance, location filters would go here
-
+    // (specialization/GPA/distance filters omitted for brevity)
     return true;
   });
 
   return (
     <div className="app-container">
-      {/* ─── Sidebar Filters ───────────────────────────────────────────────────── */}
+      {/* ─── Sidebar ────────────────────────────────────────────────────────── */}
       <div className="sidebar">
         <h3>Filters</h3>
-
         <div>
-          <label>Search Resumes:</label><br />
+          <label>Search Resumes:</label>
+          <br />
           <input
             type="text"
             value={searchTerm}
-            onChange={e => setSearchTerm(e.target.value)}
+            onChange={(e) => setSearchTerm(e.target.value)}
             placeholder="e.g. React, Python..."
           />
         </div>
-
         <div>
           <input
             type="checkbox"
             id="requireAll"
             checked={requireAll}
-            onChange={e => setRequireAll(e.target.checked)}
+            onChange={(e) => setRequireAll(e.target.checked)}
           />
           <label htmlFor="requireAll"> Require all search terms</label>
         </div>
-
-        {['AI', 'ML', 'SE'].map(key => (
+        {["AI", "ML", "SE"].map((key) => (
           <div key={key}>
             <input
               type="checkbox"
               id={key}
               checked={filters[key]}
-              onChange={e => setFilters(f => ({ ...f, [key]: e.target.checked }))}
+              onChange={(e) =>
+                setFilters((f) => ({ ...f, [key]: e.target.checked }))
+              }
             />
             <label htmlFor={key}>
-              {key === 'AI'
-                ? ' AI'
-                : key === 'ML'
-                ? ' Machine Learning'
-                : ' Software Engineer'}
+              {key === "AI"
+                ? " AI"
+                : key === "ML"
+                ? " Machine Learning"
+                : " Software Engineer"}
             </label>
           </div>
         ))}
-
         <div>
-          <label>GPA at least</label><br />
-          <select value={minGPA} onChange={e => setMinGPA(e.target.value)}>
+          <label>GPA at least</label>
+          <br />
+          <select value={minGPA} onChange={(e) => setMinGPA(e.target.value)}>
             <option>2.0</option>
             <option>3.0</option>
             <option>4.0</option>
           </select>
         </div>
-
         <div>
-          <label>Within</label><br />
-          <select value={distance} onChange={e => setDistance(e.target.value)}>
+          <label>Within</label>
+          <br />
+          <select
+            value={distance}
+            onChange={(e) => setDistance(e.target.value)}
+          >
             <option>10</option>
             <option>25</option>
             <option>50</option>
             <option>100</option>
           </select>
           <span> miles of </span>
-          <select value={location} onChange={e => setLocation(e.target.value)}>
+          <select
+            value={location}
+            onChange={(e) => setLocation(e.target.value)}
+          >
             <option>Tempe, AZ</option>
             <option>Phoenix, AZ</option>
             <option>Chicago, IL</option>
           </select>
         </div>
+
+        {/* ─── New Requirements Input ─────────────────────────────────── */}
+        <div style={{ marginTop: "1rem" }}>
+          <label>Requirements (one per line):</label>
+          <textarea
+            rows="5"
+            value={reqText}
+            onChange={(e) => setReqText(e.target.value)}
+            placeholder="e.g. Strong React skills"
+            style={{ width: "100%" }}
+          />
+          <button onClick={applyRequirements} style={{ marginTop: "0.5rem" }}>
+            Apply Requirements
+          </button>
+        </div>
       </div>
 
-      {/* ─── Main Panel ─────────────────────────────────────────────────────────── */}
+      {/* ─── Main Panel ─────────────────────────────────────────────────── */}
       <div className="main">
         <div className="toolbar">
-          <input type="file" multiple onChange={onFileChange} />
+          <input
+            type="file"
+            multiple
+            onChange={(e) => setFiles(e.target.files)}
+          />
           <button onClick={uploadResumes}>Upload Resumes</button>
           <button
             onClick={() => {
-              const starred = candidates.filter(c => c.starred);
+              const starred = candidates.filter((c) => c.starred);
               alert(`Exporting ${starred.length} candidates`);
             }}
           >
@@ -167,25 +224,31 @@ function App() {
               <th>ID</th>
               <th>Filename</th>
               <th>Size (bytes)</th>
+              {nicknames.map((n) => (
+                <th key={n}>{n}</th>
+              ))}
               <th>Actions</th>
             </tr>
           </thead>
           <tbody>
-            {displayed.map(c => (
+            {displayed.map((c) => (
               <tr key={c.id}>
                 <td
                   onClick={() => toggleStar(c.id)}
-                  style={{ cursor: 'pointer', textAlign: 'center' }}
+                  style={{ cursor: "pointer", textAlign: "center" }}
                 >
-                  {c.starred ? '★' : '☆'}
+                  {c.starred ? "★" : "☆"}
                 </td>
                 <td>{c.id}</td>
                 <td>{c.filename}</td>
                 <td>{c.size}</td>
+                {nicknames.map((n) => (
+                  <td key={n}>{c.scores?.[n]?.toFixed(1) ?? "-"}</td>
+                ))}
                 <td>
                   <button
                     onClick={() =>
-                      window.open(`/api/candidates/${c.id}`, '_blank')
+                      window.open(`/api/candidates/${c.id}`, "_blank")
                     }
                   >
                     View Candidate

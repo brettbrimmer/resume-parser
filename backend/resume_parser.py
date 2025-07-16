@@ -97,6 +97,8 @@ def parseFileAtPathToText(filePath):
         texts = [text for _, text, _ in ocr_results]    # Grab recognized strings
         result_text = " ".join(texts)   # Join parsed strings
     
+    printf(f"Results text for resume parsing: {result_text}")
+
     return result_text
 
 import re

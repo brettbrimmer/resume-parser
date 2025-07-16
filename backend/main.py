@@ -1,18 +1,52 @@
-import os, json, shutil
+from pathlib import Path
+from dotenv import load_dotenv
+
+import os
+import json
+import shutil
+import re
+
+import openai
 from fastapi import FastAPI, UploadFile, File, Depends, HTTPException
 from fastapi.staticfiles import StaticFiles
+from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
 from sqlalchemy.orm import Session
+
 from backend import models
-from backend.database import SessionLocal
-from backend.database import engine
-from backend.resume_parser import parseFileAtPathToText
+from backend.database import SessionLocal, engine
+
+# ————————————————————————————————
+# 0. Load env + set OpenAI key
+# ————————————————————————————————
+# Point to backend/.env
+env_path = Path(__file__).resolve().parent / ".env"
+load_dotenv(env_path)
+
+openai.api_key = os.getenv("OPENAI_API_KEY")
+if not openai.api_key:
+    raise RuntimeError(
+        "OPENAI_API_KEY not found! Ensure /backend/.env exists and is git-ignored."
+    )
+
+# ————————————————————————————————
+# 1. Create app + CORS
+# ————————————————————————————————
+app = FastAPI()
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:5173"],
+    allow_methods=["*"],
+    allow_headers=["*"],
+    allow_credentials=True,
+)
 
 
-# Ensure DB + upload folder exist
+# ————————————————————————————————
+# 1. DB setup & static‐files mount
+# ————————————————————————————————
 models.Base.metadata.create_all(bind=engine)
 os.makedirs("uploads", exist_ok=True)
-
-app = FastAPI()
 app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")
 
 def get_db():
@@ -22,63 +56,55 @@ def get_db():
     finally:
         db.close()
 
+# ————————————————————————————————
+# 2. Text extraction helper
+# ————————————————————————————————
 def extract_text(path: str) -> str:
-    # if path.lower().endswith(".pdf"):
-    #     return extract_pdf_text(path)
-    # elif path.lower().endswith(".docx"):
-     #    doc = docx.Document(path)
-     #    return "\n".join(p.text for p in doc.paragraphs)
-    # return ""
-    parsedText = parseFileAtPathToText(path)
-    print(f"file parsed as: {parsedText}")
+    from backend.resume_parser import parseFileAtPathToText
+    try:
+        text = parseFileAtPathToText(path)
+        print(f"Parsed text for {os.path.basename(path)}: {text[:60]}…")
+        return text
+    except Exception as e:
+        print("Parser error:", e)
+        return ""
 
-    return parsedText
-
-
+# ————————————————————————————————
+# 3. Upload endpoint
+# ————————————————————————————————
 @app.post("/api/upload")
-async def upload(files: list[UploadFile] = File(...), db: Session = Depends(get_db)):
+async def upload(
+    files: list[UploadFile] = File(...),
+    db: Session = Depends(get_db)
+):
     saved = []
     for f in files:
         path = f"uploads/{f.filename}"
         with open(path, "wb") as out:
             shutil.copyfileobj(f.file, out)
-        # Dummy parse: we just record filename + size
-        # parsed = {"filename": f.filename, "size": os.path.getsize(path)}
-        # candidate = models.Candidate(
-        #     filename=f.filename,
-        #     parsed_data=json.dumps(parsed)
-       # )
 
-       # 1) Parse full text from the file
-        try:
-            full_text = extract_text(path)
-        except Exception as e:
-            full_text = ""
-            print("Parser error:", e)
-
-        # 2) Build your parsed_data JSON
-        parsed = {"filename": f.filename, "size": os.path.getsize(path)}
-
-        # 3) Create the ORM object, including new columns
+        full_text = extract_text(path)
+        meta = { "filename": f.filename, "size": os.path.getsize(path) }
         candidate = models.Candidate(
             filename=f.filename,
-            parsed_data=json.dumps(parsed),
+            parsed_data=json.dumps(meta),
             text=full_text,
-            scores={}            # initialize empty scores map
+            scores={}
         )
         db.add(candidate)
         db.commit()
         db.refresh(candidate)
-        saved.append({"id": candidate.id, **parsed})
+        saved.append({"id": candidate.id, **meta})
+
     return saved
 
+# ————————————————————————————————
+# 4. List & get endpoints
+# ————————————————————————————————
 @app.get("/api/candidates")
 def list_candidates(db: Session = Depends(get_db)):
     rows = db.query(models.Candidate).all()
-    return [
-        {"id": c.id, **json.loads(c.parsed_data)}
-        for c in rows
-    ]
+    return [{"id": r.id, **json.loads(r.parsed_data)} for r in rows]
 
 @app.get("/api/candidates/{cand_id}")
 def get_candidate(cand_id: int, db: Session = Depends(get_db)):
@@ -88,3 +114,92 @@ def get_candidate(cand_id: int, db: Session = Depends(get_db)):
     data = json.loads(c.parsed_data)
     data["resume_url"] = f"/uploads/{c.filename}"
     return data
+
+# ————————————————————————————————
+# 5. OpenAI scoring flow
+# ————————————————————————————————
+class ReqModel(BaseModel):
+    requirements: list[str]
+
+import re
+
+async def generate_nicknames(reqs: list[str]) -> dict[str, str]:
+    prompt = (
+        "You are a JSON generator. Return ONLY a JSON array of objects "
+        "with keys text (original requirement) and nickname (short name).\n\n"
+        "Requirements:\n" + "\n".join(f"{i+1}. {r}" for i, r in enumerate(reqs))
+    )
+    resp = openai.chat.completions.create(
+        model="gpt-4o-mini",
+        messages=[{"role":"user", "content": prompt}],
+        temperature=0.0,
+        max_tokens=200,
+    )
+
+    raw = resp.choices[0].message.content
+    print("🔍 raw nickname reply:", repr(raw))
+
+    # strip markdown code fences if present
+    # this will turn ```json\n[ ... ]\n``` into just the JSON array
+    cleaned = re.sub(r"^```(?:json)?\n", "", raw)
+    cleaned = re.sub(r"\n```$", "", cleaned)
+    print("🧹 cleaned nickname reply:", repr(cleaned))
+
+    try:
+        arr = json.loads(cleaned)
+    except Exception as e:
+        print("❗ JSON parse failed:", e)
+        # fallback: map each requirement to itself
+        return {r: r for r in reqs}
+
+    return {item["text"]: item["nickname"] for item in arr}
+
+
+async def score_requirement(req: str, resume: str) -> float:
+    prompt = (
+        f"Rate 0–100 how well this resume meets the requirement:\n\n"
+        f"Requirement: {req}\n\nResume text:\n{resume}\n\n"
+        "Return ONLY the number."
+    )
+    resp = openai.chat.completions.create(
+        model="gpt-4o-mini",
+        messages=[{"role":"user", "content": prompt}],
+        temperature=0.0,
+        max_tokens=5,
+    )
+    try:
+        return float(resp.choices[0].message.content.strip())
+    except Exception:
+        return 0.0
+
+@app.post("/api/requirements")
+async def process_requirements(
+    body: ReqModel,
+    db: Session = Depends(get_db)
+):
+    try:
+        reqs = body.requirements
+        if not reqs:
+            raise HTTPException(400, "No requirements provided")
+
+        mapping = await generate_nicknames(reqs)
+
+        candidates = db.query(models.Candidate).all()
+        for c in candidates:
+            scores: dict[str, float] = {}
+            for original, nick in mapping.items():
+                scores[nick] = await score_requirement(original, c.text or "")
+            c.scores = scores
+            db.add(c)
+        db.commit()
+
+        return {
+            "mapping": mapping,
+            "candidates": [{"id": c.id, "scores": c.scores} for c in candidates]
+        }
+
+    except Exception as e:
+        import traceback
+        print("Error in /api/requirements:", e)
+        traceback.print_exc()
+        raise
