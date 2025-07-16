@@ -5,6 +5,7 @@ from sqlalchemy.orm import Session
 from backend import models
 from backend.database import SessionLocal
 from backend.database import engine
+from backend.resume_parser import parseFileAtPathToText
 
 
 # Ensure DB + upload folder exist
@@ -21,6 +22,19 @@ def get_db():
     finally:
         db.close()
 
+def extract_text(path: str) -> str:
+    # if path.lower().endswith(".pdf"):
+    #     return extract_pdf_text(path)
+    # elif path.lower().endswith(".docx"):
+     #    doc = docx.Document(path)
+     #    return "\n".join(p.text for p in doc.paragraphs)
+    # return ""
+    parsedText = parseFileAtPathToText(path)
+    print(f"file parsed as: {parsedText}")
+
+    return parsedText
+
+
 @app.post("/api/upload")
 async def upload(files: list[UploadFile] = File(...), db: Session = Depends(get_db)):
     saved = []
@@ -29,10 +43,28 @@ async def upload(files: list[UploadFile] = File(...), db: Session = Depends(get_
         with open(path, "wb") as out:
             shutil.copyfileobj(f.file, out)
         # Dummy parse: we just record filename + size
+        # parsed = {"filename": f.filename, "size": os.path.getsize(path)}
+        # candidate = models.Candidate(
+        #     filename=f.filename,
+        #     parsed_data=json.dumps(parsed)
+       # )
+
+       # 1) Parse full text from the file
+        try:
+            full_text = extract_text(path)
+        except Exception as e:
+            full_text = ""
+            print("Parser error:", e)
+
+        # 2) Build your parsed_data JSON
         parsed = {"filename": f.filename, "size": os.path.getsize(path)}
+
+        # 3) Create the ORM object, including new columns
         candidate = models.Candidate(
             filename=f.filename,
-            parsed_data=json.dumps(parsed)
+            parsed_data=json.dumps(parsed),
+            text=full_text,
+            scores={}            # initialize empty scores map
         )
         db.add(candidate)
         db.commit()

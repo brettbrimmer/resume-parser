@@ -1,6 +1,6 @@
-from resume_parser import parseFileToText, split_into_sections
+from backend.resume_parser import parseFileToText, split_into_sections
 from specializationData import specializationData
-from resume_parser import split_projects_by_bullets
+from backend.resume_parser import split_projects_by_bullets
 # from resume_parser import printProjects_from_sections
 
 # easyocr setup

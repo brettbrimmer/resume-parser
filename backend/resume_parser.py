@@ -78,6 +78,27 @@ def parseFileToText(fileName):
     
     return result_text
 
+def parseFileAtPathToText(filePath):
+    """Parses file at fileName and returns it as a string"""
+    extension = getExt(filePath)
+    result_text = ""
+
+    if(extension == ".pdf"):
+        doc = fitz.open(filePath)  # Load the PDF
+
+        # Extract text from each page
+        for page in doc:
+            result_text += page.get_text()  
+    elif (extension == ".txt"):
+        # Parse to string
+        result_text = open(filePath, encoding="utf-8").read()
+    elif(extension == ".jpg" or extension == ".png"):
+        ocr_results = reader.readtext(filePath) # parse with OCR
+        texts = [text for _, text, _ in ocr_results]    # Grab recognized strings
+        result_text = " ".join(texts)   # Join parsed strings
+    
+    return result_text
+
 import re
 from typing import List
 
