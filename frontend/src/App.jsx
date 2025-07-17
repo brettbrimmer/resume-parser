@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from "react";
+import "bootstrap/dist/css/bootstrap.min.css";
+import { Badge } from "react-bootstrap";
 import axios from "axios";
 import "./App.css";
 
@@ -227,6 +229,7 @@ function App() {
               {nicknames.map((n) => (
                 <th key={n}>{n}</th>
               ))}
+              <th>Badges</th>
               <th>Actions</th>
             </tr>
           </thead>
@@ -245,6 +248,18 @@ function App() {
                 {nicknames.map((n) => (
                   <td key={n}>{c.scores?.[n]?.toFixed(1) ?? "-"}</td>
                 ))}
+                <td>
+                  {Object.entries(c.scores || {}).map(([nick, score]) => (
+                    <Badge
+                      key={nick}
+                      pill
+                      bg="primary"
+                      className="me-1 mb-1"
+                    >
+                      {nick} {score.toFixed(1)}
+                    </Badge>
+                  ))}
+                </td>
                 <td>
                   <button
                     onClick={() =>
