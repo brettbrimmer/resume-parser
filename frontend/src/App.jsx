@@ -4,28 +4,6 @@ import { Badge } from "react-bootstrap";
 import axios from "axios";
 import "./App.css";
 
-/*
-// 1) Bootstrap CSS & Badge component
-// 2) Badge‐color helper (must be declared before you use it)
-// pick a Bootstrap variant based on score
-const getBadgeVariant = (score) => {
-  if (score <= 40) return "danger";  // red
-  if (score <= 60) return "warning"; // orange
-  if (score <= 80) return "info";    // light-blue/yellowish
-  return "success";                  // green
-};
-*/
-
-// pick a Bootstrap variant, or null for orange
-const getBadgeVariant = (score) => {
-  if (score <= 40) return "danger";   // red
-  if (score <= 60) return null;       // our custom orange
-  if (score <= 80) return "warning";  // yellow
-  return "success";                   // green
-};
-
-
-
 function App() {
   // ─── Filter & Requirements States ────────────────────────────────────────
   const [searchTerm, setSearchTerm] = useState("");
@@ -270,36 +248,38 @@ function App() {
                 {nicknames.map((n) => (
                   <td key={n}>{c.scores?.[n]?.toFixed(1) ?? "-"}</td>
                 ))}
-<td>
+                <td>
                   {Object.entries(c.scores || {}).map(([nick, score]) => {
-  const num = typeof score === "string"
-    ? parseFloat(score) || 0
-    : score;
+                    const num = typeof score === "string"
+                      ? parseFloat(score) || 0
+                      : score;
 
-  // Decide variant vs. custom class
-  let variant, extraClass;
-  if (num <= 40) {
-    variant = "danger";
-  } else if (num <= 60) {
-    extraClass = "badge-score-medium";   // only medium uses this
-  } else if (num <= 80) {
-    extraClass = "badge-score-medium";
-  } else {
-    variant = "success";
-  }
+                    // Decide variant vs. custom class
+                    let variant, extraClass;
 
-  return (
-    <Badge
-      key={nick}
-      pill
-      bg={variant}                    // undefined when extraClass is set
-      className={`me-1 mb-1 ${extraClass || ""}`}
-    >
-      {nick} {num.toFixed(1)}
-    </Badge>
-  );
-})}
+                    if (num <= 50) {
+                      extraClass = "badge-score-low";
+                    } else if (num <= 70) {
+                      extraClass = "badge-score-medium";
+                    } else if (num <= 80) {
+                      extraClass = "badge-score-high";
+                    } else {
+                      extraClass = "badge-score-veryhigh";
+                    }
 
+                    //extraClass += "badge rounded-pill badge-text-outline";
+
+                    return (
+                      <Badge
+                        key={nick}
+                        pill
+                        //bg={variant}                    // undefined when extraClass is set
+                        className={`me-1 mb-1 ${extraClass || ""}`}
+                      >
+                        {nick} {num.toFixed(1)}
+                      </Badge>
+                    );
+                  })}
                 </td>
                 <td>
                   <button

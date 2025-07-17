@@ -127,6 +127,7 @@ async def generate_nicknames(reqs: list[str]) -> dict[str, str]:
     prompt = (
         "You are a JSON generator. Return ONLY a JSON array of objects "
         "with keys text (original requirement) and nickname (short name).\n\n"
+        "Each requirement should correspond to one line of text. Do not split a single line of text into multiple requirements.\n\n"
         "Requirements:\n" + "\n".join(f"{i+1}. {r}" for i, r in enumerate(reqs))
     )
     resp = openai.chat.completions.create(
