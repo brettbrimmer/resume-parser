@@ -172,6 +172,22 @@ async def score_requirement(req: str, resume: str) -> float:
         return float(resp.choices[0].message.content.strip())
     except Exception:
         return 0.0
+    
+# ─── New: return a one‐sentence justification from OpenAI ────────────
+async def explain_requirement(req: str, resume: str) -> str:
+    prompt = (
+        f"Explain in one concise sentence WHY this resume meets the requirement:\n\n"
+        f"Requirement: {req}\n\n"
+        f"Resume text:\n{resume}\n\n"
+        "Return ONLY the justification text."
+    )
+    resp = openai.chat.completions.create(
+        model="gpt-4o-mini",
+        messages=[{"role": "user", "content": prompt}],
+        temperature=0.0,
+        max_tokens=60,
+    )
+    return resp.choices[0].message.content.strip()
 
 @app.post("/api/requirements")
 async def process_requirements(
@@ -185,18 +201,25 @@ async def process_requirements(
 
         mapping = await generate_nicknames(reqs)
 
-        candidates = db.query(models.Candidate).all()
-        for c in candidates:
-            scores: dict[str, float] = {}
-            for original, nick in mapping.items():
-                scores[nick] = await score_requirement(original, c.text or "")
-            c.scores = scores
-            db.add(c)
-        db.commit()
+        rows = db.query(models.Candidate).all()
 
+        # build output list with both score & reason for each req
+        output = []
+        for c in rows:
+            per_req: dict[str, dict] = {}
+            for original, nick in mapping.items():
+                score  = await score_requirement(original, c.text or "")
+                reason = await explain_requirement(original, c.text or "")
+
+                per_req[nick] = { "score": score, "reason": reason }
+                c.scores[nick] = score    # still persist numeric score only
+
+            output.append({ "id": c.id, "results": per_req })
+
+        db.commit()
         return {
             "mapping": mapping,
-            "candidates": [{"id": c.id, "scores": c.scores} for c in candidates]
+            "candidates": output
         }
 
     except Exception as e:

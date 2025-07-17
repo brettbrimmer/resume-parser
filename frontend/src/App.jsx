@@ -77,15 +77,12 @@ function App() {
       setNicknames(newNames);
 
       // 2) merge new scores into candidates
-      setCandidates((prev) =>
-        prev.map((c) => {
-          const scored = data.candidates.find((x) => x.id === c.id);
-          return {
-            ...c,
-            scores: scored?.scores || {},
-          };
-        })
-      );
+      +    setCandidates((prev) =>
+      prev.map((c) => {
+        const scored = data.candidates.find((x) => x.id === c.id);
+        return { ...c, scores: scored?.results || {} };
+      })
+    );
     } catch (err) {
       console.error("Error applying requirements:", err);
       alert("Failed to apply requirements.");
@@ -246,35 +243,30 @@ function App() {
                 <td>{c.filename}</td>
                 <td>{c.size}</td>
                 {nicknames.map((n) => (
-                  <td key={n}>{c.scores?.[n]?.toFixed(1) ?? "-"}</td>
+                  <td key={n}>
+                  {c.scores?.[n]?.score != null
+                    ? c.scores[n].score.toFixed(1)
+                    : "-"}
+                </td>
                 ))}
                 <td>
-                  {Object.entries(c.scores || {}).map(([nick, score]) => {
-                    const num = typeof score === "string"
-                      ? parseFloat(score) || 0
-                      : score;
+                  {Object.entries(c.scores || {}).map(([nick, entry]) => {
+                    // entry is now { score: number, reason: string }
+                    const num    = entry.score;
+                    const reason = entry.reason;
 
-                    // Decide variant vs. custom class
-                    let variant, extraClass;
-
-                    if (num <= 50) {
-                      extraClass = "badge-score-low";
-                    } else if (num <= 70) {
-                      extraClass = "badge-score-medium";
-                    } else if (num <= 80) {
-                      extraClass = "badge-score-high";
-                    } else {
-                      extraClass = "badge-score-veryhigh";
-                    }
-
-                    //extraClass += "badge rounded-pill badge-text-outline";
+                    let extraClass;
+                    if (num <= 50)       extraClass = "badge-score-low";
+                    else if (num <= 70)  extraClass = "badge-score-medium";
+                    else if (num <= 80)  extraClass = "badge-score-high";
+                    else                 extraClass = "badge-score-veryhigh";
 
                     return (
                       <Badge
                         key={nick}
                         pill
-                        //bg={variant}                    // undefined when extraClass is set
-                        className={`me-1 mb-1 ${extraClass || ""}`}
+                        className={`me-1 mb-1 ${extraClass}`}
+                        title={reason}        // ← native browser tooltip
                       >
                         {nick} {num.toFixed(1)}
                       </Badge>
