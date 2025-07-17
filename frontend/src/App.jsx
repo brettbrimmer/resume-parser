@@ -4,6 +4,17 @@ import { Badge } from "react-bootstrap";
 import axios from "axios";
 import "./App.css";
 
+// 1) Bootstrap CSS & Badge component
+// 2) Badge‐color helper (must be declared before you use it)
+// pick a Bootstrap variant based on score
+const getBadgeVariant = (score) => {
+  if (score <= 40) return "danger";  // red
+  if (score <= 60) return "warning"; // orange
+  if (score <= 80) return "info";    // light-blue/yellowish
+  return "success";                  // green
+};
+
+
 function App() {
   // ─── Filter & Requirements States ────────────────────────────────────────
   const [searchTerm, setSearchTerm] = useState("");
@@ -248,17 +259,25 @@ function App() {
                 {nicknames.map((n) => (
                   <td key={n}>{c.scores?.[n]?.toFixed(1) ?? "-"}</td>
                 ))}
-                <td>
-                  {Object.entries(c.scores || {}).map(([nick, score]) => (
-                    <Badge
-                      key={nick}
-                      pill
-                      bg="primary"
-                      className="me-1 mb-1"
-                    >
-                      {nick} {score.toFixed(1)}
-                    </Badge>
-                  ))}
+<td>
+                  {Object.entries(c.scores || {}).map(([nick, score]) => {
+                    // 3) coerce to Number and round
+                    const num = typeof score === "string"
+                      ? parseFloat(score) || 0
+                      : score;
+
+                    return (
+                      <Badge
+                        key={nick}
+                        pill
+                        // 4) use React-Bootstrap variant prop for bg color
+                        bg={getBadgeVariant(num)}
+                        className="me-1 mb-1"
+                      >
+                        {nick} {num.toFixed(1)}
+                      </Badge>
+                    );
+                  })}
                 </td>
                 <td>
                   <button
