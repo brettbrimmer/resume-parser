@@ -56,3 +56,22 @@ body, html, #root {
   background: #f9f9f9;
 }
 
+.badge.badge-score-low {
+  background-color: #dc3545 !important;
+  color: white !important;
+}
+
+.badge.badge-score-medium {
+  background-color: #FFA500 !important;
+  color: white !important;
+}
+badge-score-low
+.badge.badge-score-high {
+  background-color: #ffc107 !important;
+  color: whit !important;
+}
+
+.badge.badge-score-veryhigh {
+  background-color: #28a745 !important;
+  color: white !important;
+}
