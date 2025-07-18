@@ -75,3 +75,7 @@ body, html, #root {
   background-color: #dae3dd !important;
   color: black !important;
 }
+
+.col-star {
+  width: 80px;
+}

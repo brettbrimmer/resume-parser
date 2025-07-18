@@ -8,13 +8,13 @@ export default function CandidatesTable({
   onViewCandidate
 }) {
   return (
-    <Table striped hover bordered responsive size="sm">
+    <Table hover bordered responsive size="sm">
       <thead>
         <tr>
-          <th>Star</th>
+          <th className="col-star">Star</th>
           <th>ID</th>
-          <th>Filename</th>
-          <th>Size</th>
+          {/* <th>Filename</th> */}
+          {/* <th>Size</th> */}
           {nicknames.map((n) => (
             <th key={n}>{n}</th>
           ))}
@@ -25,15 +25,15 @@ export default function CandidatesTable({
       <tbody>
         {candidates.map((c) => (
           <tr key={c.id}>
-            <td
+            <td className="col-star"
               style={{ textAlign: "center", cursor: "pointer" }}
               onClick={() => onToggleStar(c.id)}
             >
               {c.starred ? "★" : "☆"}
             </td>
             <td>{c.id}</td>
-            <td>{c.filename}</td>
-            <td>{c.size}</td>
+            {/* <td>{c.filename}</td> */}
+            {/* <td>{c.size}</td> */}
             {nicknames.map((n) => (
               <td key={n}>
                 {c.scores?.[n]?.score != null
