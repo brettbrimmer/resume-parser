@@ -175,18 +175,44 @@ async def score_requirement(req: str, resume: str) -> float:
     
 # ─── New: return a one‐sentence justification from OpenAI ────────────
 async def explain_requirement(req: str, resume: str) -> str:
-    prompt = (
-        f"Explain in one concise sentence WHY this resume meets the requirement:\n\n"
-        f"Requirement: {req}\n\n"
-        f"Resume text:\n{resume}\n\n"
-        "Return ONLY the justification text."
+    """
+    print(f"req: {req}\n\nresume: {resume}")
+    messages = f"Here is a single requirement for a job: {req}",
+    "I am going to give you a resume for that job, and you are going to tell me why specifically that resume matches or doesn't match the requirement",
+    "Avoid flowery language and generalized explanations.",
+    "Instead, give specific examples from the resume that explain why it does or does not match the requirement.",
+    "No preamble, no padding, no extra fields.",
+    "Do not invent companies, dates, or skills that are not literally in the resume.",
+    f"Here is the resume: {resume}"
+
+    resp = openai.chat.completions.create(
+      model="gpt-4o-mini",
+      messages=messages,
+      temperature=0.0,
+      max_tokens=400,
     )
+    return resp.choices[0].message.content.strip()
+    """
+    prompt = (
+        f"Here is a single requirement for a job: {req}"
+        "I am going to give you a resume for that job, and you are going to tell me why specifically that resume matches or doesn't match the requirement"
+        "Avoid flowery language and generalized explanations."
+        "Instead, give specific examples from the resume that explain why it does or does not match the requirement."
+        "No preamble, no padding, no extra fields."
+        "Do not invent companies, dates, or skills that are not literally in the resume."
+        f"Here is the resume: {resume}"
+    )
+
+    # if("Brett" in resume):
+    print(f"The resume provided was this one: {resume}")
+
     resp = openai.chat.completions.create(
         model="gpt-4o-mini",
-        messages=[{"role": "user", "content": prompt}],
+        messages=[{"role":"user", "content": prompt}],
         temperature=0.0,
-        max_tokens=60,
+        max_tokens=80,
     )
+
     return resp.choices[0].message.content.strip()
 
 @app.post("/api/requirements")
