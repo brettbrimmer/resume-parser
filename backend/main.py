@@ -177,24 +177,27 @@ async def score_requirement(req: str, resume: str) -> float:
 async def explain_requirement(req: str, resume: str) -> str:
     prompt = (
         f"""
-        You are evaluating a resume against this job requirement: {req}
+You are evaluating a resume against this job requirement: {req}
 
-        Respond with one sentence of 35 words or fewer.
+Respond with one sentence of 35 words or fewer.
 
-        Your goal is to provide accurate, specific, and concise evidence from the resume that proves whether the requirement is met.
+Your response must consist of short, literal fact fragments separated by periods. Each fragment should describe a specific, concrete example from the resume.
 
-        If the match is weak, partial, or unclear, say so directly. Do not try to fill space or stretch weak evidence.
+If the requirement is only loosely mentioned (e.g., in the skills section), include that as one weak example.
 
-        If multiple strong examples exist, include them, summarized briefly.
+If the requirement is strongly supported by multiple examples, include them all briefly and clearly as fragments.
 
-        Use short, concrete phrases only (e.g. “built React app”, “used AWS for deployment”).
+If the requirement is not mentioned at all — neither in skills, nor in experience, nor in projects — say exactly: No relevant evidence found.
 
-        Do not interpret, praise, explain, or use names, pronouns, or the word “resume”.
+Use only what is literally present in the resume. Do not assume, interpret, praise, or use names, pronouns, or the word "resume".
 
-        If no evidence exists, say exactly: No relevant evidence found.
+Here is the resume: {resume}
+"""
 
-        Here is the resume: {resume}
-        """
+
+
+
+
 
 
 
