@@ -234,19 +234,14 @@ const displayed = candidates.filter((c) => {
             GPA listed
           </label>
 
-          <br />
-          <label
-            htmlFor="gpaWhole"
-            className="form-label"
-            style={{ marginTop: "0.5rem", display: "block" }}
-          >
-            Min GPA
-          </label>
-          <div className="d-flex align-items-center">
-            {/* whole part 0–4 */}
+          <div className="d-flex align-items-center mb-2">
+            <label htmlFor="gpaWhole" className="me-2 mb-0">
+              Min GPA
+            </label>
+
             <select
               id="gpaWhole"
-             className="form-select w-auto me-1"
+              className="form-select form-select-sm w-auto me-1"
               value={gpaWhole}
               onChange={(e) => setGpaWhole(e.target.value)}
             >
@@ -257,12 +252,11 @@ const displayed = candidates.filter((c) => {
               ))}
             </select>
 
-            <span>.</span>
+            <span id="gpa-dot" className="mx-1">.</span>
 
-            {/* decimal part 0–9 */}
             <select
               id="gpaDecimal"
-              className="form-select w-auto ms-1"
+              className="form-select form-select-sm w-auto"
               value={gpaDecimal}
               onChange={(e) => setGpaDecimal(e.target.value)}
             >
@@ -273,6 +267,7 @@ const displayed = candidates.filter((c) => {
               ))}
             </select>
           </div>
+
         </div>
 
         {/* ─── New Requirements Input ─────────────────────────────────── */}

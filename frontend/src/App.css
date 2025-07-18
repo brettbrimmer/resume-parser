@@ -79,3 +79,8 @@ body, html, #root {
   width: 80px;
   text-align: center;
 }
+
+#gpa-dot {
+  font-size: 40px;
+  font-family: "Times New Roman", Georgia, serif;
+}
