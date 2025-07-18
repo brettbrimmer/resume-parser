@@ -194,23 +194,39 @@ async def explain_requirement(req: str, resume: str) -> str:
     return resp.choices[0].message.content.strip()
     """
     prompt = (
-        f"Here is a single requirement for a job: {req}"
-        "I am going to give you a resume for that job, and you are going to tell me why specifically that resume matches or doesn't match the requirement"
-        "Avoid flowery language and generalized explanations."
-        "Instead, give specific examples from the resume that explain why it does or does not match the requirement."
-        "No preamble, no padding, no extra fields."
-        "Do not invent companies, dates, or skills that are not literally in the resume."
-        f"Here is the resume: {resume}"
+        f"""
+        You are evaluating a resume against one job requirement: {req}
+
+        Respond with one sentence only, 35 words or fewer, with **specific evidence from the resume** showing whether it does or does not meet the requirement.
+
+        DO NOT:
+        - Do not mention the resume, the candidate, or pronouns like "he", "she", or names.
+        - Do not say "shows entrepreneurial spirit", "demonstrates ability", or similar abstract phrases.
+        - Do not explain or summarize — just give concrete facts (e.g. founded a company, launched a product, ran a side business).
+        - Do not use phrases like "it is evident", "this matches because", "the resume meets the requirement", or anything similar.
+        - Do not add commentary, interpretations, introductions, or conclusions.
+        - Do not use newlines, bullet points, or extra spacing.
+
+        Only state objective, specific facts from the resume that directly prove or disprove the requirement.
+
+        If no such facts exist, respond with exactly this phrase: No relevant evidence found.
+
+        Review 100% of the resume, then respond.
+        Here is the resume: {resume}
+        """
+
+
     )
 
     # if("Brett" in resume):
-    print(f"The resume provided was this one: {resume}")
+    # print(f"The resume provided was this one: {resume}")
 
     resp = openai.chat.completions.create(
         model="gpt-4o-mini",
+        # model="gpt-4",
         messages=[{"role":"user", "content": prompt}],
         temperature=0.0,
-        max_tokens=80,
+        max_tokens=400,
     )
 
     return resp.choices[0].message.content.strip()
