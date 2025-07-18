@@ -11,6 +11,8 @@ function App() {
   const [requireAll, setRequireAll] = useState(false);
   const [filters, setFilters] = useState({ AI: false, ML: false, SE: false });
   const [minGPA, setMinGPA] = useState("2.0");
+  // checkbox makes it so that we only show GPA filter when resumes actually list a GPA
+  const [gpaListed, setGpaListed] = useState(false);
   const [distance, setDistance] = useState("10");
   const [location, setLocation] = useState("Tempe, AZ");
 
@@ -106,11 +108,10 @@ function App() {
     );
   };
 
-  // Apply client‐side filters (search + checkboxes)
-  const displayed = candidates.filter((c) => {
-    // no filter if search box is empty
-    if (!searchTerm) return true;
-
+  // Apply client‐side filters (search + GPA)
+const displayed = candidates.filter((c) => {
+  // 1) Text‐search only when the user has typed something
+  if (searchTerm.trim()) {
     // build an array of non-empty, trimmed, lowercase terms
     const terms = searchTerm
       .split(",")
@@ -131,19 +132,28 @@ function App() {
         return false;
       }
     }
-
-    // GPA filter: drop candidates below the selected minGPA
-  if (minGPA) {
-    // parse stored c.gpa (null or string) into a float
-    const gpaValue = parseFloat(c.gpa) || 0;
-    console.log(`Comparing gpaValue ${gpaValue} to parseFloat(minGPA) of ${parseFloat(minGPA)}`);
-    if (gpaValue < parseFloat(minGPA)) {
-      return false;
-    }
   }
 
-    return true;
-  });
+    // 2) GPA filter: respect checkbox and only drop real GPAs below threshold
+  const gpaValue = c.gpa; // float or null
+  console.log(
+    `GPA listed? ${gpaListed}, value: ${gpaValue}, threshold: ${minGPA}`
+  );
+
+  // if “GPA listed” is checked, drop candidates without a GPA
+  if (gpaListed && gpaValue == null) {
+    return false;
+  }
+
+  // if a GPA exists but is below the threshold, drop them
+  if (gpaValue != null && gpaValue < parseFloat(minGPA)) {
+    return false;
+  }
+
+
+  return true;
+});
+
 
   return (
     <div className="app-container">
@@ -211,8 +221,18 @@ function App() {
           </select>
         </div>
         <div>
-          <label>GPA at least</label>
+          <input
+            type="checkbox"
+            id="gpaListed"
+            checked={gpaListed}
+            onChange={(e) => setGpaListed(e.target.checked)}
+          />
+          <label htmlFor="gpaListed"> GPA listed</label>
+
           <br />
+          <label style={{ marginTop: "0.5rem", display: "block" }}>
+            GPA at least
+          </label>
           <select value={minGPA} onChange={(e) => setMinGPA(e.target.value)}>
             <option>2.0</option>
             <option>3.0</option>
