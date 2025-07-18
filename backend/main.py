@@ -179,20 +179,22 @@ async def explain_requirement(req: str, resume: str) -> str:
         f"""
 You are evaluating a resume against this job requirement: {req}
 
-Respond with one sentence of 35 words or fewer.
+Your task is to output up to 3 short fact fragments, each directly describing a specific piece of evidence in the resume that clearly supports the requirement.
 
-Your response must consist of short, literal fact fragments separated by periods. Each fragment should describe a specific, concrete example from the resume.
+Each fragment must refer only to the requirement itself — do not include implementation details, technical tools, team collaboration, or generic development activity unless that is the requirement.
 
-If the requirement is only loosely mentioned (e.g., in the skills section), include that as one weak example.
+Fragments must be short, literal, and factual — 15 words or fewer. Do not summarize, interpret, or use names, pronouns, or the word "resume".
 
-If the requirement is strongly supported by multiple examples, include them all briefly and clearly as fragments.
+If only one relevant example exists, give only that. Do not pad the answer with extra context.
 
-If the requirement is not mentioned at all — neither in skills, nor in experience, nor in projects — say exactly: No relevant evidence found.
-
-Use only what is literally present in the resume. Do not assume, interpret, praise, or use names, pronouns, or the word "resume".
+If there is no relevant evidence — not in skills, projects, or experience — respond with exactly: No relevant evidence found.
 
 Here is the resume: {resume}
 """
+
+
+
+
 
 
 
