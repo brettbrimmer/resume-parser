@@ -177,35 +177,21 @@ async def score_requirement(req: str, resume: str) -> float:
 async def explain_requirement(req: str, resume: str) -> str:
     prompt = (
         f"""
-You are evaluating a resume against this job requirement: {req}
+        You are evaluating a resume against this job requirement: {req}
 
-Your output must contain only direct, factual evidence that clearly supports the requirement — nothing else.
+        Your output must contain only direct, factual evidence that clearly supports the requirement — nothing else.
 
-Respond with 1 to 3 bullet points. Each bullet must describe a **distinct, literal piece of evidence** from the resume that directly supports the requirement.
+        Respond with 1 to 3 bullet points. Each bullet must describe a **distinct, literal piece of evidence** from the resume that directly supports the requirement.
 
-If only 1 or 2 real examples exist, output only those. **Do not create extra bullets** unless the resume gives clear, separate evidence. Do not pad with generic or tangential information.
+        If only 1 or 2 real examples exist, output only those. **Do not create extra bullets** unless the resume gives clear, separate evidence. Do not pad with generic or tangential information.
 
-Each bullet must be concise (15 words or fewer), avoid interpretation or summarizing, and must not mention names, pronouns, or the word “resume”.
+        Each bullet must be concise (15 words or fewer), avoid interpretation or summarizing, and must not mention names, pronouns, or the word “resume”.
 
-If the resume contains **no clear supporting evidence at all**, reply with exactly:
-**No relevant evidence found.**
+        If the resume contains **no clear supporting evidence at all**, reply with exactly:
+        **No relevant evidence found.**
 
-Here is the resume: {resume}
-"""
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        Here is the resume: {resume}
+        """
     )
 
     # if("Brett" in resume):

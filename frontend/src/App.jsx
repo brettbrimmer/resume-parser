@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { Badge } from "react-bootstrap";
+import { Table, Badge } from "react-bootstrap";
 import axios from "axios";
 import "./App.css";
+import CandidatesTable from "./components/CandidateTable.jsx";
 
 function App() {
   // ─── Filter & Requirements States ────────────────────────────────────────
@@ -216,76 +217,14 @@ function App() {
           </button>
         </div>
 
-        <table className="candidates-table">
-          <thead>
-            <tr>
-              <th>Star</th>
-              <th>ID</th>
-              <th>Filename</th>
-              <th>Size (bytes)</th>
-              {nicknames.map((n) => (
-                <th key={n}>{n}</th>
-              ))}
-              <th>Badges</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {displayed.map((c) => (
-              <tr key={c.id}>
-                <td
-                  onClick={() => toggleStar(c.id)}
-                  style={{ cursor: "pointer", textAlign: "center" }}
-                >
-                  {c.starred ? "★" : "☆"}
-                </td>
-                <td>{c.id}</td>
-                <td>{c.filename}</td>
-                <td>{c.size}</td>
-                {nicknames.map((n) => (
-                  <td key={n}>
-                  {c.scores?.[n]?.score != null
-                    ? c.scores[n].score.toFixed(1)
-                    : "-"}
-                </td>
-                ))}
-                <td>
-                  {Object.entries(c.scores || {}).map(([nick, entry]) => {
-                    // entry is now { score: number, reason: string }
-                    const num    = entry.score;
-                    const reason = entry.reason;
-
-                    let extraClass;
-                    if (num <= 50)       extraClass = "badge-score-low";
-                    else if (num <= 70)  extraClass = "badge-score-medium";
-                    else if (num <= 80)  extraClass = "badge-score-high";
-                    else                 extraClass = "badge-score-veryhigh";
-
-                    return (
-                      <Badge
-                        key={nick}
-                        pill
-                        className={`me-1 mb-1 ${extraClass}`}
-                        title={reason}        // ← native browser tooltip
-                      >
-                        {nick} {num.toFixed(1)}
-                      </Badge>
-                    );
-                  })}
-                </td>
-                <td>
-                  <button
-                    onClick={() =>
-                      window.open(`/api/candidates/${c.id}`, "_blank")
-                    }
-                  >
-                    View Candidate
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        <CandidatesTable
+          candidates={displayed}
+          nicknames={nicknames}
+          onToggleStar={toggleStar}
+          onViewCandidate={(id) =>
+            window.open(`/api/candidates/${id}`, "_blank")
+          }
+        />
       </div>
     </div>
   );
