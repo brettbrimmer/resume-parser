@@ -11,8 +11,8 @@ function App() {
   const [requireAll, setRequireAll] = useState(false);
   const [filters, setFilters] = useState({ AI: false, ML: false, SE: false });
   // split GPA into whole and decimal parts
-  const [gpaWhole,   setGpaWhole]   = useState("2"); // 0–4
-  const [gpaDecimal, setGpaDecimal] = useState("0"); // 0–9
+  const [minGpaText, setMinGpaText] = useState("");
+  const [gpaError,    setGpaError]   = useState(false);
   // checkbox makes it so that we only show GPA filter when resumes actually list a GPA
   const [gpaListed, setGpaListed] = useState(false);
   const [distance, setDistance] = useState("10");
@@ -110,6 +110,14 @@ function App() {
     );
   };
 
+  // enforce format /^[0-4](\.\d{1,2})?$/ or blank
+  const handleGpaChange = (e) => {
+    const v = e.target.value;
+    setMinGpaText(v);
+    const valid = /^$|^[0-4](\.\d{1,2})?$/.test(v);
+    setGpaError(!valid);
+  };
+
   // Apply client‐side filters (search + GPA)
 const displayed = candidates.filter((c) => {
   // 1) Text‐search only when the user has typed something
@@ -136,22 +144,20 @@ const displayed = candidates.filter((c) => {
     }
   }
 
-  // 2) GPA filter
-  const threshold = parseFloat(`${gpaWhole}.${gpaDecimal}`);
-  const gpaValue  = c.gpa; // float or null
-  console.log(
-    `gpaListed=${gpaListed} · candidate.gpa=${gpaValue} · threshold=${threshold}`
-  );
+  // build numeric threshold only when input is non-empty & valid
+const threshold =
+  !gpaError && minGpaText ? parseFloat(minGpaText) : null;
 
-  // a) if “GPA listed” checked, drop candidates without a GPA
-  if (gpaListed && gpaValue == null) {
-    return false;
-  }
+// a) if “GPA listed” is checked, drop any candidate with no GPA
+if (gpaListed && c.gpa == null) {
+  return false;
+}
 
-  // b) drop if a GPA exists but is below the threshold
-  if (gpaValue != null && gpaValue < threshold) {
-    return false;
-  }
+// b) if threshold is set and candidate has a GPA below it, drop
+if (threshold != null && c.gpa != null && c.gpa < threshold) {
+  return false;
+}
+
 
 
   return true;
@@ -182,25 +188,6 @@ const displayed = candidates.filter((c) => {
           />
           <label htmlFor="requireAll"> Require all search terms</label>
         </div>
-        {/*{["AI", "ML", "SE"].map((key) => (
-          <div key={key}>
-            <input
-              type="checkbox"
-              id={key}
-              checked={filters[key]}
-              onChange={(e) =>
-                setFilters((f) => ({ ...f, [key]: e.target.checked }))
-              }
-            />
-            <label htmlFor={key}>
-              {key === "AI"
-                ? " AI"
-                : key === "ML"
-                ? " Machine Learning"
-                : " Software Engineer"}
-            </label>
-          </div>
-        ))}*/}
         <div>
           <label>Within</label>
           <br />
@@ -231,44 +218,30 @@ const displayed = candidates.filter((c) => {
             onChange={(e) => setGpaListed(e.target.checked)}
           />
           <label htmlFor="gpaListed" className="ms-1">
-            GPA listed
+            Has GPA
           </label>
 
-          <div className="d-flex align-items-center mb-2">
-            <label htmlFor="gpaWhole" className="me-2 mb-0">
-              Min GPA
-            </label>
+          <br />
 
-            <select
-              id="gpaWhole"
-              className="form-select form-select-sm w-auto me-1"
-              value={gpaWhole}
-              onChange={(e) => setGpaWhole(e.target.value)}
-            >
-              {[0, 1, 2, 3, 4].map((n) => (
-                <option key={n} value={n}>
-                  {n}
-                </option>
-              ))}
-            </select>
-
-            <span id="gpa-dot" className="mx-1">.</span>
-
-            <select
-              id="gpaDecimal"
-              className="form-select form-select-sm w-auto"
-              value={gpaDecimal}
-              onChange={(e) => setGpaDecimal(e.target.value)}
-            >
-              {[...Array(10).keys()].map((n) => (
-                <option key={n} value={n}>
-                  {n}
-                </option>
-              ))}
-            </select>
+          <label htmlFor="minGpa" className="form-label mt-2 mb-0 me-2">
+            Min GPA
+          </label>
+          <input
+            id="minGpa"
+            type="text"
+            placeholder="e.g. 3.5"
+            style={{ maxWidth: "4rem" }}
+            className={`form-control form-control-sm d-inline-block ${
+              gpaError ? "is-invalid" : ""
+            }`}
+            value={minGpaText}
+            onChange={handleGpaChange}
+          />
+          <div className="invalid-feedback">
+            Must be 0–4, optionally with up to two decimals (e.g. 3.75)
           </div>
-
         </div>
+
 
         {/* ─── New Requirements Input ─────────────────────────────────── */}
         <div style={{ marginTop: "1rem" }}>
