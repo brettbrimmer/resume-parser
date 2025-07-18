@@ -34,6 +34,7 @@ function App() {
       setCandidates(
         res.data.map((c) => ({ ...c, starred: false, scores: {} }))
       );
+      console.log("candidates payload:", res.data);
     } catch (err) {
       console.error("Error fetching candidates:", err);
     }
@@ -107,11 +108,30 @@ function App() {
 
   // Apply client‐side filters (search + checkboxes)
   const displayed = candidates.filter((c) => {
-    if (searchTerm) {
-      const match = c.filename.toLowerCase().includes(searchTerm.toLowerCase());
-      if (!match) return false;
+    // no filter if search box is empty
+    if (!searchTerm) return true;
+
+    // build an array of non-empty, trimmed, lowercase terms
+    const terms = searchTerm
+      .split(",")
+      .map((t) => t.trim().toLowerCase())
+      .filter(Boolean);
+
+    // prepare the text to search in
+    const hay = c.text?.toLowerCase() || "";
+
+    if (requireAll) {
+      // every term must be present
+      if (!terms.every((term) => hay.includes(term))) {
+        return false;
+      }
+    } else {
+      // at least one term must match
+      if (!terms.some((term) => hay.includes(term))) {
+        return false;
+      }
     }
-    // (specialization/GPA/distance filters omitted for brevity)
+
     return true;
   });
 

@@ -85,3 +85,8 @@ body, html, #root {
   width: 80px;
   text-align: center;
 }
+
+.col-id {
+  width: 80px;
+  text-align: center;
+}

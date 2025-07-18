@@ -14,13 +14,13 @@ export default function CandidatesTable({
       <thead>
         <tr>
           <th className="col-select">Select</th>
-          <th className="col-star">Star</th>
-          <th>ID</th>
+          <th className="col-id">ID</th>
           {/* <th>Filename</th> */}
           {/* <th>Size</th> */}
           {nicknames.map((n) => (
             <th key={n}>{n}</th>
           ))}
+          <th className="col-star">Star</th>
           <th>Badges</th>
           <th>Actions</th>
         </tr>
@@ -43,13 +43,13 @@ export default function CandidatesTable({
               }}
             />
             </td>
+            <td className="col-id">{c.id}</td>
             <td className="col-star"
               style={{ textAlign: "center", cursor: "pointer" }}
               onClick={() => onToggleStar(c.id)}
             >
               {c.starred ? "★" : "☆"}
             </td>
-            <td>{c.id}</td>
             {/* <td>{c.filename}</td> */}
             {/* <td>{c.size}</td> */}
             {nicknames.map((n) => (

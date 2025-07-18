@@ -104,7 +104,14 @@ async def upload(
 @app.get("/api/candidates")
 def list_candidates(db: Session = Depends(get_db)):
     rows = db.query(models.Candidate).all()
-    return [{"id": r.id, **json.loads(r.parsed_data)} for r in rows]
+    return [
+        {
+            "id":   r.id,
+            **json.loads(r.parsed_data),  # filename + size
+            "text": r.text               # <-- include parsed resume body
+        }
+        for r in rows
+    ]
 
 @app.get("/api/candidates/{cand_id}")
 def get_candidate(cand_id: int, db: Session = Depends(get_db)):
