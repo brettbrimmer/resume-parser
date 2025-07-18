@@ -1,16 +1,19 @@
 import React from "react";
-import { Table, Badge, OverlayTrigger, Tooltip } from "react-bootstrap";
+import { Table, Badge, OverlayTrigger, Tooltip, Form } from "react-bootstrap";
 
 export default function CandidatesTable({
   candidates,
   nicknames,
   onToggleStar,
-  onViewCandidate
+  onViewCandidate,
+  selectedRows,
+  onSelectRow
 }) {
   return (
     <Table hover bordered responsive size="sm">
       <thead>
         <tr>
+          <th className="col-select">Select</th>
           <th className="col-star">Star</th>
           <th>ID</th>
           {/* <th>Filename</th> */}
@@ -25,6 +28,21 @@ export default function CandidatesTable({
       <tbody>
         {candidates.map((c) => (
           <tr key={c.id}>
+            <td
+              className="col-select"
+              style={{ cursor: "pointer" }}
+              onClick={() => onSelectRow(c.id)}
+            >
+              <Form.Check
+              type="checkbox"
+              checked={selectedRows.includes(c.id)}
+              readOnly                           // avoids React warning
+              onClick={(e) => {
+                e.stopPropagation();            // block the cell’s onClick
+                onSelectRow(c.id);              // but still toggle once
+              }}
+            />
+            </td>
             <td className="col-star"
               style={{ textAlign: "center", cursor: "pointer" }}
               onClick={() => onToggleStar(c.id)}

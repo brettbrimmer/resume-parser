@@ -21,6 +21,7 @@ function App() {
   // ─── Upload & Data States ────────────────────────────────────────────────
   const [files, setFiles] = useState([]);
   const [candidates, setCandidates] = useState([]);
+  const [selectedRows, setSelectedRows] = useState([]);
 
   // Fetch parsed candidates on mount
   useEffect(() => {
@@ -94,6 +95,13 @@ function App() {
   const toggleStar = (id) => {
     setCandidates((prev) =>
       prev.map((c) => (c.id === id ? { ...c, starred: !c.starred } : c))
+    );
+  };
+
+  // Toggle selection on a candidate row
+  const onSelectRow = (id) => {
+    setSelectedRows((prev) =>
+      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
     );
   };
 
@@ -224,6 +232,8 @@ function App() {
           onViewCandidate={(id) =>
             window.open(`/api/candidates/${id}`, "_blank")
           }
+          selectedRows={selectedRows}
+          onSelectRow={onSelectRow}
         />
       </div>
     </div>

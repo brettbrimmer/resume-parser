@@ -78,4 +78,10 @@ body, html, #root {
 
 .col-star {
   width: 80px;
+  text-align: center;
+}
+
+.col-select {
+  width: 80px;
+  text-align: center;
 }
