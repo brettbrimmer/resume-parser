@@ -132,6 +132,16 @@ function App() {
       }
     }
 
+    // GPA filter: drop candidates below the selected minGPA
+  if (minGPA) {
+    // parse stored c.gpa (null or string) into a float
+    const gpaValue = parseFloat(c.gpa) || 0;
+    console.log(`Comparing gpaValue ${gpaValue} to parseFloat(minGPA) of ${parseFloat(minGPA)}`);
+    if (gpaValue < parseFloat(minGPA)) {
+      return false;
+    }
+  }
+
     return true;
   });
 
