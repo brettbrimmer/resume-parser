@@ -51,15 +51,22 @@ export default function CandidatesTable({
                 else if (num <= 80) variant = "info";
                 else variant = "success";
 
+                let extraClass;
+                    if (num <= 50)       extraClass = "badge-score-low";
+                    else if (num <= 70)  extraClass = "badge-score-medium";
+                    else if (num <= 80)  extraClass = "badge-score-high";
+                    else                 extraClass = "badge-score-veryhigh";
+
                 return (
                   <OverlayTrigger
                     key={nick}
                     placement="bottom"
-                    flipe={false}
+                    flip={false}
                     delay={{ show: 0, hide: 0 }}
                     overlay={<Tooltip id={`tt-${nick}`}>{reason}</Tooltip>}
                   >
-                    <Badge pill bg={variant} className="me-1 mb-1">
+
+                    <Badge pill className={`me-1 mb-1 ${extraClass}`}>
                       {nick} {num.toFixed(1)}
                     </Badge>
                   </OverlayTrigger>
