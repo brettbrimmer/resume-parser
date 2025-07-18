@@ -10,7 +10,9 @@ function App() {
   const [searchTerm, setSearchTerm] = useState("");
   const [requireAll, setRequireAll] = useState(false);
   const [filters, setFilters] = useState({ AI: false, ML: false, SE: false });
-  const [minGPA, setMinGPA] = useState("2.0");
+  // split GPA into whole and decimal parts
+  const [gpaWhole,   setGpaWhole]   = useState("2"); // 0–4
+  const [gpaDecimal, setGpaDecimal] = useState("0"); // 0–9
   // checkbox makes it so that we only show GPA filter when resumes actually list a GPA
   const [gpaListed, setGpaListed] = useState(false);
   const [distance, setDistance] = useState("10");
@@ -134,19 +136,20 @@ const displayed = candidates.filter((c) => {
     }
   }
 
-    // 2) GPA filter: respect checkbox and only drop real GPAs below threshold
-  const gpaValue = c.gpa; // float or null
+  // 2) GPA filter
+  const threshold = parseFloat(`${gpaWhole}.${gpaDecimal}`);
+  const gpaValue  = c.gpa; // float or null
   console.log(
-    `GPA listed? ${gpaListed}, value: ${gpaValue}, threshold: ${minGPA}`
+    `gpaListed=${gpaListed} · candidate.gpa=${gpaValue} · threshold=${threshold}`
   );
 
-  // if “GPA listed” is checked, drop candidates without a GPA
+  // a) if “GPA listed” checked, drop candidates without a GPA
   if (gpaListed && gpaValue == null) {
     return false;
   }
 
-  // if a GPA exists but is below the threshold, drop them
-  if (gpaValue != null && gpaValue < parseFloat(minGPA)) {
+  // b) drop if a GPA exists but is below the threshold
+  if (gpaValue != null && gpaValue < threshold) {
     return false;
   }
 
@@ -220,24 +223,56 @@ const displayed = candidates.filter((c) => {
             <option>Chicago, IL</option>
           </select>
         </div>
-        <div>
+        <div className="mb-3">
           <input
             type="checkbox"
             id="gpaListed"
             checked={gpaListed}
             onChange={(e) => setGpaListed(e.target.checked)}
           />
-          <label htmlFor="gpaListed"> GPA listed</label>
+          <label htmlFor="gpaListed" className="ms-1">
+            GPA listed
+          </label>
 
           <br />
-          <label style={{ marginTop: "0.5rem", display: "block" }}>
-            GPA at least
+          <label
+            htmlFor="gpaWhole"
+            className="form-label"
+            style={{ marginTop: "0.5rem", display: "block" }}
+          >
+            Min GPA
           </label>
-          <select value={minGPA} onChange={(e) => setMinGPA(e.target.value)}>
-            <option>2.0</option>
-            <option>3.0</option>
-            <option>4.0</option>
-          </select>
+          <div className="d-flex align-items-center">
+            {/* whole part 0–4 */}
+            <select
+              id="gpaWhole"
+             className="form-select w-auto me-1"
+              value={gpaWhole}
+              onChange={(e) => setGpaWhole(e.target.value)}
+            >
+              {[0, 1, 2, 3, 4].map((n) => (
+                <option key={n} value={n}>
+                  {n}
+                </option>
+              ))}
+            </select>
+
+            <span>.</span>
+
+            {/* decimal part 0–9 */}
+            <select
+              id="gpaDecimal"
+              className="form-select w-auto ms-1"
+              value={gpaDecimal}
+              onChange={(e) => setGpaDecimal(e.target.value)}
+            >
+              {[...Array(10).keys()].map((n) => (
+                <option key={n} value={n}>
+                  {n}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
 
         {/* ─── New Requirements Input ─────────────────────────────────── */}
