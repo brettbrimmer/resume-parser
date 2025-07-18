@@ -220,7 +220,7 @@ function App() {
             placeholder="e.g. Strong React skills"
             style={{ width: "100%" }}
           />
-          <button class="btn btn-primary me-2" onClick={applyRequirements} style={{ marginTop: "0.5rem" }}>
+          <button className="btn btn-primary me-2" onClick={applyRequirements} style={{ marginTop: "0.5rem" }}>
             Apply Requirements
           </button>
         </div>
@@ -238,8 +238,8 @@ function App() {
               style={{ display: "none" }}
             />
           </label>
-          <button class="btn btn-primary me-2" onClick={uploadResumes}>Upload Resumes</button>
-          <button class="btn btn-primary me-2"
+          <button className="btn btn-primary me-2" onClick={uploadResumes}>Upload Resumes</button>
+          <button className="btn btn-primary me-2"
             onClick={() => {
               const starred = candidates.filter((c) => c.starred);
               alert(`Exporting ${starred.length} candidates`);

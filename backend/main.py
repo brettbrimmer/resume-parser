@@ -15,6 +15,7 @@ from sqlalchemy.orm import Session
 
 from backend import models
 from backend.database import SessionLocal, engine
+from backend.resume_parser import parse_resume
 
 # ————————————————————————————————
 # 0. Load env + set OpenAI key
@@ -83,13 +84,20 @@ async def upload(
         with open(path, "wb") as out:
             shutil.copyfileobj(f.file, out)
 
-        full_text = extract_text(path)
-        meta = { "filename": f.filename, "size": os.path.getsize(path) }
+        # use parse_resume to get text + structured fields
+        parsed = parse_resume(path)
+        meta   = { "filename": f.filename, "size": os.path.getsize(path) }
+
         candidate = models.Candidate(
-            filename=f.filename,
-            parsed_data=json.dumps(meta),
-            text=full_text,
-            scores={}
+            filename             = f.filename,
+            parsed_data          = json.dumps(meta),
+            text                 = parsed["text"],
+            name                 = parsed["name"],
+            location             = parsed["location"],
+            gpa                  = parsed["gpa"],
+            degrees_earned       = parsed["degrees_earned"],
+            degrees_in_progress  = parsed["degrees_in_progress"],
+            scores               = {}
         )
         db.add(candidate)
         db.commit()
@@ -106,9 +114,15 @@ def list_candidates(db: Session = Depends(get_db)):
     rows = db.query(models.Candidate).all()
     return [
         {
-            "id":   r.id,
+            "id":                   r.id,
             **json.loads(r.parsed_data),  # filename + size
-            "text": r.text               # <-- include parsed resume body
+            "text":                 r.text,
+            "name":                 r.name,
+            "location":             r.location,
+            "gpa":                  r.gpa,
+            "degrees_earned":       r.degrees_earned,
+            "degrees_in_progress":  r.degrees_in_progress,
+            "scores":               r.scores
         }
         for r in rows
     ]

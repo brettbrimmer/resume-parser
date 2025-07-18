@@ -6,6 +6,7 @@ import spacy
 from spacy.matcher import Matcher
 import re
 from typing import List
+from dateparser.search import search_dates
 
 # 1. OCR reader (module‐level so it loads once)
 reader = easyocr.Reader(["en"])
@@ -100,6 +101,92 @@ def parseFileAtPathToText(filePath):
     print(f"Results text for resume parsing: {result_text}")
 
     return result_text
+
+# ── SMART FIELDS EXTRACTION ─────────────────────────────────────────────
+
+# degree‐line indicators
+DEGREE_KEYWORDS = [
+    r"\bBachelor\b", r"\bB\.S\.?\b", r"\bBA\b", r"\bBSc\b",
+    r"\bMaster\b",   r"\bM\.S\.?\b", r"\bMA\b",  r"\bMSc\b",
+    r"\bPh\.?D\b",   r"\bDoctor\b",      r"\bAssociate\b"
+]
+
+def extract_name(text: str) -> str:
+    doc = nlp(text)
+    # 1) NER
+    for ent in doc.ents:
+        if ent.label_ == "PERSON":
+            return ent.text
+
+    # 2) “Name:” pattern
+    for match_id, start, end in matcher(doc):
+        span = doc[start:end].text
+        return span.split(":", 1)[-1].strip()
+
+    # 3) First non-blank line
+    for line in text.splitlines():
+        if line.strip():
+            return line.strip()
+
+    return ""
+
+def extract_location(text: str) -> str:
+    """Returns the first GPE (geo‐political entity) SpaCy finds."""
+    doc = nlp(text)
+    for ent in doc.ents:
+        if ent.label_ == "GPE":
+            return ent.text
+    return ""
+
+def extract_degrees(text: str):
+    """
+    Scans each line for degree keywords.
+    Returns two lists of tuples: (full line, date-string or ''):
+      earned      – true degrees
+      in_progress – lines with 'expected' or 'in progress'
+    """
+    earned, in_prog = [], []
+    for line in text.splitlines():
+        for pat in DEGREE_KEYWORDS:
+            if re.search(pat, line, re.IGNORECASE):
+                # pull any date-like substring
+                result = search_dates(line)
+                date_str = result[0][0] if result else ""
+
+                target = in_prog if re.search(r"expected|in progress|ongoing",
+                                               line, re.IGNORECASE) else earned
+                target.append((line.strip(), date_str))
+                break
+    return earned, in_prog
+
+def parse_resume(path: str) -> dict:
+    """
+    Master entrypoint:
+      • parses raw text
+      • extracts name, location
+      • splits out earned vs in‐progress degrees
+    """
+    text = parseFileAtPathToText(path)
+    name, location = extract_name(text), extract_location(text)
+    earned, in_prog = extract_degrees(text)
+
+    # ── GPA extraction ─────────────────────────────────────────────────
+    def extract_gpa(txt: str) -> float | None:
+        # look for patterns like "GPA: 3.82" or "GPA 3.8/4.0"
+        m = re.search(r"GPA[:\s]*([0-4](?:\.\d{1,2})?)", txt, re.IGNORECASE)
+        return float(m.group(1)) if m else None
+
+    gpa = extract_gpa(text)
+
+    return {
+        "text": text,
+        "name": name,
+        "location": location,
+        "gpa": gpa,
+        "degrees_earned": earned,
+        "degrees_in_progress": in_prog
+    }
+
 
 import re
 from typing import List
