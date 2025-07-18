@@ -220,7 +220,7 @@ function App() {
             placeholder="e.g. Strong React skills"
             style={{ width: "100%" }}
           />
-          <button onClick={applyRequirements} style={{ marginTop: "0.5rem" }}>
+          <button class="btn btn-primary me-2" onClick={applyRequirements} style={{ marginTop: "0.5rem" }}>
             Apply Requirements
           </button>
         </div>
@@ -229,13 +229,17 @@ function App() {
       {/* ─── Main Panel ─────────────────────────────────────────────────── */}
       <div className="main">
         <div className="toolbar">
-          <input
-            type="file"
-            multiple
-            onChange={(e) => setFiles(e.target.files)}
-          />
-          <button onClick={uploadResumes}>Upload Resumes</button>
-          <button
+          <label className="btn btn-primary me-2">
+            Choose Files
+            <input
+              type="file"
+              multiple
+              onChange={(e) => setFiles(e.target.files)}
+              style={{ display: "none" }}
+            />
+          </label>
+          <button class="btn btn-primary me-2" onClick={uploadResumes}>Upload Resumes</button>
+          <button class="btn btn-primary me-2"
             onClick={() => {
               const starred = candidates.filter((c) => c.starred);
               alert(`Exporting ${starred.length} candidates`);
