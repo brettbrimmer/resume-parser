@@ -159,7 +159,7 @@ function App() {
           />
           <label htmlFor="requireAll"> Require all search terms</label>
         </div>
-        {["AI", "ML", "SE"].map((key) => (
+        {/*{["AI", "ML", "SE"].map((key) => (
           <div key={key}>
             <input
               type="checkbox"
@@ -177,16 +177,7 @@ function App() {
                 : " Software Engineer"}
             </label>
           </div>
-        ))}
-        <div>
-          <label>GPA at least</label>
-          <br />
-          <select value={minGPA} onChange={(e) => setMinGPA(e.target.value)}>
-            <option>2.0</option>
-            <option>3.0</option>
-            <option>4.0</option>
-          </select>
-        </div>
+        ))}*/}
         <div>
           <label>Within</label>
           <br />
@@ -207,6 +198,15 @@ function App() {
             <option>Tempe, AZ</option>
             <option>Phoenix, AZ</option>
             <option>Chicago, IL</option>
+          </select>
+        </div>
+        <div>
+          <label>GPA at least</label>
+          <br />
+          <select value={minGPA} onChange={(e) => setMinGPA(e.target.value)}>
+            <option>2.0</option>
+            <option>3.0</option>
+            <option>4.0</option>
           </select>
         </div>
 
