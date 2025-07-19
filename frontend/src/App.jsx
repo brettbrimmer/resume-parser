@@ -7,6 +7,7 @@ import {
   Card,
   Form,
   Button,
+  Badge,
 } from "react-bootstrap";
 import axios from "axios";
 import "./App.css";
@@ -26,6 +27,21 @@ function App() {
 
   const [reqText, setReqText] = useState("");
   const [nicknames, setNicknames] = useState([]);
+  const [mapping, setMapping]   = useState({});       // { requirementKey: label }
+  const [sortConfig, setSortConfig] = useState({}); // { [name]: 1|-1 }
+
+  // cycle: 0 → 1 (↑) → -1 (↓) → back to 0
+  function handleBadgeClick(name) {
+    setSortConfig((prev) => {
+      const curr = prev[name] || 0;
+      const next = curr === 0 ? 1 : curr === 1 ? -1 : 0;
+      if (next === 0) {
+        const { [name]: _, ...rest } = prev;
+        return rest;
+      }
+      return { ...prev, [name]: next };
+    });
+  }
 
   // ─── Upload & Data States ────────────────────────────────────────────────
   const [files, setFiles] = useState([]);
@@ -76,7 +92,13 @@ function App() {
       const { data } = await axios.post("/api/requirements", {
         requirements: lines,
       });
-      setNicknames(Object.values(data.mapping));
+      // invert label→key into key→label:
+     const flipped = Object.entries(data.mapping).reduce(
+       (acc, [label, key]) => ({ ...acc, [key]: label }),
+       {}
+     );
+     setMapping(flipped);
+     setNicknames(Object.keys(flipped));
       setCandidates((prev) =>
         prev.map((c) => {
           const scored = data.candidates.find((x) => x.id === c.id);
@@ -112,8 +134,8 @@ function App() {
     );
   }
 
-  // Apply client‐side filters
-  const displayed = candidates.filter((c) => {
+  // Apply client‐side filters first
+  const filtered = candidates.filter((c) => {
     // 1) text‐search
     if (searchTerm.trim()) {
       const terms = searchTerm
@@ -143,6 +165,30 @@ function App() {
 
     return true;
   });
+
+  // 2) always sort by badges (no-op if sortConfig is empty)
+  console.log("SortConfig:", sortConfig);
+    filtered.forEach(c => {
+      console.log("Candidate", c.id, "scores:", c.scores);
+    });
+  const displayed = [...filtered].sort((a, b) => {
+  for (const [key, dir] of Object.entries(sortConfig)) {
+    const aVal = a.scores?.[key]?.score ?? 0;
+    const bVal = b.scores?.[key]?.score ?? 0;
+
+    const cmp = dir * (bVal - aVal); // descending
+    if (cmp !== 0) return cmp; // only return if there's a difference
+  }
+  return 0; // completely equal
+});
+
+// ←—— Place your debug log here
+  console.log(
+    "App rendering, displayed order:",
+    displayed.map((c) => c.id),
+    "sortConfig:",
+    sortConfig
+  );
 
   return (
     <Container fluid className="py-4">
@@ -307,6 +353,24 @@ function App() {
             >
               Export Starred
             </Button>
+            {/* requirement-sorting badges */}
+            {nicknames.map((nick) => {
+              const dir   = sortConfig[nick] || 0;
+              const arrow = dir === 1 ? "↑" : dir === -1 ? "↓" : "";
+              const variant = dir ? "primary" : "secondary";
+              return (
+                <Badge
+                  key={nick}
+                  bg={variant}
+                  className="me-2 mb-2"
+                  style={{ cursor: "pointer" }}
+                  onClick={() => handleBadgeClick(nick)} // Use nickname, not label!
+                >
+                  {mapping[nick]} {arrow}
+                </Badge>
+              );
+            })}
+
           </div>
 
           <CandidatesTable

@@ -8,6 +8,7 @@ export default function CandidatesTable({
   selectedRows,
   onSelectRow
 }) {
+  console.log("Table rendering with order:", candidates.map(c => c.id));
   return (
     <Table hover bordered responsive size="sm">
       <thead>
