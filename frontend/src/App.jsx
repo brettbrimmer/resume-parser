@@ -311,7 +311,7 @@ function App() {
 
           <CandidatesTable
             candidates={displayed}
-            nicknames={nicknames}
+            // nicknames={nicknames}
             onToggleStar={toggleStar}
             onViewCandidate={(id) =>
               window.open(`/api/candidates/${id}`, "_blank")

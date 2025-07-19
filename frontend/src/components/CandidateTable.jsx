@@ -3,7 +3,6 @@ import { Table, Badge, OverlayTrigger, Tooltip, Form } from "react-bootstrap";
 
 export default function CandidatesTable({
   candidates,
-  nicknames,
   onToggleStar,
   onViewCandidate,
   selectedRows,
@@ -17,9 +16,9 @@ export default function CandidatesTable({
           <th className="col-id">ID</th>
           {/* <th>Filename</th> */}
           {/* <th>Size</th> */}
-          {nicknames.map((n) => (
-            <th key={n}>{n}</th>
-          ))}
+          {/* {nicknames.map((n) => ( */}
+          {/*   <th key={n}>{n}</th> */}
+          {/* ))} */}
           <th className="col-star">Star</th>
           <th>Badges</th>
           <th>Actions</th>
@@ -52,13 +51,13 @@ export default function CandidatesTable({
             </td>
             {/* <td>{c.filename}</td> */}
             {/* <td>{c.size}</td> */}
-            {nicknames.map((n) => (
+            {/*{nicknames.map((n) => (
               <td key={n}>
                 {c.scores?.[n]?.score != null
                   ? c.scores[n].score.toFixed(1)
                   : "-"}
               </td>
-            ))}
+            ))}*/}
             <td>
               {Object.entries(c.scores || {}).map(([nick, entry]) => {
                 const num = entry.score;
