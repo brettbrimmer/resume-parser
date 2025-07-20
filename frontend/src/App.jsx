@@ -404,7 +404,9 @@ function App() {
         show={showModal}
         onHide={() => setShowModal(false)}
         size="lg"
-        centered
+        // centered
+        centered={false}                   // disable flex-centering
+        dialogClassName="modal-top"       // our custom class on .modal-dialog
       >
         <Modal.Header closeButton>
           {/* <Modal.Title>Resume: {modalCandidate?.name}</Modal.Title> */}

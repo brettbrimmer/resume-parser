@@ -128,3 +128,8 @@ body, html, #root {
 .fst-italic {
   font-style: italic !important;
 }
+
+/* push the modal-dialog down from the very top */
+.modal-top {
+  margin-top: 3rem;   /* tweak this value to taste */
+}
