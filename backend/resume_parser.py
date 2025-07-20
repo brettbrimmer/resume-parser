@@ -98,7 +98,7 @@ def parseFileAtPathToText(filePath):
         texts = [text for _, text, _ in ocr_results]    # Grab recognized strings
         result_text = " ".join(texts)   # Join parsed strings
     
-    print(f"Results text for resume parsing: {result_text}")
+    # print(f"Results text for resume parsing: {result_text}")
 
     return result_text
 
@@ -112,30 +112,56 @@ DEGREE_KEYWORDS = [
 ]
 
 def extract_name(text: str) -> str:
+# 1) Look at the *very first* non‐empty line and see if it looks like a human name
+    for line in text.splitlines():
+        candidate = line.strip()
+        if not candidate:
+            continue
+        # simple heuristic: between 2–4 words, each capitalized
+        parts = candidate.split()
+        if 2 <= len(parts) <= 4 and all(p[0].isupper() for p in parts):
+            print(f"Name parsed as (line‐1 heuristic): {candidate}")
+            return candidate
+        break
+
+    # 2) Regex “Name: John Doe” anywhere
+    m = re.search(r'(?mi)^Name[:\s]+(.+)$', text)
+    if m:
+        nm = m.group(1).strip()
+        print(f"Name parsed via regex: {nm}")
+        return nm
+
+    # 3) Finally, fall back to spaCy NER in case the above failed
     doc = nlp(text)
-    # 1) NER
     for ent in doc.ents:
         if ent.label_ == "PERSON":
+            print(f"Name parsed via NER: {ent.text}")
             return ent.text
-
-    # 2) “Name:” pattern
-    for match_id, start, end in matcher(doc):
-        span = doc[start:end].text
-        return span.split(":", 1)[-1].strip()
-
-    # 3) First non-blank line
-    for line in text.splitlines():
-        if line.strip():
-            return line.strip()
 
     return ""
 
 def extract_location(text: str) -> str:
-    """Returns the first GPE (geo‐political entity) SpaCy finds."""
+# 1) Look for a “📍 City, State” pattern on the top line
+    m = re.search(r'📍\s*([^|]+)', text)
+    if m:
+        loc = m.group(1).strip()
+        print(f"Location parsed via bullet: {loc}")
+        return loc
+
+    # 2) Regex capture “City, ST”
+    m2 = re.search(r'([A-Z][a-z]+(?: [A-Z][a-z]+)*,\s*[A-Z]{2})', text)
+    if m2:
+        loc = m2.group(1)
+        print(f"Location parsed via regex: {loc}")
+        return loc
+
+    # 3) Fallback to spaCy GPE
     doc = nlp(text)
     for ent in doc.ents:
         if ent.label_ == "GPE":
+            print(f"Location parsed via NER: {ent.text}")
             return ent.text
+
     return ""
 
 def extract_degrees(text: str):
@@ -157,6 +183,8 @@ def extract_degrees(text: str):
                                                line, re.IGNORECASE) else earned
                 target.append((line.strip(), date_str))
                 break
+
+    print(f"degrees parsed as {earned} .. {in_prog}")
     return earned, in_prog
 
 def parse_resume(path: str) -> dict:
