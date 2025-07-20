@@ -1,5 +1,7 @@
+from datetime import datetime, timezone
 from sqlalchemy import Column, Integer, String, Text, JSON, Float
 from backend.database import Base
+from sqlalchemy import DateTime
 
 class Candidate(Base):
     __tablename__ = "candidates"
@@ -24,3 +26,9 @@ class Candidate(Base):
 
     # NEW: store requirement-to-score map, e.g. {"Python": 87.5, "AWS": 42.0}
     scores      = Column(JSON, nullable=False, default={})
+
+    upload_date = Column(
+            DateTime(timezone=True),
+            default=lambda: datetime.now(timezone.utc),
+            nullable=False
+        )

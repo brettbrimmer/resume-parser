@@ -112,33 +112,40 @@ DEGREE_KEYWORDS = [
 ]
 
 def extract_name(text: str) -> str:
-# 1) Look at the *very first* non‐empty line and see if it looks like a human name
+    # 1) Look at the *very first* non‐empty line and see if it looks like a human name
     for line in text.splitlines():
         candidate = line.strip()
+        extracted_name = ""
+
         if not candidate:
             continue
         # simple heuristic: between 2–4 words, each capitalized
         parts = candidate.split()
         if 2 <= len(parts) <= 4 and all(p[0].isupper() for p in parts):
             print(f"Name parsed as (line‐1 heuristic): {candidate}")
-            return candidate
+            extracted_name = candidate
         break
 
     # 2) Regex “Name: John Doe” anywhere
-    m = re.search(r'(?mi)^Name[:\s]+(.+)$', text)
-    if m:
-        nm = m.group(1).strip()
-        print(f"Name parsed via regex: {nm}")
-        return nm
+    if(extracted_name == ""):
+        m = re.search(r'(?mi)^Name[:\s]+(.+)$', text)
+        if m:
+            nm = m.group(1).strip()
+            print(f"Name parsed via regex: {nm}")
+            extracted_name = nm
 
-    # 3) Finally, fall back to spaCy NER in case the above failed
-    doc = nlp(text)
-    for ent in doc.ents:
-        if ent.label_ == "PERSON":
-            print(f"Name parsed via NER: {ent.text}")
-            return ent.text
+    if(extracted_name == ""):
+        # 3) Finally, fall back to spaCy NER in case the above failed
+        doc = nlp(text)
+        for ent in doc.ents:
+            if ent.label_ == "PERSON":
+                print(f"Name parsed via NER: {ent.text}")
+                extracted_name = ent.text
 
-    return ""
+    # Change name to Title Case
+    extracted_name = " ".join(part.capitalize() for part in extracted_name.lower().split())
+
+    return extracted_name
 
 def extract_location(text: str) -> str:
 # 1) Look for a “📍 City, State” pattern on the top line

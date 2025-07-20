@@ -23,6 +23,7 @@ export default function CandidatesTable({
           {/* ))} */}
           <th className="col-star">Star</th>
           <th>Badges</th>
+          <th className="col-upload-date">Upload Date</th>
           <th>Actions</th>
         </tr>
       </thead>
@@ -92,6 +93,11 @@ export default function CandidatesTable({
                   </OverlayTrigger>
                 );
               })}
+            </td>
+            <td className="col-upload-date">
+              {c.upload_date
+                ? new Date(c.upload_date).toLocaleDateString()
+                : "—"}
             </td>
             <td className="col-view">
               <button

@@ -17,6 +17,8 @@ from backend import models
 from backend.database import SessionLocal, engine
 from backend.resume_parser import parse_resume
 
+from datetime import datetime, timezone
+
 # ————————————————————————————————
 # 0. Load env + set OpenAI key
 # ————————————————————————————————
@@ -99,7 +101,8 @@ async def upload(
             gpa                  = parsed["gpa"],
             degrees_earned       = parsed["degrees_earned"],
             degrees_in_progress  = parsed["degrees_in_progress"],
-            scores               = {}
+            scores               = {},
+            upload_date          = datetime.now(timezone.utc)
         )
         db.add(candidate)
         db.commit()
@@ -126,7 +129,8 @@ def list_candidates(db: Session = Depends(get_db)):
             "gpa":                  r.gpa,
             "degrees_earned":       r.degrees_earned,
             "degrees_in_progress":  r.degrees_in_progress,
-            "scores":               r.scores
+            "scores":               r.scores,
+            "upload_date":          r.upload_date.isoformat()
         }
         for r in rows
     ]
@@ -152,6 +156,7 @@ def get_candidate(cand_id: int, db: Session = Depends(get_db)):
       "degrees_in_progress":  c.degrees_in_progress,
       "scores":               c.scores,
       "resume_url":           f"/uploads/{c.filename}",
+      "upload_date":          c.upload_date.isoformat()
     })
 
     return data
