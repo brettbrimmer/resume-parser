@@ -412,7 +412,8 @@ function App() {
                   style={{ cursor: "pointer" }}
                   onClick={() => handleBadgeClick(nick)} // Use nickname, not label!
                 >
-                  {mapping[nick]} {arrow}
+                  {/*mapping[nick]} {arrow}*/}
+                  {nick} {arrow}
                 </Badge>
               );
             })}
