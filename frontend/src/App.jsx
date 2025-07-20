@@ -8,7 +8,9 @@ import {
   Form,
   Button,
   Badge,
-  Modal
+  Modal,
+  Navbar,
+  Nav
 } from "react-bootstrap";
 import axios from "axios";
 import "./App.css";
@@ -207,7 +209,30 @@ function App() {
   );
 
   return (
-    <Container fluid className="py-4">
+    <>
+      {/* ─── Top Navbar ─────────────────────────────────────────────────── */}
+      <Navbar bg="light" expand="lg" sticky="top" className="shadow-sm">
+        <Container fluid className="justify-content-start">
+          <Navbar.Brand href="/">
+            <img
+              src="src/images/resumeParserLogo.png"
+              height="20"
+              alt="Resume Parser Logo"
+            />
+          </Navbar.Brand>
+          <Nav>
+            <Nav.Link href="/jobs" className="ms-3 pt-3">View Jobs</Nav.Link>
+            <Nav.Link href="/create" className="ms-3 pt-3">Create Job</Nav.Link>
+          </Nav>
+        </Container>
+      </Navbar>
+
+      {/* ─── Page Body ──────────────────────────────────────────────────── */}
+      <Container
+        fluid
+        className="py-4"
+        style={{ marginTop: "1rem" }}  // adjust to push content below navbar
+      >
       <Row>
         {/* ─── Sidebar ─────────────────────────────────────────────────── */}
         <Col xs={12} md={2}>
@@ -539,6 +564,7 @@ function App() {
         </Modal.Footer>
       </Modal>
     </Container>
+    </>
   );
 }
 
