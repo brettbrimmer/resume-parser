@@ -265,10 +265,10 @@ function App() {
                 <hr />
 
                 {/* Location */}
-                <Form.Group
-                  controlId="locationFilter"
-                  className="mb-3 d-flex align-items-center"
-                >
+              <Form.Group
+                controlId="locationFilter"
+                className="mb-3 d-flex flex-wrap align-items-center"
+              >
                   <Form.Label className="me-2 mb-0">
                     Within
                   </Form.Label>
@@ -278,12 +278,14 @@ function App() {
                     onChange={(e) =>
                       setDistance(e.target.value)
                     }
-                    className="w-auto"
+                    className="w-auto me-2 mb-1"
                   >
                     <option>10</option>
                     <option>25</option>
                     <option>50</option>
                     <option>100</option>
+                    <option>150</option>
+                    <option>200</option>
                   </Form.Select>
                   <span className="mx-2">miles of</span>
                   <Form.Select
@@ -292,7 +294,7 @@ function App() {
                     onChange={(e) =>
                       setLocation(e.target.value)
                     }
-                    className="w-auto"
+                    className="w-auto mb-1"
                   >
                     <option>Tempe, AZ</option>
                     <option>Phoenix, AZ</option>

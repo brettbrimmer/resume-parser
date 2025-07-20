@@ -144,6 +144,9 @@ body, html, #root {
   /* set up a transparent bottom border that becomes visible on hover */
   border-bottom: 2px solid transparent;
   transition: none;
+
+  /* always show a light gray underline */
+  /* border-bottom: 2px solid #ccc; */
 }
 
 /* on hover: text glow + instant underline */
