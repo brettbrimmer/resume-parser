@@ -21,8 +21,8 @@ export default function CandidatesTable({
           {/* {nicknames.map((n) => ( */}
           {/*   <th key={n}>{n}</th> */}
           {/* ))} */}
-          <th className="col-star">Star</th>
           <th>Badges</th>
+          <th className="col-star">Star</th>
           <th className="col-upload-date">Upload Date</th>
           <th>Actions</th>
         </tr>
@@ -47,12 +47,6 @@ export default function CandidatesTable({
             </td>
             <td className="col-id">{c.id}</td>
             <td className="col-candidate">{c.name}</td>
-            <td className="col-star"
-              style={{ textAlign: "center", cursor: "pointer" }}
-              onClick={() => onToggleStar(c.id)}
-            >
-              {c.starred ? "★" : "☆"}
-            </td>
             {/* <td>{c.filename}</td> */}
             {/* <td>{c.size}</td> */}
             {/*{nicknames.map((n) => (
@@ -93,6 +87,12 @@ export default function CandidatesTable({
                   </OverlayTrigger>
                 );
               })}
+            </td>
+            <td className="col-star"
+              style={{ textAlign: "center", cursor: "pointer" }}
+              onClick={() => onToggleStar(c.id)}
+            >
+              {c.starred ? "★" : "☆"}
             </td>
             <td className="col-upload-date">
               {c.upload_date

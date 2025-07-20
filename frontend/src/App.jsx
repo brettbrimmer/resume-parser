@@ -102,6 +102,9 @@ function App() {
       .split("\n")
       .map((l) => l.trim())
       .filter(Boolean);
+    // treat the whole textarea as a single requirement
+    //const trimmed = reqText.trim();
+    //const lines = trimmed ? [trimmed] : [];
     if (!lines.length) {
       alert("Enter at least one requirement.");
       return;

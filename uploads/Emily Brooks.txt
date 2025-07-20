@@ -1,0 +1,69 @@
+EMILY M. BROOKS
+📍 Ann Arbor, MI | 📞 (734) 555-8643 | ✉️ emily.m.brooks@umich.edu
+🌐 github.com/embrooks-dev | linkedin.com/in/emilymbrooks
+
+EDUCATION
+University of Michigan – Ann Arbor, MI
+Bachelor of Science in Computer Science
+📅 Sept 2021 – May 2025 (Expected)
+📊 GPA: 2.4 / 4.0
+Relevant Coursework: Data Structures, Computer Architecture, Software Engineering, Database Systems
+
+SKILLS
+Languages: Python, JavaScript, C++
+Frameworks & Tools: React, Flask, PostgreSQL, Git
+Technologies: REST APIs, basic Docker usage
+
+TECHNICAL EXPERIENCE
+Software Engineering Intern (Part-time)
+BlueSignal Technologies – Remote
+📅 June 2024 – Aug 2024
+
+Assisted with bug fixes in internal web tools using JavaScript and Python.
+
+Helped update documentation and tested features before deployment.
+
+Research Assistant
+University of Michigan, CSE Dept.
+📅 Jan 2024 – Apr 2024
+
+Supported data collection for a wearable device study.
+
+Wrote simple Python scripts to clean and organize sensor data.
+
+PROJECTS
+Budget Tracker Web App
+Next.js | PostgreSQL
+
+Developed a simple web app to track personal expenses and income.
+
+Implemented basic login functionality and responsive UI.
+
+Maze Solver Program
+Python | Pygame
+
+Built a program demonstrating basic pathfinding algorithms (DFS).
+
+Focused on clear visualization rather than performance optimization.
+
+Photo Tagging Tool
+React | Flask
+
+Created a prototype app for organizing photos by tags.
+
+Used pre-existing APIs for image recognition with minimal customization.
+
+LEADERSHIP & ACTIVITIES
+Member, Michigan Hackers Club
+📅 Sept 2023 – Present
+
+Participated in club meetings and coding challenges.
+
+Resident Advisor, UM Housing
+📅 Aug 2023 – May 2024
+
+Assisted residents with general support and organized occasional social events.
+
+ADDITIONAL INFORMATION
+Citizenship: U.S. Citizen
+Interests: Casual running, board games, learning new coding skills

@@ -76,7 +76,7 @@ body, html, #root {
 }
 
 .col-id {
-  width: 80px;
+  width: 40px;
   text-align: center;
 }
 
@@ -92,6 +92,11 @@ body, html, #root {
 
 .col-badge {
   width: 400px;
+  text-align: center;
+}
+
+.col-upload-date {
+  width: 80px;
   text-align: center;
 }
 
@@ -146,7 +151,7 @@ body, html, #root {
 
 /* push the modal-dialog down from the very top */
 .modal-top {
-  margin-top: 3rem;   /* tweak this value to taste */
+  margin-top: 1rem;   /* tweak this value to taste */
 }
 
 /* base styles for nav links */
