@@ -84,3 +84,47 @@ body, html, #root {
   font-size: 40px;
   font-family: "Times New Roman", Georgia, serif;
 }
+
+/* Container tweaks */
+.resume-body {
+  font-family: "Helvetica Neue", Arial, sans-serif;
+  font-size: 0.95rem;
+}
+
+/* Header */
+.resume-header {
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid #333;
+}
+.resume-name {
+  font-size: 1.75rem;
+  letter-spacing: 0.5px;
+  margin-bottom: 0;
+}
+.resume-contact {
+  font-size: 0.9rem;
+}
+
+/* Section Titles */
+.resume-section {
+  margin-top: 1.5rem;
+}
+.resume-section-title {
+  font-size: 1.1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 0.5rem;
+  border-bottom: 1px solid #555;
+  padding-bottom: 2px;
+}
+
+/* Job entries */
+.resume-job + .resume-job {
+  padding-top: 1rem;
+  border-top: 1px dashed #ccc;
+}
+
+/* Italic job subtitle */
+.fst-italic {
+  font-style: italic !important;
+}

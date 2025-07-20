@@ -399,92 +399,107 @@ function App() {
           />
         </Col>
       </Row>
-    {/* ——— Resume Preview Modal ——— */}
-    <Modal
-      show={showModal}
-      onHide={() => setShowModal(false)}
-      size="lg"
-      centered
-    >
-      <Modal.Header closeButton>
-        <Modal.Title>Resume: {modalCandidate?.name}</Modal.Title>
-      </Modal.Header>
-      <Modal.Body>
-        {/* Profile */}
-        <h5>Profile</h5>
-        <dl className="row">
-          <dt className="col-3">Name</dt>
-          <dd className="col-9">{modalCandidate?.name}</dd>
+      {/* ——— Resume Preview Modal ——— */}
+      <Modal
+        show={showModal}
+        onHide={() => setShowModal(false)}
+        size="lg"
+        centered
+      >
+        <Modal.Header closeButton>
+          {/* <Modal.Title>Resume: {modalCandidate?.name}</Modal.Title> */}
+        </Modal.Header>
+        <Modal.Body className="resume-body">
 
-          <dt className="col-3">Email</dt>
-          <dd className="col-9">{modalCandidate?.email}</dd>
+        {/* ——— HEADER ——— */}
+        <div className="resume-header text-center mb-4">
+          <h1 className="resume-name mb-1">{modalCandidate?.name}</h1>
+          <div className="resume-contact text-muted">
+            {modalCandidate?.email} &bull; {modalCandidate?.phone} &bull; {modalCandidate?.location}
+          </div>
+        </div>
 
-          <dt className="col-3">Phone</dt>
-          <dd className="col-9">{modalCandidate?.phone}</dd>
+        {/* ——— EDUCATION ——— */}
+        <div className="resume-section">
+          <h2 className="resume-section-title">Education</h2>
+          <div className="d-flex justify-content-between">
+            <div>
+              <strong>
+                {modalCandidate?.degrees_earned?.[0]?.[0]
+                  || "University of La Verne, La Verne, CA"}
+              </strong>
+              <div className="text-muted">
+                {modalCandidate?.degrees_earned?.[0]?.[1]
+                  || "Expected Graduation: June 2016"}
+              </div>
+            </div>
+            <div className="text-end">
+              <div>
+                {modalCandidate?.degrees_earned?.[0]?.[0]
+                  .split("–")[0]
+                  || "Bachelor of Arts, Business Administration"}
+              </div>
+              <div className="text-muted">
+                GPA: {modalCandidate?.gpa?.toFixed(2) || "3.50"}
+              </div>
+           </div>
+          </div>
+        </div>
 
-          <dt className="col-3">Location</dt>
-          <dd className="col-9">{modalCandidate?.location}</dd>
-        </dl>
+        {/* ——— EXPERIENCE ——— */}
+        <div className="resume-section">
+          <h2 className="resume-section-title">Experience</h2>
 
-        {/* Education */}
-        <h5 className="mt-4">Education</h5>
-        <p>
-          <strong>School:</strong>{" "}
-          {modalCandidate?.degrees_earned?.[0]?.[0] ||
-            "University of La Verne, La Verne, CA"}
-        </p>
-        <p>
-          <strong>Degree:</strong>{" "}
-          {modalCandidate?.degrees_earned?.[0]?.[0].split("–")[0] ||
-            "Bachelor of Arts, Business Administration"}
-        </p>
-        <p>
-          <strong>GPA:</strong>{" "}
-          {modalCandidate?.gpa?.toFixed(2) || "3.5"}
-        </p>
-        <p>
-          <strong>Date:</strong>{" "}
-          {modalCandidate?.degrees_earned?.[0]?.[1] ||
-            "Expected Graduation: June 2016"}
-        </p>
+          <div className="resume-job mb-3">
+            <div className="d-flex justify-content-between">
+              <strong>LionLike MindState</strong>
+              <span className="text-muted">Pomona, CA</span>
+            </div>
+            <div className="d-flex justify-content-between fst-italic mb-2">
+              <span>Volunteer</span>
+              <span className="text-muted">June 2012 – Present</span>
+            </div>
+            <ul className="mb-0">
+              <li>
+                Plan two yearly outreach events to highlight community 
+                members’ creativity in spoken word, poetry, music, and art
+              </li>
+            </ul>
+          </div>
 
-        {/* Hallucinated Work Experience */}
-        <h5 className="mt-4">Work Experience</h5>
-        <p>
-          <strong>LionLike MindState</strong> — Volunteer<br/>
-          Pomona, CA · June 2012–Present<br/>
-          <ul>
-            <li>
-              Plan two yearly outreach events to highlight community 
-              members’ creativity in spoken word, poetry, music, and art
-            </li>
+          <div className="resume-job mb-3">
+            <div className="d-flex justify-content-between">
+              <strong>YMCA</strong>
+              <span className="text-muted">Pomona, CA</span>
+            </div>
+            <div className="d-flex justify-content-between fst-italic mb-2">
+              <span>Volunteer Swim Coach</span>
+             <span className="text-muted">Summer 2013, 2014</span>
+            </div>
+            <ul className="mb-0">
+              <li>Instructed classes of up to 15 children on basic swimming skills</li>
+              <li>Communicated regularly with parents on children’s progress</li>
+            </ul>
+          </div>
+        </div>
+
+        {/* ——— SKILLS ——— */}
+        <div className="resume-section mb-0">
+          <h2 className="resume-section-title">Skills</h2>
+          <ul className="mb-0">
+            <li><strong>Computer:</strong> Windows/Mac OS, Word, PowerPoint, Excel</li>
+            <li><strong>Language:</strong> Spanish (fluent)</li>
+            <li><strong>Social Media:</strong> Facebook, Twitter, Instagram</li>
           </ul>
-        </p>
-        <p>
-          <strong>YMCA</strong> — Volunteer Swim Coach<br/>
-          Pomona, CA · Summer 2013, 2014<br/>
-          <ul>
-            <li>Instructed classes of up to 15 children on basic swimming skills</li>
-            <li>Communicated regularly with parents on children’s progress</li>
-          </ul>
-        </p>
+        </div>
 
-        {/* Hallucinated Skills */}
-        <h5 className="mt-4">Skills</h5>
-        <ul>
-          <li>
-            Computer: Proficient in Windows and Mac OS, Word, PowerPoint, Excel
-          </li>
-          <li>Language: Fluent in Spanish</li>
-          <li>Social Media: Facebook, Twitter, Instagram</li>
-        </ul>
       </Modal.Body>
-      <Modal.Footer>
-        <Button variant="secondary" onClick={() => setShowModal(false)}>
-          Close
-        </Button>
-      </Modal.Footer>
-    </Modal>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowModal(false)}>
+            Close
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </Container>
   );
 }
