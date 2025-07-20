@@ -15,6 +15,7 @@ export default function CandidatesTable({
         <tr>
           <th className="col-select">Select</th>
           <th className="col-id">ID</th>
+          <th className="col-candidate">Candidate</th>
           {/* <th>Filename</th> */}
           {/* <th>Size</th> */}
           {/* {nicknames.map((n) => ( */}
@@ -44,6 +45,7 @@ export default function CandidatesTable({
             />
             </td>
             <td className="col-id">{c.id}</td>
+            <td className="col-candidate">{c.name}</td>
             <td className="col-star"
               style={{ textAlign: "center", cursor: "pointer" }}
               onClick={() => onToggleStar(c.id)}
@@ -59,7 +61,7 @@ export default function CandidatesTable({
                   : "-"}
               </td>
             ))}*/}
-            <td>
+            <td className="col-badge">
               {Object.entries(c.scores || {}).map(([nick, entry]) => {
                 const num = entry.score;
                 const reason = entry.reason;
@@ -91,7 +93,7 @@ export default function CandidatesTable({
                 );
               })}
             </td>
-            <td>
+            <td className="col-view">
               <button
                 className="btn btn-sm btn-outline-primary"
                 onClick={() => onViewCandidate(c.id)}

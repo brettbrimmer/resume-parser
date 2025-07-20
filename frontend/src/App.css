@@ -80,6 +80,21 @@ body, html, #root {
   text-align: center;
 }
 
+.col-view {
+  width: 80px;
+  text-align: center;
+}
+
+.col-candidate {
+  width: 250px;
+  text-align: left;
+}
+
+.col-badge {
+  width: 400px;
+  text-align: center;
+}
+
 #gpa-dot {
   font-size: 40px;
   font-family: "Times New Roman", Georgia, serif;
