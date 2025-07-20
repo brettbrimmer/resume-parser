@@ -94,6 +94,8 @@ async def upload(
             text                 = parsed["text"],
             name                 = parsed["name"],
             location             = parsed["location"],
+            email                = parsed.get("email"),
+            phone                = parsed.get("phone"),
             gpa                  = parsed["gpa"],
             degrees_earned       = parsed["degrees_earned"],
             degrees_in_progress  = parsed["degrees_in_progress"],
@@ -119,6 +121,8 @@ def list_candidates(db: Session = Depends(get_db)):
             "text":                 r.text,
             "name":                 r.name,
             "location":             r.location,
+            "email":                r.email,
+            "phone":                r.phone,
             "gpa":                  r.gpa,
             "degrees_earned":       r.degrees_earned,
             "degrees_in_progress":  r.degrees_in_progress,
@@ -132,8 +136,24 @@ def get_candidate(cand_id: int, db: Session = Depends(get_db)):
     c = db.query(models.Candidate).get(cand_id)
     if not c:
         raise HTTPException(404, "Not found")
-    data = json.loads(c.parsed_data)
-    data["resume_url"] = f"/uploads/{c.filename}"
+    # start with your filename+size meta
+    data = { **json.loads(c.parsed_data) }
+
+    # add every field you need
+    data.update({
+      "id":                   c.id,
+      "text":                 c.text,
+      "name":                 c.name,
+      "location":             c.location,
+      "email":                c.email,
+      "phone":                c.phone,
+      "gpa":                  c.gpa,
+      "degrees_earned":       c.degrees_earned,
+      "degrees_in_progress":  c.degrees_in_progress,
+      "scores":               c.scores,
+      "resume_url":           f"/uploads/{c.filename}",
+    })
+
     return data
 
 # ————————————————————————————————
