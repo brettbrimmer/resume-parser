@@ -8,6 +8,7 @@ import {
   Form,
   Button,
   Badge,
+  Modal
 } from "react-bootstrap";
 import axios from "axios";
 import "./App.css";
@@ -29,6 +30,21 @@ function App() {
   const [nicknames, setNicknames] = useState([]);
   const [mapping, setMapping]   = useState({});       // { requirementKey: label }
   const [sortConfig, setSortConfig] = useState({}); // { [name]: 1|-1 }
+
+  // control the resume‐popup
+  const [showModal, setShowModal] = useState(false);
+  const [modalCandidate, setModalCandidate] = useState(null);
+
+  // fetch one candidate and show in modal
+  async function handleViewCandidate(id) {
+    try {
+      const { data } = await axios.get(`/api/candidates/${id}`);
+      setModalCandidate(data);
+      setShowModal(true);
+    } catch (err) {
+      console.error("Failed to load candidate:", err);
+    }
+  }
 
   // cycle: 0 → 1 (↑) → -1 (↓) → back to 0
   function handleBadgeClick(name) {
@@ -377,14 +393,98 @@ function App() {
             candidates={displayed}
             // nicknames={nicknames}
             onToggleStar={toggleStar}
-            onViewCandidate={(id) =>
-              window.open(`/api/candidates/${id}`, "_blank")
-            }
+            onViewCandidate={handleViewCandidate}
             selectedRows={selectedRows}
             onSelectRow={onSelectRow}
           />
         </Col>
       </Row>
+    {/* ——— Resume Preview Modal ——— */}
+    <Modal
+      show={showModal}
+      onHide={() => setShowModal(false)}
+      size="lg"
+      centered
+    >
+      <Modal.Header closeButton>
+        <Modal.Title>Resume: {modalCandidate?.name}</Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
+        {/* Profile */}
+        <h5>Profile</h5>
+        <dl className="row">
+          <dt className="col-3">Name</dt>
+          <dd className="col-9">{modalCandidate?.name}</dd>
+
+          <dt className="col-3">Email</dt>
+          <dd className="col-9">{modalCandidate?.email}</dd>
+
+          <dt className="col-3">Phone</dt>
+          <dd className="col-9">{modalCandidate?.phone}</dd>
+
+          <dt className="col-3">Location</dt>
+          <dd className="col-9">{modalCandidate?.location}</dd>
+        </dl>
+
+        {/* Education */}
+        <h5 className="mt-4">Education</h5>
+        <p>
+          <strong>School:</strong>{" "}
+          {modalCandidate?.degrees_earned?.[0]?.[0] ||
+            "University of La Verne, La Verne, CA"}
+        </p>
+        <p>
+          <strong>Degree:</strong>{" "}
+          {modalCandidate?.degrees_earned?.[0]?.[0].split("–")[0] ||
+            "Bachelor of Arts, Business Administration"}
+        </p>
+        <p>
+          <strong>GPA:</strong>{" "}
+          {modalCandidate?.gpa?.toFixed(2) || "3.5"}
+        </p>
+        <p>
+          <strong>Date:</strong>{" "}
+          {modalCandidate?.degrees_earned?.[0]?.[1] ||
+            "Expected Graduation: June 2016"}
+        </p>
+
+        {/* Hallucinated Work Experience */}
+        <h5 className="mt-4">Work Experience</h5>
+        <p>
+          <strong>LionLike MindState</strong> — Volunteer<br/>
+          Pomona, CA · June 2012–Present<br/>
+          <ul>
+            <li>
+              Plan two yearly outreach events to highlight community 
+              members’ creativity in spoken word, poetry, music, and art
+            </li>
+          </ul>
+        </p>
+        <p>
+          <strong>YMCA</strong> — Volunteer Swim Coach<br/>
+          Pomona, CA · Summer 2013, 2014<br/>
+          <ul>
+            <li>Instructed classes of up to 15 children on basic swimming skills</li>
+            <li>Communicated regularly with parents on children’s progress</li>
+          </ul>
+        </p>
+
+        {/* Hallucinated Skills */}
+        <h5 className="mt-4">Skills</h5>
+        <ul>
+          <li>
+            Computer: Proficient in Windows and Mac OS, Word, PowerPoint, Excel
+          </li>
+          <li>Language: Fluent in Spanish</li>
+          <li>Social Media: Facebook, Twitter, Instagram</li>
+        </ul>
+      </Modal.Body>
+      <Modal.Footer>
+        <Button variant="secondary" onClick={() => setShowModal(false)}>
+          Close
+        </Button>
+      </Modal.Footer>
+    </Modal>
     </Container>
   );
 }
