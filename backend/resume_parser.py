@@ -164,6 +164,34 @@ def extract_location(text: str) -> str:
 
     return ""
 
+def extract_email(text: str) -> str:
+    """Find the first email address in the text."""
+    m = re.search(r'[\w\.-]+@[\w\.-]+\.\w+', text)
+    email = m.group(0) if m else ""
+    if email:
+        print(f"Email parsed as: {email}")
+    else:
+            print("extracting email failed.")
+    return email
+
+def extract_phone(text: str) -> str:
+    """
+    Find the first US‐style phone number, e.g.
+    (408) 555-1278, 408-555-1278, 408.555.1278, +1 408 555 1278
+    """
+    m = re.search(
+        r'(\+?\d{1,2}\s*)?'                    # optional country code
+        r'(\(\d{3}\)|\d{3})[\s\-.]?'          # area code
+        r'\d{3}[\s\-.]?\d{4}',                # local number
+        text
+    )
+    phone = m.group(0) if m else ""
+    if phone:
+        print(f"Phone parsed as: {phone}")
+    else:
+            print("extracting phone number failed.")
+    return phone
+
 def extract_degrees(text: str):
     """
     Scans each line for degree keywords.
@@ -195,8 +223,10 @@ def parse_resume(path: str) -> dict:
       • splits out earned vs in‐progress degrees
     """
     text = parseFileAtPathToText(path)
-    name, location = extract_name(text), extract_location(text)
-    earned, in_prog = extract_degrees(text)
+    name, location      = extract_name(text), extract_location(text)
+    earned, in_prog     = extract_degrees(text)
+    email               = extract_email(text)
+    phone               = extract_phone(text)
 
     # ── GPA extraction ─────────────────────────────────────────────────
     def extract_gpa(txt: str) -> float | None:
@@ -210,6 +240,8 @@ def parse_resume(path: str) -> dict:
         "text": text,
         "name": name,
         "location": location,
+        "email":                email,
+        "phone":                phone,
         "gpa": gpa,
         "degrees_earned": earned,
         "degrees_in_progress": in_prog

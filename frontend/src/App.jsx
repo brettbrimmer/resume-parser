@@ -425,12 +425,12 @@ function App() {
           <div className="d-flex justify-content-between">
             <div>
               <strong>
-                {modalCandidate?.degrees_earned?.[0]?.[0]
-                  || "University of La Verne, La Verne, CA"}
+                {/*modalCandidate?.degrees_earned?.[0]?.[0]
+                  || */"North Carolina State University"}
               </strong>
               <div className="text-muted">
                 {modalCandidate?.degrees_earned?.[0]?.[1]
-                  || "Expected Graduation: June 2016"}
+                  || "Expected Graduation: May 2027"}
               </div>
             </div>
             <div className="text-end">
@@ -448,39 +448,75 @@ function App() {
 
         {/* ——— EXPERIENCE ——— */}
         <div className="resume-section">
-          <h2 className="resume-section-title">Experience</h2>
+        <h2 className="resume-section-title">Experience</h2>
 
-          <div className="resume-job mb-3">
-            <div className="d-flex justify-content-between">
-              <strong>LionLike MindState</strong>
-              <span className="text-muted">Pomona, CA</span>
-            </div>
-            <div className="d-flex justify-content-between fst-italic mb-2">
-              <span>Volunteer</span>
-              <span className="text-muted">June 2012 – Present</span>
-            </div>
-            <ul className="mb-0">
-              <li>
-                Plan two yearly outreach events to highlight community 
-                members’ creativity in spoken word, poetry, music, and art
-              </li>
-            </ul>
+        <div className="resume-job mb-3">
+          <div className="d-flex justify-content-between">
+            <strong>TechForward Inc.</strong>
+            <span className="text-muted">Santa Clara, CA</span>
           </div>
+          <div className="d-flex justify-content-between fst-italic mb-2">
+            <span>Software Engineering Intern</span>
+            <span className="text-muted">May 2024 – Aug 2024</span>
+          </div>
+          <ul className="mb-0">
+            <li>
+              Contributed to front-end development of a SaaS analytics dashboard
+              using React and Chart.js.
+            </li>
+            <li>
+              Wrote unit and integration tests with Jest and React Testing Library,
+              boosting coverage by 30%.
+            </li>
+            <li>
+              Participated in Agile ceremonies—daily stand-ups, sprint planning, and
+              retrospectives.
+            </li>
+          </ul>
+        </div>
+      </div>
 
-          <div className="resume-job mb-3">
-            <div className="d-flex justify-content-between">
-              <strong>YMCA</strong>
-              <span className="text-muted">Pomona, CA</span>
+        {/* ——— PROJECTS ——— */}
+        <div className="resume-section">
+          <h2 className="resume-section-title">Projects</h2>
+
+           {(
+           // if modalCandidate exists & has projects, use them; otherwise fall back to static
+           modalCandidate?.projects ?? [
+            {
+              name: "JobQuest – Full Stack Job Board Platform",
+              tech: "React.js, Node.js, Express, MongoDB",
+              dates: "Jan 2024 – Apr 2024",
+              desc: [
+                "Developed a job listing web app that allows companies to post openings and users to search and apply.",
+                "Implemented secure authentication using JWT; integrated role-based access control.",
+                "Designed responsive UI and REST API endpoints; deployed on Render."
+              ]
+            },
+            {
+              name: "FitBuddy – Android Fitness Companion App",
+              tech: "Java, Firebase, Google Maps API",
+              dates: "Sep 2023 – Dec 2023",
+              desc: [
+                "Built a mobile app to track workouts and suggest local trails using Maps API.",
+                "Used Firebase for user auth, data storage, and real-time sync.",
+                "Achieved over 500 downloads during university app showcase week."
+              ]
+            }
+          ]).map((p, idx) => (
+            <div className="resume-job mb-3" key={idx}>
+              <div className="d-flex justify-content-between">
+                <strong>{p.name}</strong>
+                <span className="text-muted">{p.dates}</span>
+              </div>
+              <div className="text-muted mb-2"><em>{p.tech}</em></div>
+              <ul className="mb-0">
+                {p.desc.map((b, i) => (
+                  <li key={i}>{b}</li>
+                ))}
+              </ul>
             </div>
-            <div className="d-flex justify-content-between fst-italic mb-2">
-              <span>Volunteer Swim Coach</span>
-             <span className="text-muted">Summer 2013, 2014</span>
-            </div>
-            <ul className="mb-0">
-              <li>Instructed classes of up to 15 children on basic swimming skills</li>
-              <li>Communicated regularly with parents on children’s progress</li>
-            </ul>
-          </div>
+          ))}
         </div>
 
         {/* ——— SKILLS ——— */}
