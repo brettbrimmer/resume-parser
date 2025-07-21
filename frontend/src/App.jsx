@@ -560,43 +560,28 @@ function App() {
         <div className="resume-section">
           <h2 className="resume-section-title">Projects</h2>
 
-           {(
-           // if modalCandidate exists & has projects, use them; otherwise fall back to static
-           modalCandidate?.projects ?? [
-            {
-              name: "JobQuest – Full Stack Job Board Platform",
-              tech: "React.js, Node.js, Express, MongoDB",
-              dates: "Jan 2024 – Apr 2024",
-              desc: [
-                "Developed a job listing web app that allows companies to post openings and users to search and apply.",
-                "Implemented secure authentication using JWT; integrated role-based access control.",
-                "Designed responsive UI and REST API endpoints; deployed on Render."
-              ]
-            },
-            {
-              name: "FitBuddy – Android Fitness Companion App",
-              tech: "Java, Firebase, Google Maps API",
-              dates: "Sep 2023 – Dec 2023",
-              desc: [
-                "Built a mobile app to track workouts and suggest local trails using Maps API.",
-                "Used Firebase for user auth, data storage, and real-time sync.",
-                "Achieved over 500 downloads during university app showcase week."
-              ]
-            }
-          ]).map((p, idx) => (
-            <div className="resume-job mb-3" key={idx}>
-              <div className="d-flex justify-content-between">
-                <strong>{p.name}</strong>
-                <span className="text-muted">{p.dates}</span>
-              </div>
-              <div className="text-muted mb-2"><em>{p.tech}</em></div>
-              <ul className="mb-0">
-                {p.desc.map((b, i) => (
-                  <li key={i}>{b}</li>
+           {(modalCandidate?.projects || []).map((block, idx) => {
+          // break the raw block into lines
+          const lines = block.split("\n").filter((l) => l.trim());
+          // first line is the title
+          const [title, second, ...rest] = lines;
+          // if the second line has a '|', treat it as tech stack
+          const tech = second && second.includes("|") ? second : null;
+          // the rest become your “description” array
+          const descLines = tech ? rest : [second, ...rest].filter((l) => l);
+
+          return (
+            <div key={idx} className="mb-3">
+              <h5 className="project-name">{title}</h5>
+              {tech && <p className="project-tech">{tech}</p>}
+              <ul className="project-desc">
+                {descLines.map((d, i) => (
+                  <li key={i}>{d}</li>
                 ))}
               </ul>
             </div>
-          ))}
+          );
+        })}
         </div>
 
         {/* ——— SKILLS ——— */}

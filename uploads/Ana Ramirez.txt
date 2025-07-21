@@ -1,0 +1,71 @@
+ANA RAMIREZ
+Austin, TX | 📞 (512) 555-4482 | ana.ramirez@utexas.edu
+github.com/anaramirez | linkedin.com/in/ana-ramirez-dev | anaramirez.dev
+
+EDUCATION
+The University of Texas at Austin
+Bachelor of Science in Electrical and Computer Engineering
+Aug 2022 – May 2025 (Expected)
+GPA: 3.68 / 4.0
+Focus: Embedded Systems, Mobile Development, Signal Processing
+
+Austin Community College
+Associate of Science in Computer Science
+Aug 2020 – May 2022
+GPA: 3.90 / 4.0
+
+TECHNICAL SKILLS
+Languages: Kotlin, C, C++, Python, JavaScript, Bash
+Platforms: Android Studio, Arduino, Raspberry Pi, Firebase, Git, Linux
+Technologies: Bluetooth LE, REST APIs, MQTT, SQLite, Firebase Auth
+Hardware: Oscilloscope, Logic Analyzer, 3D Printing, PCB Design (KiCad), Sensors (DHT11, MPU6050)
+
+PROJECTS
+FieldOps – Worksite Management Platform for Small Contractors
+Kotlin | Firebase | SQLite | REST APIs
+• Developed a mobile app to help independent electricians and plumbers manage job sites, inventory, and invoicing.
+• Integrated Firebase Auth for secure team access and real-time syncing between devices.
+• Onboarded three local contractors during pilot testing, collecting feedback and feature requests.
+
+SafeRoute – Personal Safety Tracker with Wearable Integration
+ESP32 | C++ | MQTT | Android Studio
+• Built a wearable panic button that sends GPS and status to an Android app via Bluetooth LE.
+• Deployed a cloud-connected backend using MQTT and Firebase for real-time alerts and location logging.
+• Showcased at a UT hardware showcase; received interest from a campus safety initiative.
+
+EXPERIENCE
+Software & Hardware Intern
+Lumos IoT Solutions – Austin, TX
+May 2024 – Aug 2024
+• Developed Android companion app for smart utility meters using Bluetooth LE.
+• Created CLI tools in Python for sensor diagnostics and firmware updates.
+• Assisted in debugging power-related PCB issues using oscilloscopes and logic analyzers.
+
+Peer Coding Tutor
+Austin Community College – Computer Science Dept.
+Jan 2022 – May 2022
+• Tutored students in C++, Python, and Java for data structures and intro programming courses.
+• Helped students with Git version control and debugging skills.
+
+LEADERSHIP & INVOLVEMENT
+Team Lead, UT MakerSpace Projects Team
+Sept 2023 – Present
+• Built automated compost sorter using machine vision and servo control.
+• Mentored new members on soldering, CAD, and prototyping safety.
+
+Volunteer Mentor, FIRST Robotics (FRC #6241)
+Sept 2022 – Present
+• Guided high school team in autonomous programming and drivetrain configuration.
+
+Society of Hispanic Professional Engineers (SHPE), UT Austin Chapter
+Aug 2022 – Present
+
+HONORS & AWARDS
+• National Science Foundation S-STEM Scholar (2023–2025)
+• 2nd Place – Hack the Planet Hackathon (2023)
+• Top 10 Finalist – Texas Instruments Embedded Contest (2024)
+
+ADDITIONAL DETAILS
+Languages: Bilingual – English and Spanish
+Interests: Maker culture, open-source electronics, PC building, biking the Austin Greenbelt
+Portfolio: anaramirez.dev

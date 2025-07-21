@@ -5,7 +5,7 @@ import easyocr
 import spacy
 from spacy.matcher import Matcher
 import re
-from typing import List
+from typing import List, Dict
 from dateparser.search import search_dates
 
 # 1. OCR reader (module‐level so it loads once)
@@ -21,7 +21,6 @@ SECTIONS = ["education", "experience", "skills",
 for sec in SECTIONS:
     # Use uppercase labels but match on token.lower_ for case-insensitive section headings detection.
     matcher.add(sec.upper(), [[{"LOWER": sec}]])
-
 
 def find_headings(text: str) -> list[tuple[str, int]]:
     """Return a sorted list of (SECTION_NAME, token_start_index)."""
@@ -51,6 +50,24 @@ def split_into_sections(text: str) -> dict[str, str]:
         sections[sec] = content
 
     return sections
+
+def split_sections(text: str) -> Dict[str, str]:
+     """
+     Split resume into sections based on spaCy Matcher.
+     Returns a dict mapping lowercase section name -> body text.
+     """
+     doc     = nlp(text)
+     matches = matcher(doc)
+     heads   = [(nlp.vocab.strings[mid], start) for mid, start, _ in matches]
+     heads   = sorted(heads, key=lambda x: x[1])
+     heads.append(("END", len(doc)))
+
+     sections: Dict[str, str] = {}
+     for (sec, start), (_, nxt) in zip(heads, heads[1:]):
+         lines = doc[start:nxt].text.splitlines()
+         body  = "\n".join(lines[1:]).strip()
+         sections[sec.lower()] = body
+     return sections
 
 def getExt(file_name):
     """Returns extension of file_name as string"""
@@ -233,6 +250,22 @@ def parse_resume(path: str) -> dict:
     name, location      = extract_name(text), extract_location(text)
     earned, in_prog     = extract_degrees(text)
     email               = extract_email(text)
+
+    # ── PROJECTS extraction ──────────────────────────────────────────
+    # ── PROJECTS extraction via spaCy splitter ───────────────────────
+    # sections      = split_sections(text)
+    # projects_text = sections.get("projects", "")
+    # projects      = extract_projects(projects_text)
+
+    # myText     = parseFileToText(resume_path)
+    # mySections = split_into_sections(myText)
+    # raw_projects = mySections.get("PROJECTS", "")
+
+    # ── PROJECTS extraction (existing split/split‐by‐bullets) ────────
+    sections      = split_into_sections(text)
+    projects_text = sections.get("PROJECTS", "")
+    projects      = split_projects_by_bullets(projects_text)
+
     phone               = extract_phone(text)
 
     # ── GPA extraction ─────────────────────────────────────────────────
@@ -249,6 +282,7 @@ def parse_resume(path: str) -> dict:
         "location": location,
         "email":                email,
         "phone":                phone,
+        "projects":             projects,
         "gpa": gpa,
         "degrees_earned": earned,
         "degrees_in_progress": in_prog
@@ -257,12 +291,47 @@ def parse_resume(path: str) -> dict:
 
 import re
 from typing import List
+from typing import Dict
 
-import re
-from typing import List
+# ── PROJECT EXTRACTION (spaCy + header matching) ─────────────────────────
+PROJECT_HEADER_RE = re.compile(
+    r'^(?P<name>[\w &\-,]+?)\s*'
+    r'(?:\(\s*(?P<dates>\d{4}(?:–\d{4})?)\s*\))?:?$'
+)
 
-import re
-from typing import List
+def extract_projects(text: str) -> List[Dict]:
+    """
+    Pull out each project header + its detail lines into
+    a list of dicts { name, dates, desc }.
+    """
+    # normalize and trim lines
+    lines = [ln.strip() for ln in text.splitlines() if ln.strip()]
+    blocks: List[List[str]] = []
+    current: List[str] = []
+
+    for ln in lines:
+        if PROJECT_HEADER_RE.match(ln):
+            if current:
+                blocks.append(current)
+            current = [ln]
+        else:
+            # continuation of current project
+            if not current:
+                current = ["Untitled Project"]
+            current.append(ln)
+    if current:
+        blocks.append(current)
+
+    projects: List[Dict] = []
+    for blk in blocks:
+        header = blk[0]
+        m = PROJECT_HEADER_RE.match(header)
+        name = m.group("name").strip() if m else header
+        dates = m.group("dates") or ""
+        # strip any leading bullet markers
+        desc = [re.sub(r'^[\-\*•]\s*', '', line) for line in blk[1:]]
+        projects.append({"name": name, "dates": dates, "desc": desc})
+    return projects
 
 def split_projects_by_bullets(projects_text: str) -> List[str]:
     """
@@ -315,28 +384,13 @@ def split_projects_by_bullets(projects_text: str) -> List[str]:
 
     # 6) Slice out each project
     projects = []
+
     for s, e in zip(starts, starts[1:]):
+        # slice & clean each line of its leading bullet marker
         block = normalized[s:e]
-        text = "\n".join(block).strip()
+        cleaned = [re.sub(r'^[▪•\-\*]+\s*', '', line) for line in block]
+        text = "\n".join(cleaned).strip()
         if text:
             projects.append(text)
 
     return projects
-
-
-
-
-"""
-def printProjects_from_sections(resume_path):
-    print("printProjects_from_sections run.")
-
-    myText     = parseFileToText(resume_path)
-    mySections = split_into_sections(myText)
-    raw_projects = mySections.get("PROJECTS", "")
-    print(f"raw_projects is: {raw_projects}")
-    project_list = split_projects_by_bullets(raw_projects)
-    for i, proj in enumerate(project_list, 1):
-        print(f"── Project #{i} ──")
-        print(proj)
-        print()
-"""

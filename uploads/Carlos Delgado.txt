@@ -1,0 +1,51 @@
+CARLOS DELGADO
+Phoenix, AZ | 📞 (602) 555-3321 | ✉️ carlos.delgado@asu.edu
+github.com/carlosdelgado
+
+EDUCATION
+Arizona State University – Tempe, AZ
+Bachelor of Science in Computer Science
+Aug 2021 – May 2025 (Expected)
+GPA: 2.78 / 4.00
+Relevant Courses: Introduction to Programming, Web Development I, Database Systems, Computer Networks
+
+TECHNICAL SKILLS
+Languages: JavaScript, Python, HTML, CSS
+Tools: Git, VS Code, MySQL, basic React
+Other: Basic understanding of REST APIs, group projects, debugging
+
+EXPERIENCE
+IT Support Assistant
+ASU Tech Help Desk – Tempe, AZ
+Oct 2023 – May 2024
+• Provided basic technical support to students and faculty with software installations and account issues
+• Logged support tickets and assisted with resetting devices across campus
+• Learned to troubleshoot Windows and macOS systems in a team setting
+
+Fast Food Crew Member
+Burger House – Phoenix, AZ
+Jun 2022 – Aug 2023
+• Worked register and food prep during summer breaks
+• Handled customer orders and cleaned kitchen stations
+• Practiced communication and teamwork in a fast-paced environment
+
+PROJECTS
+Simple Task Tracker
+HTML | CSS | JavaScript
+• Built a basic to-do list app to help manage class assignments
+• Used local storage to save tasks between sessions
+
+Student Budget Calculator
+Python
+• Wrote a script to help estimate monthly spending and visualize costs using text-based menus
+• Created during a school assignment and improved after feedback
+
+INVOLVEMENT
+Member, ASU Programming Club
+Jan 2024 – Present
+• Occasionally attended meetings to learn new tools and hear from guest speakers
+• Participated in one weekend hackathon (no placement)
+
+ADDITIONAL INFO
+Languages: English (native), Spanish (conversational)
+Interests: PC gaming, casual coding, hiking trails around Phoenix

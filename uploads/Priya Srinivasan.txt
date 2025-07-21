@@ -1,12 +1,12 @@
 PRIYA SRINIVASAN
-📍 Seattle, WA | 📞 (206) 555-0194 | ✉️ priya.srinivasan@uw.edu
-🌐 github.com/priyasrinivasan | linkedin.com/in/priya-srinivasan
+Seattle, WA | (206) 555-0194 | priya.srinivasan@uw.edu
+github.com/priyasrinivasan | linkedin.com/in/priya-srinivasan
 
 EDUCATION
 University of Washington – Paul G. Allen School of Computer Science & Engineering
 Bachelor of Science in Computer Science + Minor in Statistics
-📅 Sept 2021 – June 2025
-📊 GPA: 3.4 / 4.0
+Sept 2021 – June 2025
+GPA: 3.4 / 4.0
 Relevant Courses: Data Structures, Software Engineering, Probability & Statistics, Machine Learning, Operating Systems, Web Development
 
 TECHNICAL SKILLS
@@ -17,64 +17,48 @@ Cloud: AWS (S3, Lambda, EC2), Google Cloud (basic)
 EXPERIENCE
 Software Engineering Intern
 RainCity Civic Tech – Seattle, WA
-📅 June 2024 – Aug 2024
-
-Assisted in developing APIs using Django for a city data transparency project.
-
-Worked on optimizing database queries resulting in noticeable performance improvements.
-
-Contributed to writing unit tests and updated onboarding documentation.
+June 2024 – Aug 2024
+• Assisted in developing APIs using Django for a city data transparency project.
+• Worked on optimizing database queries resulting in noticeable performance improvements.
+• Contributed to writing unit tests and updated onboarding documentation.
 
 Data Science Fellow
 Break Through Tech AI – UW Cohort
-📅 Jan 2024 – May 2024
-
-Collaborated with a local nonprofit to analyze food insecurity using public datasets.
-
-Built Python scripts for data cleaning and basic statistical analysis.
-
-Presented findings to project partners and stakeholders.
+Jan 2024 – May 2024
+• Collaborated with a local nonprofit to analyze food insecurity using public datasets.
+• Built Python scripts for data cleaning and basic statistical analysis.
+• Presented findings to project partners and stakeholders.
 
 PROJECTS
 CommuteMapSEA – Transit & Safety Visualization
 Python | Django | Leaflet.js
-
-Developed a web app visualizing crime and delay data near Seattle transit stops.
-
-Implemented REST APIs and a mobile-friendly map interface.
-
-Deployed on AWS EC2 with manual update process.
+• Developed a web app visualizing crime and delay data near Seattle transit stops.
+• Implemented REST APIs and a mobile-friendly map interface.
+• Deployed on AWS EC2 with manual update process.
 
 GPA Forecasting Tool
 Flask | SQLite | Chart.js
-
-Built an app to help students estimate GPA outcomes based on coursework.
-
-Added basic interactive charts and simple CSV upload feature.
+• Built an app to help students estimate GPA outcomes based on coursework.
+• Added basic interactive charts and simple CSV upload feature.
 
 TandemTalk – Language Exchange App (Backend)
 Java | Spring Boot | MySQL
-
-Developed backend components for matching users by language proficiency and preferences.
-
-Managed authentication and user profile features.
+• Developed backend components for matching users by language proficiency and preferences.
+• Managed authentication and user profile features.
 
 LEADERSHIP & INVOLVEMENT
 Mentor, UW Women in Computing (WiC)
-📅 Sept 2023 – Present
-
-Led occasional workshops on Python and Git for newer students.
+Sept 2023 – Present
+• Led occasional workshops on Python and Git for newer students.
 
 Volunteer Instructor, Seattle Public Library Tech Hub
-📅 Summer 2023
-
-Assisted community members with beginner programming and portfolio building.
+Summer 2023
+• Assisted community members with beginner programming and portfolio building.
 
 Member, Society of Women Engineers (SWE), UW Chapter
-📅 Sept 2022 – Present
+Sept 2022 – Present
 
 ADDITIONAL INFORMATION
 Languages: Fluent in Tamil and Spanish
 Interests: Data equity, hiking, analog synth music, community education
-
 Portfolio: priyadevs.io

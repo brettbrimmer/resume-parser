@@ -24,6 +24,8 @@ class Candidate(Base):
     degrees_earned        = Column(JSON, nullable=True)     # list of [line, date]
     degrees_in_progress   = Column(JSON, nullable=True)     # list of [line, date]
 
+    projects       = Column(JSON, default=[])  # new: structured list of parsed projects
+
     # NEW: store requirement-to-score map, e.g. {"Python": 87.5, "AWS": 42.0}
     scores      = Column(JSON, nullable=False, default={})
 

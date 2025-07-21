@@ -101,6 +101,7 @@ async def upload(
             gpa                  = parsed["gpa"],
             degrees_earned       = parsed["degrees_earned"],
             degrees_in_progress  = parsed["degrees_in_progress"],
+            projects             = parsed.get("projects", []),
             scores               = {},
             upload_date          = datetime.now(timezone.utc)
         )
@@ -129,6 +130,7 @@ def list_candidates(db: Session = Depends(get_db)):
             "gpa":                  r.gpa,
             "degrees_earned":       r.degrees_earned,
             "degrees_in_progress":  r.degrees_in_progress,
+            "projects":             r.projects,
             "scores":               r.scores,
             "upload_date":          r.upload_date.isoformat()
         }
@@ -154,6 +156,7 @@ def get_candidate(cand_id: int, db: Session = Depends(get_db)):
       "gpa":                  c.gpa,
       "degrees_earned":       c.degrees_earned,
       "degrees_in_progress":  c.degrees_in_progress,
+      "projects":              c.projects,
       "scores":               c.scores,
       "resume_url":           f"/uploads/{c.filename}",
       "upload_date":          c.upload_date.isoformat()
@@ -228,6 +231,8 @@ async def explain_requirement(req: str, resume: str) -> str:
         Your output must contain only direct, factual evidence that clearly supports the requirement — nothing else.
 
         Respond with 1 to 3 bullet points (use the • symbol). Each bullet must describe a **distinct, literal piece of evidence** from the resume that directly supports the requirement.
+
+        Do not hallucinate anything, only use what's on the resume.
 
         If only 1 or 2 real examples exist, output only those. **Do not create extra bullets** unless the resume gives clear, separate evidence. Do not pad with generic or tangential information.
 

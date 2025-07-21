@@ -1,11 +1,11 @@
 OLIVIA CHEN
-📍 San Francisco, CA | 📞 (415) 555-0987 | 📧 olivia.chen.dev@gmail.com
-🔗 github.com/oliviacodes | linkedin.com/in/oliviacodes
+San Francisco, CA | (415) 555-0987 | olivia.chen.dev@gmail.com
+github.com/oliviacodes | linkedin.com/in/oliviacodes
 
 EDUCATION
 University of California, Berkeley — B.S. Computer Science
-📅 Aug 2020 – May 2024
-📊 GPA: 3.4 / 4.0
+Aug 2020 – May 2024
+GPA: 3.4 / 4.0
 Relevant Coursework: Algorithms, Operating Systems, Computer Security, Web Development
 
 TECHNICAL SKILLS
@@ -15,49 +15,35 @@ Tools & Frameworks: Git, Docker, PostgreSQL, AWS (Lambda, EC2, S3), Firebase, Ne
 PROJECTS
 DevBoard – Developer Task Board
 React, Node.js, MongoDB, Docker
-
-Built a Kanban-style task board for managing software sprints.
-
-Added user login with JWT and containerized the app with Docker.
-
-Used by a small group of peers for project organization.
+• Built a Kanban-style task board for managing software sprints.
+• Added user login with JWT and containerized the app with Docker.
+• Used by a small group of peers for project organization.
 
 AutoGrader CLI Tool
 Python
-
-Developed a command-line tool to automatically test and grade code assignments.
-
-Implemented basic output parsing and error detection.
+• Developed a command-line tool to automatically test and grade code assignments.
+• Implemented basic output parsing and error detection.
 
 CrowdCode – Collaborative Coding App
 Next.js, Firebase, Tailwind
-
-Created a simple real-time code editor supporting syntax highlighting and user presence.
-
-Used Firebase for real-time data sync and authentication.
+• Created a simple real-time code editor supporting syntax highlighting and user presence.
+• Used Firebase for real-time data sync and authentication.
 
 EXPERIENCE
 Software Engineering Intern
 Asana — San Francisco, CA
-📅 May 2023 – Aug 2023
-
-Contributed to internal dashboard tooling using React and TypeScript.
-
-Helped improve page load times with front-end optimizations.
-
-Participated in Agile workflows and team meetings.
+May 2023 – Aug 2023
+• Contributed to internal dashboard tooling using React and TypeScript.
+• Helped improve page load times with front-end optimizations.
+• Participated in Agile workflows and team meetings.
 
 Teaching Assistant – CS 61B: Data Structures
 UC Berkeley
-📅 Jan 2023 – May 2023
-
-Led weekly lab sessions and office hours for students learning data structures.
-
-Assisted with grading and maintaining programming assignments in Java.
+Jan 2023 – May 2023
+• Led weekly lab sessions and office hours for students learning data structures.
+• Assisted with grading and maintaining programming assignments in Java.
 
 AWARDS & LEADERSHIP
-2nd Place – CalHacks 9.0 (2023)
-
-Vice President – Women in Computer Science & Engineering (WiCSE)
-
-Grace Hopper Conference Attendee (2023)
+• 2nd Place – CalHacks 9.0 (2023)
+• Vice President – Women in Computer Science & Engineering (WiCSE)
+• Grace Hopper Conference Attendee (2023)

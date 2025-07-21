@@ -1,55 +1,40 @@
 JORDAN CARTER
-📍 San Jose, CA | 📞 (408) 555-1278 | ✉️ jordan.carter@email.com
-🌐 github.com/jordancarter | linkedin.com/in/jordancarter
+San Jose, CA | (408) 555-1278 | jordan.carter@email.com
+github.com/jordancarter | linkedin.com/in/jordancarter
 
 EDUCATION
 San Jose State University – San Jose, CA
 Bachelor of Science in Software Engineering
-📅 Aug 2021 – May 2025 (Expected)
-📊 GPA: 2.9 / 4.0
-📌 Relevant Coursework: Data Structures & Algorithms, Object-Oriented Programming, Software Engineering, Operating Systems
+Aug 2021 – May 2025 (Expected)
+GPA: 2.9 / 4.0
+Relevant Coursework: Data Structures & Algorithms, Object-Oriented Programming, Software Engineering, Operating Systems
 
 TECHNICAL SKILLS
 Languages: Java, Python, JavaScript, HTML/CSS
-
 Frameworks: React.js (basic), Node.js, Flask
-
 Tools: Git, GitHub, Postman
-
 Concepts: REST APIs, unit testing
 
 PROJECTS
-Job Listing Web App
-
-Developed a simple website where users can view and search job postings.
-
-Implemented login/logout with basic form validation using React and Node.js.
 
 Fitness Tracker App
-
-Created an Android app to log workouts and track progress.
-
-Used Firebase for authentication and data storage.
+• Created an Android app to log workouts and track progress.
+• Used Firebase for authentication and data storage.
 
 Flashcard Study Tool
-
-Built a web app for creating and reviewing flashcards with Python and Flask.
-
-Implemented CRUD functionality and a simple user interface.
+• Built a web app for creating and reviewing flashcards with Python and Flask.
+• Implemented CRUD functionality and a simple user interface.
 
 EXPERIENCE
 IT Support Assistant (Part-time)
 San Jose State University – Campus Computing Services
-📅 Sept 2022 – Present
-
-Assisted students and staff with basic software and hardware troubleshooting.
-
-Helped maintain computer labs and manage equipment.
+Sept 2022 – Present
+• Assisted students and staff with basic software and hardware troubleshooting.
+• Helped maintain computer labs and manage equipment.
 
 ACTIVITIES
-Attended occasional programming tutoring sessions.
-
-No formal leadership or club involvement.
+• Attended occasional programming tutoring sessions.
+• No formal leadership or club involvement.
 
 AWARDS
-Dean’s List – Fall 2022
+• Dean’s List – Fall 2022
