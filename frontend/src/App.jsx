@@ -96,6 +96,43 @@ function App() {
     });
   }
 
+  // ─── Delete Selected Resumes ─────────────────────────────────────────
+  async function deleteSelected() {
+    if (!selectedRows.length) return;
+
+    if (
+      !window.confirm(
+        `Are you sure you want to delete ${selectedRows.length} resume(s)?`
+      )
+    ) {
+      return;
+    }
+
+    try {
+      // 1) hit the backend delete endpoint
+      const response = await axios.delete("/api/candidates", {
+        data: { ids: selectedRows },
+      });
+
+      // 2) check the response body to see which IDs were truly deleted
+      //    (your backend returns { deleted: [1,2,3] })
+      const { deleted } = response.data;
+      if (!Array.isArray(deleted)) {
+        throw new Error("Unexpected delete response");
+      }
+
+      // 3) now update your React state to remove only those records
+      setCandidates((prev) => prev.filter((c) => !deleted.includes(c.id)));
+      setSelectedRows([]);
+    } catch (err) {
+      console.error("Delete failed:", err);
+
+      // if the DELETE never even reached the server (404 or network error),
+      // you’ll see it here.  Check DevTools → Network → DELETE /api/candidates
+      alert("Failed to delete selected resumes. See console/network tab.");
+    }
+  }
+
   // the export routine
   async function exportSelectedToCsv() {
     // filter out only the starred/selected candidates
@@ -520,6 +557,14 @@ function App() {
                 onClick={exportSelectedToCsv}
               >
                 Export Selected
+              </Button>
+              <Button
+                variant="danger"
+                className="me-2"
+                disabled={selectedRows.length === 0}
+                onClick={deleteSelected}
+              >
+                Delete Selected
               </Button>
               {/* requirement-sorting badges */}
               {nicknames.map((nick) => {

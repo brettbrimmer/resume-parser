@@ -19,6 +19,8 @@ from backend.resume_parser import parse_resume
 
 from datetime import datetime, timezone
 
+from typing import List
+
 # ————————————————————————————————
 # 0. Load env + set OpenAI key
 # ————————————————————————————————
@@ -151,6 +153,34 @@ def list_candidates(db: Session = Depends(get_db)):
         }
         for r in rows
     ]
+
+class DeleteCandidatesRequest(BaseModel):
+    ids: List[int]
+
+@app.delete("/api/candidates")
+async def delete_candidates(
+    req: DeleteCandidatesRequest,
+    db: Session = Depends(get_db),
+):
+    deleted = []
+    for cid in req.ids:
+        # 1) look up the candidate row
+        cand = db.query(models.Candidate).get(cid)
+        if not cand:
+            continue
+
+        # 2) delete the actual file by its real filename
+        file_path = UPLOAD_DIR / cand.filename
+        if file_path.exists():
+            file_path.unlink()
+
+        # 3) delete the DB row
+        db.delete(cand)
+        deleted.append(cid)
+
+    # 4) commit everything
+    db.commit()
+    return {"deleted": deleted}
 
 @app.get("/api/candidates/{cand_id}")
 def get_candidate(cand_id: int, db: Session = Depends(get_db)):
