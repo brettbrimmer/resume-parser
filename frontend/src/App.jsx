@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { getFullNameByCode } from "us-state-codes";
 import "bootstrap/dist/css/bootstrap.min.css";
 import {
   Container,
@@ -17,6 +18,9 @@ import {
 import axios from "axios";
 import "./App.css";
 import CandidatesTable from "./components/CandidateTable.jsx";
+import { getDistance } from 'geolib';
+// cities.json exports a default array of { name, lat, lng, country, admin1, admin2 }
+import cities from 'cities.json';
 
 function App() {
   // ─── Filter & Requirements States ────────────────────────────────────────
@@ -27,7 +31,7 @@ function App() {
   const [gpaError, setGpaError] = useState(false);
   const [gpaListed, setGpaListed] = useState(false);
 
-  const [distance, setDistance] = useState("10");
+  const [distance, setDistance] = useState("Any");
   const [location, setLocation] = useState("Tempe, AZ");
 
   const [reqText, setReqText] = useState("");
@@ -41,6 +45,37 @@ function App() {
 
   // whether to hide real names
   const [anonymize, setAnonymize] = useState(false);
+
+  const [userCoords, setUserCoords] = useState(null);
+
+  // ——— Haversine distance helper (meters) ———
+  const R = 6371e3; // meters
+  function getDistance(p1, p2) {
+    const toRad = (d) => (d * Math.PI) / 180;
+    const φ1 = toRad(p1.lat), φ2 = toRad(p2.lat);
+    const Δφ = toRad(p2.lat - p1.lat);
+    const Δλ = toRad(p2.lng - p1.lng);
+    const a =
+      Math.sin(Δφ / 2) ** 2 +
+      Math.cos(φ1) * Math.cos(φ2) * Math.sin(Δλ / 2) ** 2;
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    return R * c;
+  }
+
+  // Simple, synchronous city→coords lookup
+function lookupCoords(address) {
+  const [cityName, stateAbbr] = address.split(',').map(s => s.trim().toLowerCase());
+  const rec = cities.find(c =>
+    c.name.toLowerCase()   === cityName &&
+    c.country              === 'US'     &&
+    c.admin1.toLowerCase() === stateAbbr
+  );
+  return rec
+    ? { lat: parseFloat(rec.lat), lng: parseFloat(rec.lng) }
+    : null;
+}
+
+  
 
   // fetch one candidate and show in modal
   async function handleViewCandidate(id) {
@@ -76,11 +111,25 @@ function App() {
     fetchCandidates();
   }, []);
 
+  // Geocode whenever the filter “location” changes (step 4)
+  useEffect(() => {
+    if (!location) {
+      setUserCoords(null);
+    } else {
+      setUserCoords(lookupCoords(location));
+    }
+  }, [location]);
+
   async function fetchCandidates() {
     try {
       const res = await axios.get("/api/candidates");
       setCandidates(
-        res.data.map((c) => ({ ...c, starred: false, scores: {} }))
+        res.data.map((c) => ({
+          ...c,
+          starred: false,
+          scores: {},
+          coords: lookupCoords(c.location),   // ← add this line
+        }))
       );
     } catch (err) {
       console.error(err);
@@ -189,6 +238,14 @@ function App() {
     )
       return false;
 
+    // 3) Distance filter: drop anyone outside `distance` miles
+    if (userCoords && parseFloat(distance) > 0) {
+      if (!c.coords) return false;
+      const meters = getDistance(userCoords, c.coords);
+      const miles  = meters / 1609.34;
+      if (miles > parseFloat(distance)) return false;
+    }
+
     return true;
   });
 
@@ -281,20 +338,21 @@ function App() {
                     Within
                   </Form.Label>
                   <Form.Select
-                    size="sm"
-                    value={distance}
-                    onChange={(e) =>
-                      setDistance(e.target.value)
-                    }
-                    className="w-auto me-2 mb-1"
-                  >
-                    <option>10</option>
-                    <option>25</option>
-                    <option>50</option>
-                    <option>100</option>
-                    <option>150</option>
-                    <option>200</option>
-                  </Form.Select>
+                size="sm"
+                value={distance}
+                onChange={(e) =>
+                  setDistance(e.target.value)
+                }
+                className="w-auto me-2 mb-1"
+              >
+                <option value="">Any</option>
+                <option value="5">5</option>
+                <option value="10">10</option>
+                <option value="25">25</option>
+                <option value="50">50</option>
+                <option value="100">100</option>
+                <option value="200">200</option>
+              </Form.Select>
                   <span className="mx-2">miles of</span>
                   <Form.Select
                     size="sm"

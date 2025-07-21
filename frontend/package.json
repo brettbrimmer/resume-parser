@@ -10,11 +10,15 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "all-the-cities": "^3.1.0",
     "axios": "^1.10.0",
     "bootstrap": "^5.3.7",
+    "cities.json": "^1.1.50",
+    "geolib": "^3.3.4",
     "react": "^19.1.0",
     "react-bootstrap": "^2.10.10",
-    "react-dom": "^19.1.0"
+    "react-dom": "^19.1.0",
+    "us-state-codes": "^1.1.2"
   },
   "devDependencies": {
     "@eslint/js": "^9.30.1",
