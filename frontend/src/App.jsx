@@ -22,6 +22,7 @@ import CandidatesTable from "./components/CandidateTable.jsx";
 import { getDistance } from "geolib";
 // cities.json exports a default array of { name, lat, lng, country, admin1, admin2 }
 import cities from "cities.json";
+import { unparse } from "papaparse"; // or use your own serializer
 
 function App() {
   // ─── Filter & Requirements States ────────────────────────────────────────
@@ -81,6 +82,75 @@ function App() {
         c.admin1.toLowerCase() === stateAbbr
     );
     return rec ? { lat: parseFloat(rec.lat), lng: parseFloat(rec.lng) } : null;
+  }
+
+  // build a CSV string from an array of row‐objects
+  function makeCsv(rows) {
+    return unparse(rows, {
+      quotes: false, // don’t quote everything
+      quoteChar: '"',
+      escapeChar: '"',
+      delimiter: ",",
+      header: true,
+      newline: "\r\n",
+    });
+  }
+
+  // the export routine
+  async function exportSelectedToCsv() {
+    // filter out only the starred/selected candidates
+    const sel = candidates.filter((c) => selectedRows.includes(c.id));
+    if (!sel.length) {
+      return alert("No rows selected!");
+    }
+
+    // build your rows exactly as before
+    const rows = sel.map((c) => ({
+      ID: c.id,
+      Name: c.name,
+      Email: c.email,
+      Phone: c.phone,
+      Location: c.location,
+      GPA: c.gpa ?? "",
+      Education: (c.degrees_earned || []).map((d) => d[0]).join("; "),
+      Skills: c.skills?.replace(/\r?\n/g, "; ") ?? "",
+      Projects: (c.projects || []).map((p) => p.name).join("; "),
+      Experience: (c.experience || []).join(" | "),
+      Starred: c.starred ? "Yes" : "No",
+      "Upload Date": c.upload_date || "",
+    }));
+
+    const csvText = makeCsv(rows);
+
+    // CASE A: if the File System Access API is available
+    if (window.showSaveFilePicker) {
+      try {
+        const handle = await window.showSaveFilePicker({
+          suggestedName: "resumes.csv",
+          types: [
+            {
+              description: "CSV Files",
+              accept: { "text/csv": [".csv"] },
+            },
+          ],
+        });
+        const writable = await handle.createWritable();
+        await writable.write(csvText);
+        await writable.close();
+      } catch (err) {
+        console.error("Save canceled or failed", err);
+      }
+    }
+    // CASE B: fallback for older browsers
+    else {
+      const blob = new Blob([csvText], { type: "text/csv;charset=utf-8;" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "resumes.csv"; // user can override this in the Save dialog
+      a.click();
+      URL.revokeObjectURL(url);
+    }
   }
 
   // fetch one candidate and show in modal
@@ -447,15 +517,9 @@ function App() {
               <Button
                 variant="outline-secondary"
                 className="me-2"
-                onClick={() =>
-                  alert(
-                    `Exporting ${
-                      candidates.filter((c) => c.starred).length
-                    } starred`
-                  )
-                }
+                onClick={exportSelectedToCsv}
               >
-                Export Starred
+                Export Selected
               </Button>
               {/* requirement-sorting badges */}
               {nicknames.map((nick) => {
