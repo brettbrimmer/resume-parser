@@ -49,8 +49,18 @@ app.add_middleware(
 # 1. DB setup & static‐files mount
 # ————————————————————————————————
 models.Base.metadata.create_all(bind=engine)
-os.makedirs("uploads", exist_ok=True)
-app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")
+
+# ensure uploads lives under backend/uploads
+BASE_DIR   = Path(__file__).resolve().parent
+UPLOAD_DIR = BASE_DIR / "uploads"
+UPLOAD_DIR.mkdir(exist_ok=True)
+
+# serve those files at /uploads/…
+app.mount(
+    "/uploads",
+    StaticFiles(directory=str(UPLOAD_DIR)),
+    name="uploads",
+)
 
 def get_db():
     db = SessionLocal()
@@ -82,12 +92,13 @@ async def upload(
 ):
     saved = []
     for f in files:
-        path = f"uploads/{f.filename}"
+        # save into backend/uploads/
+        path = UPLOAD_DIR / f.filename
         with open(path, "wb") as out:
             shutil.copyfileobj(f.file, out)
 
         # use parse_resume to get text + structured fields
-        parsed = parse_resume(path)
+        parsed = parse_resume(str(path))
         meta   = { "filename": f.filename, "size": os.path.getsize(path) }
 
         candidate = models.Candidate(
