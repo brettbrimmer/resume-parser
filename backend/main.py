@@ -241,8 +241,7 @@ async def explain_requirement(req: str, resume: str) -> str:
 
         Each bullet must be concise (15 words or fewer), avoid interpretation or summarizing, and must not mention names, pronouns, or the word “resume”.
 
-        If the resume contains **no clear supporting evidence at all**, reply with exactly:
-        **No evidence found.**
+        If the evidence contains little or no supporting evidence, analyze the resume and respond with 1 to 3 bullet points (use the • symbol). Each bullet must describe a **distinct, literal reason** why there is a lack of evidence from this resume. Try to use as few bullet points as possible.
 
         Here is the resume: {resume}
         """
