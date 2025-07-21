@@ -39,6 +39,9 @@ function App() {
   const [showModal, setShowModal] = useState(false);
   const [modalCandidate, setModalCandidate] = useState(null);
 
+  // whether to hide real names
+  const [anonymize, setAnonymize] = useState(false);
+
   // fetch one candidate and show in modal
   async function handleViewCandidate(id) {
     try {
@@ -433,10 +436,21 @@ function App() {
               );
             })}
 
+            {/* anonymize toggle, pushed to right */}
+          <div className="ms-auto">
+            <Form.Check
+              type="checkbox"
+              label="Anonymize Candidate Data"
+              checked={anonymize}
+              onChange={(e) => setAnonymize(e.target.checked)}
+            />
+          </div>
+
           </div>
 
           <CandidatesTable
             candidates={displayed}
+            anonymize={anonymize}
             // nicknames={nicknames}
             onToggleStar={toggleStar}
             onViewCandidate={handleViewCandidate}
@@ -461,9 +475,27 @@ function App() {
 
         {/* ——— HEADER ——— */}
         <div className="resume-header text-center mb-4">
-          <h1 className="resume-name mb-1">{modalCandidate?.name}</h1>
+          {/* <h1 className="resume-name mb-1">{modalCandidate?.name}</h1> */}
+          <h1 className="resume-name mb-1">
+            {modalCandidate
+            ? anonymize
+              ? `C${modalCandidate.id
+                  .toString()
+                  .padStart(7, "0")}`
+              : modalCandidate.name
+            : ""}
+          </h1>
           <div className="resume-contact text-muted">
-            {modalCandidate?.email} &bull; {modalCandidate?.phone} &bull; {modalCandidate?.location}
+            {modalCandidate
+              ? anonymize
+                ? "[Email Hidden]"
+                : modalCandidate.email
+              : ""} &bull;{" "}
+            {modalCandidate
+              ? anonymize
+                ? "[Phone Hidden]"
+                : modalCandidate.phone
+              : ""} &bull; {modalCandidate?.location}
           </div>
         </div>
 

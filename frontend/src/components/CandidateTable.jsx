@@ -3,6 +3,7 @@ import { Table, Badge, OverlayTrigger, Tooltip, Form } from "react-bootstrap";
 
 export default function CandidatesTable({
   candidates,
+  anonymize,
   onToggleStar,
   onViewCandidate,
   selectedRows,
@@ -14,7 +15,8 @@ export default function CandidatesTable({
       <thead>
         <tr>
           <th className="col-select">Select</th>
-          <th className="col-id">ID</th>
+          {/* <th className="col-id">ID</th> */}
+          {/* <th className="col-candidate">Candidate</th> */}
           <th className="col-candidate">Candidate</th>
           {/* <th>Filename</th> */}
           {/* <th>Size</th> */}
@@ -45,8 +47,18 @@ export default function CandidatesTable({
               }}
             />
             </td>
-            <td className="col-id">{c.id}</td>
-            <td className="col-candidate">{c.name}</td>
+            {/*<td className="col-id">{c.id}</td> */}
+            {/*<td className="col-candidate">{c.name}</td> */}
+            {/* <td className="col-candidate">Candidate {c.id}</td> */}
+            <td className="col-candidate">
+              {anonymize
+                ? `C${c.id.toString().padStart(7, '0')}`
+                : c.name}
+            </td>
+             {/* …other columns… */}
+            {/* <td className="col-candidate">
+                C{c.id.toString().padStart(7, '0')}
+            </td> */}
             {/* <td>{c.filename}</td> */}
             {/* <td>{c.size}</td> */}
             {/*{nicknames.map((n) => (
