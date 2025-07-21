@@ -293,6 +293,7 @@ def parse_resume(path: str) -> dict:
         return float(m.group(1)) if m else None
 
     gpa = extract_gpa(text)
+    print(f"gpa extracted as {gpa}")
 
     return {
         "text": text,

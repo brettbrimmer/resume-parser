@@ -51,6 +51,9 @@ function App() {
 
   const [distanceError, setDistanceError] = useState(false);
 
+  const [sortColumn, setSortColumn] = useState(null); // e.g. "starred", "uploadDate", "score"
+  const [sortDirection, setSortDirection] = useState("asc");
+
   // ——— Haversine distance helper (meters) ———
   const R = 6371e3; // meters
   function getDistance(p1, p2) {
@@ -196,6 +199,13 @@ function App() {
     const v = e.target.value;
     setMinGpaText(v);
     setGpaError(!/^$|^[0-4](\.\d{1,2})?$/.test(v));
+  }
+
+  function formatGpa(gpa) {
+    if (gpa == null) return "[GPA Not Listed]";
+    const s = gpa.toFixed(2);
+    // if the very last char is “0”, chop it off
+    return s.endsWith("0") ? s.slice(0, -1) : s;
   }
 
   // Distance input validation (allow empty or integer only)
@@ -370,7 +380,7 @@ function App() {
                   <Form.Group controlId="gpaFilter" className="mb-3">
                     <Form.Check
                       type="checkbox"
-                      label="Has GPA"
+                      label="Has GPA Listed"
                       checked={gpaListed}
                       onChange={(e) => setGpaListed(e.target.checked)}
                     />
@@ -498,6 +508,7 @@ function App() {
               onViewCandidate={handleViewCandidate}
               selectedRows={selectedRows}
               onSelectRow={onSelectRow}
+              onClearBadgeSort={() => setSortConfig({})}
             />
           </Col>
         </Row>
@@ -562,7 +573,7 @@ function App() {
                       "Bachelor of Arts, Business Administration"}
                   </div>
                   <div className="text-muted">
-                    GPA: {modalCandidate?.gpa?.toFixed(2) || "3.50"}
+                    GPA: {formatGpa(modalCandidate?.gpa)}
                   </div>
                 </div>
               </div>

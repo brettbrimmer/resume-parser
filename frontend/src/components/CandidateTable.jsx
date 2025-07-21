@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Table, Badge, OverlayTrigger, Tooltip, Form } from "react-bootstrap";
 
 export default function CandidatesTable({
@@ -6,10 +6,40 @@ export default function CandidatesTable({
   anonymize,
   onToggleStar,
   onViewCandidate,
+  onClearBadgeSort,
   selectedRows,
-  onSelectRow
+  onSelectRow,
 }) {
-  console.log("Table rendering with order:", candidates.map(c => c.id));
+  console.log(
+    "Table rendering with order:",
+    candidates.map((c) => c.id)
+  );
+  // ── Sorting state ────────────────────────────────────────────────
+  const [sortColumn, setSortColumn] = useState(null);
+  const [sortDirection, setSortDirection] = useState("asc");
+
+  // ── Build sorted list, or pass through if no sortColumn ───────────
+  const sortedCandidates = sortColumn
+    ? [...candidates].sort((a, b) => {
+        let aVal, bVal;
+        switch (sortColumn) {
+          case "starred":
+            // map starred→0, unstarred→1 so asc (▲) shows ★ first
+            aVal = a.starred ? 0 : 1;
+            bVal = b.starred ? 0 : 1;
+            break;
+
+          case "uploadDate":
+            aVal = a.upload_date ? new Date(a.upload_date).getTime() : 0;
+            bVal = b.upload_date ? new Date(b.upload_date).getTime() : 0;
+            break;
+
+          default:
+            return 0;
+        }
+        return sortDirection === "asc" ? aVal - bVal : bVal - aVal;
+      })
+    : candidates;
   return (
     <Table hover bordered responsive size="sm">
       <thead>
@@ -24,13 +54,55 @@ export default function CandidatesTable({
           {/*   <th key={n}>{n}</th> */}
           {/* ))} */}
           <th>Badges</th>
-          <th className="col-star">Star</th>
-          <th className="col-upload-date">Upload Date</th>
+          <th
+            className="col-star"
+            style={{ cursor: "pointer" }}
+            onClick={() => {
+              if (sortColumn !== "starred") {
+                setSortColumn("starred");
+                setSortDirection("asc");
+              } else if (sortDirection === "asc") {
+                setSortDirection("desc");
+              } else {
+                setSortColumn(null);
+              }
+              onClearBadgeSort(); // ← clear badge sort whenever Star sorts
+            }}
+          >
+            Star
+            {sortColumn === "starred"
+              ? sortDirection === "asc"
+                ? " ▲"
+                : " ▼"
+              : ""}
+          </th>
+          <th
+            className="col-upload-date"
+            style={{ cursor: "pointer" }}
+            onClick={() => {
+              if (sortColumn !== "uploadDate") {
+                setSortColumn("uploadDate");
+                setSortDirection("asc");
+              } else if (sortDirection === "asc") {
+                setSortDirection("desc");
+              } else {
+                setSortColumn(null);
+              }
+              onClearBadgeSort(); // ← clear badge sort whenever Date sorts
+            }}
+          >
+            Upload Date
+            {sortColumn === "uploadDate"
+              ? sortDirection === "asc"
+                ? " ▲"
+                : " ▼"
+              : ""}
+          </th>
           <th>Actions</th>
         </tr>
       </thead>
       <tbody>
-        {candidates.map((c) => (
+        {sortedCandidates.map((c) => (
           <tr key={c.id}>
             <td
               className="col-select"
@@ -38,24 +110,22 @@ export default function CandidatesTable({
               onClick={() => onSelectRow(c.id)}
             >
               <Form.Check
-              type="checkbox"
-              checked={selectedRows.includes(c.id)}
-              readOnly                           // avoids React warning
-              onClick={(e) => {
-                e.stopPropagation();            // block the cell’s onClick
-                onSelectRow(c.id);              // but still toggle once
-              }}
-            />
+                type="checkbox"
+                checked={selectedRows.includes(c.id)}
+                readOnly // avoids React warning
+                onClick={(e) => {
+                  e.stopPropagation(); // block the cell’s onClick
+                  onSelectRow(c.id); // but still toggle once
+                }}
+              />
             </td>
             {/*<td className="col-id">{c.id}</td> */}
             {/*<td className="col-candidate">{c.name}</td> */}
             {/* <td className="col-candidate">Candidate {c.id}</td> */}
             <td className="col-candidate">
-              {anonymize
-                ? `C${c.id.toString().padStart(7, '0')}`
-                : c.name}
+              {anonymize ? `C${c.id.toString().padStart(7, "0")}` : c.name}
             </td>
-             {/* …other columns… */}
+            {/* …other columns… */}
             {/* <td className="col-candidate">
                 C{c.id.toString().padStart(7, '0')}
             </td> */}
@@ -79,10 +149,10 @@ export default function CandidatesTable({
                 else variant = "success";
 
                 let extraClass;
-                    if (num <= 50)       extraClass = "badge-score-low";
-                    else if (num <= 70)  extraClass = "badge-score-medium";
-                    else if (num <= 80)  extraClass = "badge-score-high";
-                    else                 extraClass = "badge-score-veryhigh";
+                if (num <= 50) extraClass = "badge-score-low";
+                else if (num <= 70) extraClass = "badge-score-medium";
+                else if (num <= 80) extraClass = "badge-score-high";
+                else extraClass = "badge-score-veryhigh";
 
                 return (
                   <OverlayTrigger
@@ -92,7 +162,6 @@ export default function CandidatesTable({
                     delay={{ show: 0, hide: 0 }}
                     overlay={<Tooltip id={`tt-${nick}`}>{reason}</Tooltip>}
                   >
-
                     <Badge pill className={`me-1 mb-1 ${extraClass}`}>
                       {nick} {num.toFixed(1)}
                     </Badge>
@@ -100,7 +169,8 @@ export default function CandidatesTable({
                 );
               })}
             </td>
-            <td className="col-star"
+            <td
+              className="col-star"
               style={{ textAlign: "center", cursor: "pointer" }}
               onClick={() => onToggleStar(c.id)}
             >

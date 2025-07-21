@@ -5,6 +5,7 @@ Education
 Bachelor of Science in Information Science, Drexel University
 Expected Graduation: June 2025
 Relevant Coursework: Software Engineering, Human-Computer Interaction, Database Design, Data Structures, Mobile Development
+GPA 4.0
 
 Technical Skills
 Languages: JavaScript, Python, Java, SQL
