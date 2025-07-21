@@ -31,7 +31,7 @@ function App() {
   const [gpaError, setGpaError] = useState(false);
   const [gpaListed, setGpaListed] = useState(false);
 
-  const [distance, setDistance] = useState("Any");
+  const [distance, setDistance] = useState("");
   const [location, setLocation] = useState("Tempe, AZ");
 
   const [reqText, setReqText] = useState("");
@@ -47,6 +47,8 @@ function App() {
   const [anonymize, setAnonymize] = useState(false);
 
   const [userCoords, setUserCoords] = useState(null);
+
+  const [distanceError, setDistanceError] = useState(false);
 
   // ——— Haversine distance helper (meters) ———
   const R = 6371e3; // meters
@@ -167,6 +169,8 @@ function lookupCoords(address) {
       const { data } = await axios.post("/api/requirements", {
         requirements: lines,
       });
+      // clear the requirements textarea after sending
+      setReqText("");
       // invert label→key into key→label:
      const flipped = Object.entries(data.mapping).reduce(
        (acc, [label, key]) => ({ ...acc, [key]: label }),
@@ -191,6 +195,14 @@ function lookupCoords(address) {
     const v = e.target.value;
     setMinGpaText(v);
     setGpaError(!/^$|^[0-4](\.\d{1,2})?$/.test(v));
+  }
+
+  // Distance input validation (allow empty or integer only)
+  function handleDistanceChange(e) {
+    const v = e.target.value;
+    setDistance(v);
+    const isValid = v === "" || /^\d+$/.test(v);
+    setDistanceError(!isValid);
   }
 
   // Star & row‐select toggles
@@ -337,22 +349,20 @@ function lookupCoords(address) {
                   <Form.Label className="me-2 mb-0">
                     Within
                   </Form.Label>
-                  <Form.Select
+              <Form.Control
+                type="text"
                 size="sm"
-                value={distance}
-                onChange={(e) =>
-                  setDistance(e.target.value)
-                }
                 className="w-auto me-2 mb-1"
-              >
-                <option value="">Any</option>
-                <option value="5">5</option>
-                <option value="10">10</option>
-                <option value="25">25</option>
-                <option value="50">50</option>
-                <option value="100">100</option>
-                <option value="200">200</option>
-              </Form.Select>
+                placeholder="Miles"
+                value={distance}
+                onChange={handleDistanceChange}
+                isInvalid={distanceError}
+                style={{ maxWidth: "4rem" }}
+              />
+              <span className="me-2">miles</span>
+              <Form.Control.Feedback type="invalid">
+                Enter a whole number
+              </Form.Control.Feedback>
                   <span className="mx-2">miles of</span>
                   <Form.Select
                     size="sm"
@@ -410,7 +420,7 @@ function lookupCoords(address) {
                   <Form.Control
                     as="textarea"
                     rows={5}
-                    placeholder="Strong React skills"
+                    placeholder="Enter a detailed requirement..."
                     value={reqText}
                     onChange={(e) => setReqText(e.target.value)}
                   />
@@ -420,7 +430,7 @@ function lookupCoords(address) {
                     variant="primary"
                     onClick={applyRequirements}
                   >
-                    Apply Requirements
+                    Add Requirement
                   </Button>
                 </div>
               </Form>
