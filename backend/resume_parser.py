@@ -266,7 +266,15 @@ def parse_resume(path: str) -> dict:
 
     # ── PROJECTS extraction (existing split/split‐by‐bullets) ────────
     sections      = split_into_strict_sections(text)
-    skills = sections.get("TECHNICAL SKILLS", "").strip()
+    # We'll grab all the text from any headings named SKILLS and TECHNICAL SKILLS
+    skills_raw = max(
+        [
+            sections.get("SKILLS", ""),
+            sections.get("TECHNICAL SKILLS", "")
+        ],
+        key=len
+    )
+    skills = skills_raw.strip()
     projects_text = sections.get("PROJECTS", "")
     projects      = split_projects_by_bullets(projects_text)
 
