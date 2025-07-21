@@ -11,63 +11,37 @@ from dateparser.search import search_dates
 # 1. OCR reader (module‐level so it loads once)
 reader = easyocr.Reader(["en"])
 
-# 2. spaCy model + matcher (load once at import)
-nlp = spacy.load("en_core_web_sm")
-matcher = Matcher(nlp.vocab)
-SECTIONS = ["education", "experience", "skills",
-            "projects", "certifications", "publications"]
+# only these exact headers, matching at start of line (allow optional colon)
+_HEADERS = [
+    "Education",
+    "Technical Skills",
+    "Skills",
+    "Projects",
+    "Experience",
+    "Leadership & Activities",
+    "Additional Information",
+]
 
-# Build and register patterns (sections)
-for sec in SECTIONS:
-    # Use uppercase labels but match on token.lower_ for case-insensitive section headings detection.
-    matcher.add(sec.upper(), [[{"LOWER": sec}]])
+_SECTION_RE = re.compile(
+    r"(?im)^(" + "|".join(re.escape(h) for h in _HEADERS) + r")\s*:?\s*$",
+    re.MULTILINE,
+)
 
-def find_headings(text: str) -> list[tuple[str, int]]:
-    """Return a sorted list of (SECTION_NAME, token_start_index)."""
-    doc = nlp(text) # converts text into a data structure usable by spacy
-    matches = matcher(doc)  # creates a list of tuples that each have a section header, and start/end points as integers
-     # 'mid' is the integer id that was assigned to the section header, we use that to get the header name
-     # 'start' is the start index for that header section in 'matches' (above) '_' is the end point (not used)
-    headings = [(nlp.vocab.strings[mid], start) for mid, start, _ in matches]
-
-     # sort headings data by 2nd item ('start' index)
-    headings = sorted(headings, key=lambda x: x[1])
-
-    return headings
-
-
-def split_into_sections(text: str) -> dict[str, str]:
-    """Build a dictionary by mapping section headings to the section's body text."""
-    doc = nlp(text)
-    heads = find_headings(text)
-    heads.append(("END", len(doc)))  # sentinel
-
-    sections = {}
-    for (sec, start), (_, nxt) in zip(heads, heads[1:]):
-        span = doc[start:nxt].text.strip().splitlines()
-        # remove heading itself
-        content = "\n".join(span[1:]).strip()
-        sections[sec] = content
-
+def split_into_strict_sections(text: str) -> Dict[str, str]:
+    """
+    Split the resume into known headers ONLY when they appear
+    at the very start of a line. Returns HEADER->body.
+    """
+    matches = list(_SECTION_RE.finditer(text))
+    if not matches:
+        return {}
+    sections: Dict[str, str] = {}
+    for i, m in enumerate(matches):
+        header = m.group(1).upper()
+        start = m.end()
+        end = matches[i + 1].start() if i + 1 < len(matches) else len(text)
+        sections[header] = text[start:end].strip()
     return sections
-
-def split_sections(text: str) -> Dict[str, str]:
-     """
-     Split resume into sections based on spaCy Matcher.
-     Returns a dict mapping lowercase section name -> body text.
-     """
-     doc     = nlp(text)
-     matches = matcher(doc)
-     heads   = [(nlp.vocab.strings[mid], start) for mid, start, _ in matches]
-     heads   = sorted(heads, key=lambda x: x[1])
-     heads.append(("END", len(doc)))
-
-     sections: Dict[str, str] = {}
-     for (sec, start), (_, nxt) in zip(heads, heads[1:]):
-         lines = doc[start:nxt].text.splitlines()
-         body  = "\n".join(lines[1:]).strip()
-         sections[sec.lower()] = body
-     return sections
 
 def getExt(file_name):
     """Returns extension of file_name as string"""
@@ -244,6 +218,7 @@ def extract_skills_section(text: str) -> List[str]:
     Finds a SKILLS block like "SKILLS" or "Technical Skills"
     and returns individual skills split on commas or newlines.
     """
+    print(f"extract_skills run with argument: {str}")
     # capture until the first blank line or EOF
     pattern = (
         r'(?im)^[ \t]*(?:skills|technical skills)'
@@ -261,6 +236,8 @@ def extract_skills_section(text: str) -> List[str]:
         # split comma-separated values
         parts = [p.strip() for p in line.split(',')]
         items.extend([p for p in parts if p])
+
+    print(f"extra_skills returning {items}")
     return items
 
 def parse_resume(path: str) -> dict:
@@ -288,14 +265,16 @@ def parse_resume(path: str) -> dict:
     # raw_projects = mySections.get("PROJECTS", "")
 
     # ── PROJECTS extraction (existing split/split‐by‐bullets) ────────
-    sections      = split_into_sections(text)
-    skills = sections.get("SKILLS", "").strip()
+    sections      = split_into_strict_sections(text)
+    skills = sections.get("TECHNICAL SKILLS", "").strip()
     projects_text = sections.get("PROJECTS", "")
     projects      = split_projects_by_bullets(projects_text)
 
     # ── EXPERIENCE extraction ───────────────────────────────────────
     exp_text        = sections.get("EXPERIENCE", "")
+    print(f"exp_text is: {exp_text}")
     experience      = split_projects_by_bullets(exp_text)
+    print(f"Experience parsed as: {experience}")
 
     phone               = extract_phone(text)
 
