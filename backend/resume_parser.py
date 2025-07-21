@@ -266,6 +266,10 @@ def parse_resume(path: str) -> dict:
     projects_text = sections.get("PROJECTS", "")
     projects      = split_projects_by_bullets(projects_text)
 
+    # ── EXPERIENCE extraction ───────────────────────────────────────
+    exp_text        = sections.get("EXPERIENCE", "")
+    experience      = split_projects_by_bullets(exp_text)
+
     phone               = extract_phone(text)
 
     # ── GPA extraction ─────────────────────────────────────────────────
@@ -283,6 +287,7 @@ def parse_resume(path: str) -> dict:
         "email":                email,
         "phone":                phone,
         "projects":             projects,
+        "experience":  experience,
         "gpa": gpa,
         "degrees_earned": earned,
         "degrees_in_progress": in_prog

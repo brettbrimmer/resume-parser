@@ -527,34 +527,25 @@ function App() {
         </div>
 
         {/* ——— EXPERIENCE ——— */}
-        <div className="resume-section">
-        <h2 className="resume-section-title">Experience</h2>
-
-        <div className="resume-job mb-3">
-          <div className="d-flex justify-content-between">
-            <strong>TechForward Inc.</strong>
-            <span className="text-muted">Santa Clara, CA</span>
-          </div>
-          <div className="d-flex justify-content-between fst-italic mb-2">
-            <span>Software Engineering Intern</span>
-            <span className="text-muted">May 2024 – Aug 2024</span>
-          </div>
-          <ul className="mb-0">
-            <li>
-              Contributed to front-end development of a SaaS analytics dashboard
-              using React and Chart.js.
-            </li>
-            <li>
-              Wrote unit and integration tests with Jest and React Testing Library,
-              boosting coverage by 30%.
-            </li>
-            <li>
-              Participated in Agile ceremonies—daily stand-ups, sprint planning, and
-              retrospectives.
-            </li>
-          </ul>
-        </div>
-      </div>
+        <h4>Experience</h4>
+        {(modalCandidate?.experience || []).map((block, idx) => {
+          const lines = block.split("\n").filter((l) => l.trim());
+          const [title, company, dates, ...rest] = lines;
+          return (
+            <div key={idx} className="mb-3">
+              <h5>{title}</h5>
+              {company && <p className="text-muted">{company}</p>}
+              {dates   && <p className="text-small">{dates}</p>}
+              <ul className="ps-3">
+                {rest.map((line, i) => {
+                  // strip any leading bullet char
+                  const clean = line.replace(/^[^\w]+/, "");
+                  return <li key={i}>{clean}</li>;
+                })}
+              </ul>
+            </div>
+          );
+        })}
 
         {/* ——— PROJECTS ——— */}
         <div className="resume-section">

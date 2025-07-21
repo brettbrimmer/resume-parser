@@ -102,6 +102,7 @@ async def upload(
             degrees_earned       = parsed["degrees_earned"],
             degrees_in_progress  = parsed["degrees_in_progress"],
             projects             = parsed.get("projects", []),
+            experience           = parsed.get("experience", []),
             scores               = {},
             upload_date          = datetime.now(timezone.utc)
         )
@@ -131,6 +132,7 @@ def list_candidates(db: Session = Depends(get_db)):
             "degrees_earned":       r.degrees_earned,
             "degrees_in_progress":  r.degrees_in_progress,
             "projects":             r.projects,
+            "experience":           r.experience,
             "scores":               r.scores,
             "upload_date":          r.upload_date.isoformat()
         }
@@ -156,7 +158,8 @@ def get_candidate(cand_id: int, db: Session = Depends(get_db)):
       "gpa":                  c.gpa,
       "degrees_earned":       c.degrees_earned,
       "degrees_in_progress":  c.degrees_in_progress,
-      "projects":              c.projects,
+      "projects":             c.projects,
+      "experience":           c.experience,
       "scores":               c.scores,
       "resume_url":           f"/uploads/{c.filename}",
       "upload_date":          c.upload_date.isoformat()
