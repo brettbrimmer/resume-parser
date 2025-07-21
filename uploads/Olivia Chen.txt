@@ -8,10 +8,6 @@ Aug 2020 – May 2024
 GPA: 3.4 / 4.0
 Relevant Coursework: Algorithms, Operating Systems, Computer Security, Web Development
 
-TECHNICAL SKILLS
-Languages: JavaScript (React, Node.js), Python, C++, SQL
-Tools & Frameworks: Git, Docker, PostgreSQL, AWS (Lambda, EC2, S3), Firebase, Next.js, Tailwind CSS
-
 PROJECTS
 DevBoard – Developer Task Board
 React, Node.js, MongoDB, Docker
@@ -42,8 +38,3 @@ UC Berkeley
 Jan 2023 – May 2023
 • Led weekly lab sessions and office hours for students learning data structures.
 • Assisted with grading and maintaining programming assignments in Java.
-
-AWARDS & LEADERSHIP
-• 2nd Place – CalHacks 9.0 (2023)
-• Vice President – Women in Computer Science & Engineering (WiCSE)
-• Grace Hopper Conference Attendee (2023)

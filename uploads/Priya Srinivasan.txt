@@ -9,11 +9,6 @@ Sept 2021 – June 2025
 GPA: 3.4 / 4.0
 Relevant Courses: Data Structures, Software Engineering, Probability & Statistics, Machine Learning, Operating Systems, Web Development
 
-TECHNICAL SKILLS
-Languages: Python, Java, R, SQL, Bash, HTML/CSS
-Frameworks & Tools: Django, Pandas, NumPy, PostgreSQL, Git, Docker, Linux
-Cloud: AWS (S3, Lambda, EC2), Google Cloud (basic)
-
 EXPERIENCE
 Software Engineering Intern
 RainCity Civic Tech – Seattle, WA
@@ -57,8 +52,3 @@ Summer 2023
 
 Member, Society of Women Engineers (SWE), UW Chapter
 Sept 2022 – Present
-
-ADDITIONAL INFORMATION
-Languages: Fluent in Tamil and Spanish
-Interests: Data equity, hiking, analog synth music, community education
-Portfolio: priyadevs.io

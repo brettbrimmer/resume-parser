@@ -347,7 +347,7 @@ function App() {
                 {/* Requirements */}
                 <Form.Group controlId="requirements" className="mb-3">
                   <Form.Label>
-                    Requirements (one per line)
+                    Requirement
                   </Form.Label>
                   <Form.Control
                     as="textarea"
@@ -527,25 +527,27 @@ function App() {
         </div>
 
         {/* ——— EXPERIENCE ——— */}
-        <h4>Experience</h4>
-        {(modalCandidate?.experience || []).map((block, idx) => {
-          const lines = block.split("\n").filter((l) => l.trim());
-          const [title, company, dates, ...rest] = lines;
-          return (
-            <div key={idx} className="mb-3">
-              <h5>{title}</h5>
-              {company && <p className="text-muted">{company}</p>}
-              {dates   && <p className="text-small">{dates}</p>}
-              <ul className="ps-3">
-                {rest.map((line, i) => {
-                  // strip any leading bullet char
-                  const clean = line.replace(/^[^\w]+/, "");
-                  return <li key={i}>{clean}</li>;
-                })}
-              </ul>
-            </div>
-          );
-        })}
+        <div className="resume-section">
+            <h2 className="resume-section-title">Experience</h2>
+            {(modalCandidate?.experience || []).map((block, idx) => {
+            const lines = block.split("\n").filter((l) => l.trim());
+            const [title, company, dates, ...rest] = lines;
+            return (
+              <div key={idx} className="mb-3">
+                <h5>{title}</h5>
+                {company && <p className="text-muted">{company}</p>}
+                {dates   && <p className="text-small">{dates}</p>}
+                <ul className="ps-3">
+                  {rest.map((line, i) => {
+                    // strip any leading bullet char
+                    const clean = line.replace(/^[^\w]+/, "");
+                    return <li key={i}>{clean}</li>;
+                  })}
+                </ul>
+              </div>
+            );
+          })}
+        </div>
 
         {/* ——— PROJECTS ——— */}
         <div className="resume-section">
@@ -577,11 +579,11 @@ function App() {
 
         {/* ——— SKILLS ——— */}
         <div className="resume-section mb-0">
-          <h2 className="resume-section-title">Skills</h2>
+          <h2 className="resume-section-title">Skills</h2>(Skills section in progress - contains dummy data)
           <ul className="mb-0">
-            <li><strong>Computer:</strong> Windows/Mac OS, Word, PowerPoint, Excel</li>
-            <li><strong>Language:</strong> Spanish (fluent)</li>
-            <li><strong>Social Media:</strong> Facebook, Twitter, Instagram</li>
+            <li><strong>Languages:</strong> Python, C, JavaScript, Kotlin</li>
+            <li><strong>Tools & Platforms:</strong> Git, Linux, Android Studio, Firebase</li>
+            <li><strong>Technologies:</strong> REST APIs, SQLite, Bluetooth LE (basic), MQTT (basic)</li>
           </ul>
         </div>
 

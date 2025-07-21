@@ -9,11 +9,6 @@ Aug 2021 – May 2025 (Expected)
 GPA: 2.78 / 4.00
 Relevant Courses: Introduction to Programming, Web Development I, Database Systems, Computer Networks
 
-TECHNICAL SKILLS
-Languages: JavaScript, Python, HTML, CSS
-Tools: Git, VS Code, MySQL, basic React
-Other: Basic understanding of REST APIs, group projects, debugging
-
 EXPERIENCE
 IT Support Assistant
 ASU Tech Help Desk – Tempe, AZ
@@ -39,13 +34,3 @@ Student Budget Calculator
 Python
 • Wrote a script to help estimate monthly spending and visualize costs using text-based menus
 • Created during a school assignment and improved after feedback
-
-INVOLVEMENT
-Member, ASU Programming Club
-Jan 2024 – Present
-• Occasionally attended meetings to learn new tools and hear from guest speakers
-• Participated in one weekend hackathon (no placement)
-
-ADDITIONAL INFO
-Languages: English (native), Spanish (conversational)
-Interests: PC gaming, casual coding, hiking trails around Phoenix
