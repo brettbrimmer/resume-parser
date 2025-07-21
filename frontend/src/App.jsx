@@ -559,7 +559,7 @@ function App() {
                 Export Selected
               </Button>
               <Button
-                variant="danger"
+                variant="outline-secondary"
                 className="me-2"
                 disabled={selectedRows.length === 0}
                 onClick={deleteSelected}

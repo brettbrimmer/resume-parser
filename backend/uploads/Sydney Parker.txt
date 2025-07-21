@@ -1,0 +1,51 @@
+Sydney Parker
+Portland, OR | [sydney.parker@email.com](mailto:sydney.parker@email.com) | (503) 555-2378 | linkedin.com/in/sydneyparker | github.com/sydneycodes
+GPA 3.1
+
+Education
+Bachelor of Science in Computer Science, Oregon State University
+Expected Graduation: June 2025
+Relevant Coursework: Data Structures, Operating Systems, Web Development, Cloud Application Development, Software Engineering
+
+Technical Skills
+Languages: Python, Java, JavaScript, SQL
+Frameworks/Tools: React, Django, Node.js, Git, Docker, AWS
+Databases: MySQL, MongoDB
+Other: REST APIs, Test-Driven Development, Agile Scrum, CI/CD
+
+Projects
+Local Library System
+• Developed a web-based library management system using Django and React
+• Implemented user authentication, book catalog, and reservation features
+• Deployed application to AWS with MySQL backend
+
+Event Planning App
+• Built a mobile-friendly web app with Node.js and React for event creation and RSVPs
+• Integrated Google Maps API for venue selection and directions
+• Added real-time updates using Socket.io
+
+Pet Adoption Platform
+• Designed a full-stack platform to connect shelters with adopters using Python and Flask
+• Enabled photo uploads, search filters, and secure user logins
+• Deployed the app on Heroku with a MongoDB database
+
+Experience
+Software Developer Intern, Evergreen Tech – Portland, OR
+June 2024 – September 2024
+• Assisted in developing new features for an internal CRM tool using Django and React
+• Wrote and maintained RESTful API endpoints and frontend components
+• Participated in Agile ceremonies, daily stand-ups, and sprint reviews
+• Conducted code reviews and collaborated with QA to resolve bugs
+
+Teaching Assistant, Intro to Web Development, Oregon State University
+January 2024 – May 2024
+• Helped students debug HTML, CSS, and JavaScript code
+• Provided feedback on assignments and projects
+• Led weekly lab sessions and study groups
+
+Leadership & Activities
+Vice President, OSU Coding Club
+Participant, BeaverHacks Hackathon – Built a neighborhood community app prototype for local resource sharing
+
+Additional Information
+Quick learner with a passion for building practical, user-centered software. Strong communicator and team player. Interested in backend development, cloud infrastructure, and scalable web apps.
