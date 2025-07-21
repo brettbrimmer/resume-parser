@@ -182,3 +182,9 @@ body, html, #root {
 .navbar .nav-link::after {
   content: none;
 }
+
+/* force Bootstrap tooltips to honor newlines */
+.tooltip-inner {
+  white-space: pre-wrap !important;
+  text-align: left;            /* so your bullets line up nicely */
+}

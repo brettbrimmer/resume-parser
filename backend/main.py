@@ -172,7 +172,7 @@ import re
 async def generate_nicknames(reqs: list[str]) -> dict[str, str]:
     prompt = (
         "You are a JSON generator. Return ONLY a JSON array of objects "
-        "with keys text (original requirement) and nickname (short name).\n\n"
+        "with keys text (original requirement) and nickname (as short a name as logically possible, in Title Casing).\n\n"
         "Each requirement should correspond to one line of text ended by a newline or eof. Do not split a single line of text into multiple requirements.\n\n"
         "Requirements:\n" + "\n".join(f"{i+1}. {r}" for i, r in enumerate(reqs))
     )
@@ -227,18 +227,21 @@ async def explain_requirement(req: str, resume: str) -> str:
 
         Your output must contain only direct, factual evidence that clearly supports the requirement — nothing else.
 
-        Respond with 1 to 3 bullet points. Each bullet must describe a **distinct, literal piece of evidence** from the resume that directly supports the requirement.
+        Respond with 1 to 3 bullet points (use the • symbol). Each bullet must describe a **distinct, literal piece of evidence** from the resume that directly supports the requirement.
 
         If only 1 or 2 real examples exist, output only those. **Do not create extra bullets** unless the resume gives clear, separate evidence. Do not pad with generic or tangential information.
 
         Each bullet must be concise (15 words or fewer), avoid interpretation or summarizing, and must not mention names, pronouns, or the word “resume”.
 
         If the resume contains **no clear supporting evidence at all**, reply with exactly:
-        **No relevant evidence found.**
+        **No evidence found.**
 
         Here is the resume: {resume}
         """
     )
+
+    # If the resume contains **no clear supporting evidence at all**, reply with exactly:
+    #    **No relevant evidence found.**
 
     # if("Brett" in resume):
     # print(f"The resume provided was this one: {resume}")

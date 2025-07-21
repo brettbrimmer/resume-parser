@@ -8,6 +8,8 @@ import {
   Form,
   Button,
   Badge,
+  OverlayTrigger,
+  Tooltip,
   Modal,
   Navbar,
   Nav
@@ -405,16 +407,29 @@ function App() {
               const arrow = dir === 1 ? "↑" : dir === -1 ? "↓" : "";
               const variant = dir ? "primary" : "secondary";
               return (
-                <Badge
+                <OverlayTrigger
                   key={nick}
-                  bg={variant}
-                  className="me-2 mb-2"
-                  style={{ cursor: "pointer" }}
-                  onClick={() => handleBadgeClick(nick)} // Use nickname, not label!
+                  placement="bottom"
+                  flip={false}
+                  delay={{ show: 2000, hide: 0 }}
+                  overlay={
+                    <Tooltip id={`tt-${nick}`}>
+                      {mapping[nick]
+                        // inject real line breaks before every bullet
+                        .replace(/•\s*/g, '\n• ')
+                        .trim()}
+                    </Tooltip>
+                  }
                 >
-                  {/*mapping[nick]} {arrow}*/}
-                  {nick} {arrow}
-                </Badge>
+                  <Badge
+                    bg={variant}
+                    className="me-2 mb-2"
+                    style={{ cursor: "pointer" }}
+                    onClick={() => handleBadgeClick(nick)}
+                  >
+                    {nick} {arrow}
+                  </Badge>
+                </OverlayTrigger>
               );
             })}
 
