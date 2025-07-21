@@ -30,7 +30,7 @@ class Candidate(Base):
     # NEW: store requirement-to-score map, e.g. {"Python": 87.5, "AWS": 42.0}
     scores      = Column(JSON, nullable=False, default={})
 
-    skills         = Column(JSON, nullable=True) #
+    skills = Column(Text, nullable=True)
 
     upload_date = Column(
             DateTime(timezone=True),

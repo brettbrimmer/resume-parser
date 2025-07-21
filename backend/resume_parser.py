@@ -274,7 +274,8 @@ def parse_resume(path: str) -> dict:
     name, location      = extract_name(text), extract_location(text)
     earned, in_prog     = extract_degrees(text)
     email               = extract_email(text)
-    skills              = extract_skills_section(text)
+    # skills              = extract_skills_section(text)
+    
 
     # ── PROJECTS extraction ──────────────────────────────────────────
     # ── PROJECTS extraction via spaCy splitter ───────────────────────
@@ -288,6 +289,7 @@ def parse_resume(path: str) -> dict:
 
     # ── PROJECTS extraction (existing split/split‐by‐bullets) ────────
     sections      = split_into_sections(text)
+    skills = sections.get("SKILLS", "").strip()
     projects_text = sections.get("PROJECTS", "")
     projects      = split_projects_by_bullets(projects_text)
 

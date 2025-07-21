@@ -622,16 +622,12 @@ function App() {
             </div>
 
             {/* ——— SKILLS ——— */}
-            {modalCandidate?.skills?.length > 0 && (
+            {modalCandidate?.skills && (
               <div className="resume-section mb-0">
                 <h2 className="resume-section-title">Skills</h2>
-                <div className="mb-2">
-                  {modalCandidate.skills.map((skill) => (
-                    <Badge bg="secondary" key={skill} className="me-1 mb-1">
-                      {skill}
-                    </Badge>
-                  ))}
-                </div>
+                <pre className="resume-skills-block">
+                  {modalCandidate.skills}
+                </pre>
               </div>
             )}
           </Modal.Body>

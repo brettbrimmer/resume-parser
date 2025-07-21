@@ -1,4 +1,6 @@
-body, html, #root {
+body,
+html,
+#root {
   margin: 0;
   padding: 0;
   height: 100%;
@@ -151,7 +153,7 @@ body, html, #root {
 
 /* push the modal-dialog down from the very top */
 .modal-top {
-  margin-top: 1rem;   /* tweak this value to taste */
+  margin-top: 1rem; /* tweak this value to taste */
 }
 
 /* base styles for nav links */
@@ -160,7 +162,7 @@ body, html, #root {
   padding-bottom: 0.5rem;
   color: #333;
   text-shadow: none;
-  
+
   /* set up a transparent bottom border that becomes visible on hover */
   border-bottom: 2px solid transparent;
   transition: none;
@@ -186,5 +188,13 @@ body, html, #root {
 /* force Bootstrap tooltips to honor newlines */
 .tooltip-inner {
   white-space: pre-wrap !important;
-  text-align: left;            /* so your bullets line up nicely */
+  text-align: left; /* so your bullets line up nicely */
+}
+
+.resume-section .resume-skills-block {
+  font-family: inherit; /* inherit whatever your resume is using */
+  font-size: inherit; /* match your body text size */
+  line-height: 1.5; /* match your section line-height */
+  white-space: pre-wrap; /* preserve line breaks */
+  margin: 0.5rem 0; /* adjust spacing as needed */
 }
