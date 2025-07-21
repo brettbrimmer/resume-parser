@@ -1,0 +1,49 @@
+Riley Chen
+Philadelphia, PA | [riley.chen@email.com](mailto:riley.chen@email.com) | (267) 555-4812 | linkedin.com/in/rileychen | github.com/rileychendev
+
+Education
+Bachelor of Science in Information Science, Drexel University
+Expected Graduation: June 2025
+Relevant Coursework: Software Engineering, Human-Computer Interaction, Database Design, Data Structures, Mobile Development
+
+Technical Skills
+Languages: JavaScript, Python, Java, SQL
+Frameworks/Tools: React, Express, Flask, Git, Docker, Firebase
+Databases: PostgreSQL, MongoDB
+Other: REST APIs, Agile Development, Unit Testing, CI/CD
+
+Projects
+Neighborhood Marketplace
+• Developed a web application using React and Express for local buying and selling of goods
+• Implemented secure user authentication and real-time chat between buyers and sellers
+• Deployed the app with a PostgreSQL database on Heroku
+
+Health Tracker App
+• Built a mobile health tracking app prototype using React Native and Firebase
+• Enabled users to log daily activity, nutrition, and goals with interactive data visualizations
+• Integrated push notifications for daily reminders
+
+Smart Study Planner
+• Created a personalized study planner using Python and Flask
+• Designed algorithms to recommend study sessions based on deadlines and available time
+• Built a user-friendly dashboard with progress tracking
+
+Experience
+Software Engineer Intern, UrbanTech Labs – Philadelphia, PA
+June 2024 – September 2024
+• Contributed to a web-based analytics dashboard using React and Flask
+• Wrote REST API endpoints and integrated third-party data sources
+• Collaborated with a cross-functional team using Agile methodologies
+• Participated in code reviews and automated testing
+
+Lab Assistant, Drexel College of Computing & Informatics
+September 2023 – December 2023
+• Assisted students with Python programming assignments and debugging
+• Held weekly office hours and tutoring sessions for introductory coding courses
+
+Leadership & Activities
+Secretary, Drexel Women in Computing Society
+Participant, PennApps Hackathon – Developed a prototype app for on-campus mental health resources
+
+Additional Information
+Detail-oriented team player with a strong interest in user-centered web applications. Excited about scalable software, data-driven features, and improving user experiences.

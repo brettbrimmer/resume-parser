@@ -104,7 +104,8 @@ async def upload(
             projects             = parsed.get("projects", []),
             experience           = parsed.get("experience", []),
             scores               = {},
-            upload_date          = datetime.now(timezone.utc)
+            skills              = parsed.get("skills", []),  # ← include skills
+            upload_date          = datetime.now(timezone.utc),
         )
         db.add(candidate)
         db.commit()
@@ -134,6 +135,7 @@ def list_candidates(db: Session = Depends(get_db)):
             "projects":             r.projects,
             "experience":           r.experience,
             "scores":               r.scores,
+            "skills":      r.skills,      # ← expose skills
             "upload_date":          r.upload_date.isoformat()
         }
         for r in rows
@@ -161,6 +163,7 @@ def get_candidate(cand_id: int, db: Session = Depends(get_db)):
       "projects":             c.projects,
       "experience":           c.experience,
       "scores":               c.scores,
+      "skills":               c.skills,
       "resume_url":           f"/uploads/{c.filename}",
       "upload_date":          c.upload_date.isoformat()
     })

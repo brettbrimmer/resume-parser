@@ -1,0 +1,50 @@
+Casey Ramirez
+Denver, CO | [casey.ramirez@email.com](mailto:casey.ramirez@email.com) | (720) 555-8910 | linkedin.com/in/caseyramirez | github.com/caseycode
+
+Education
+Bachelor of Science in Computer Science, University of Colorado Boulder
+Expected Graduation: May 2025
+Relevant Coursework: Software Engineering, Algorithms, Web Development, Cybersecurity, Mobile App Development
+
+Technical Skills
+Languages: Java, Python, JavaScript, SQL
+Frameworks/Tools: React, Node.js, Flask, Git, Docker, Azure
+Databases: PostgreSQL, Firebase
+Other: REST APIs, Test Automation, Agile Scrum, CI/CD Pipelines
+
+Projects
+Volunteer Connect Platform
+• Built a web application using React and Flask that connects volunteers with local non-profits
+• Implemented search filters, user authentication, and sign-up features
+• Deployed the app on Heroku with a PostgreSQL backend
+
+Fitness Tracker App
+• Developed a cross-platform mobile app prototype with React Native to track workouts and progress
+• Integrated Firebase for real-time user data storage and authentication
+• Designed a clean, user-friendly interface with interactive charts
+
+Smart Garden Monitor
+• Designed an IoT system using Python and Raspberry Pi to monitor soil moisture
+• Automated watering based on real-time sensor data
+• Created a web dashboard for users to track garden health remotely
+
+Experience
+Software Engineering Intern, CloudBridge Technologies – Denver, CO
+June 2024 – August 2024
+• Contributed to the development of a cloud-based scheduling application using Node.js and React
+• Implemented RESTful API endpoints and integrated third-party authentication services
+• Wrote unit tests to ensure code reliability and maintainability
+• Collaborated closely with UX designers to refine and test the user interface
+
+Peer Mentor, CU Boulder College of Engineering
+August 2023 – December 2023
+• Guided first-year students through programming fundamentals and best practices
+• Provided individualized feedback on coding assignments and projects
+• Assisted in organizing study sessions and collaborative workshops
+
+Leadership & Activities
+President, CU Boulder Women in Computing
+HackCU Participant – Created a web app prototype for local food rescue logistics during a 48-hour hackathon
+
+Additional Information
+Motivated problem solver with a passion for web and mobile development. Strong collaborator with experience working in diverse, fast-paced teams. Interested in cloud computing, IoT, and scalable application design.

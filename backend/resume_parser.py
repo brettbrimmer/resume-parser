@@ -239,6 +239,30 @@ def extract_degrees(text: str):
     print(f"degrees parsed as {earned} .. {in_prog}")
     return earned, in_prog
 
+def extract_skills_section(text: str) -> List[str]:
+    """
+    Finds a SKILLS block like "SKILLS" or "Technical Skills"
+    and returns individual skills split on commas or newlines.
+    """
+    # capture until the first blank line or EOF
+    pattern = (
+        r'(?im)^[ \t]*(?:skills|technical skills)'
+        r'\s*[:]?[\r\n]+([\s\S]+?)(?=\n\s*\n|$)'
+    )
+    m = re.search(pattern, text)
+    if not m:
+        return []
+    block = m.group(1).strip()
+    items = []
+    for line in re.split(r'[\r\n]+', block):
+        line = line.strip('•*- \t ')
+        if not line:
+            continue
+        # split comma-separated values
+        parts = [p.strip() for p in line.split(',')]
+        items.extend([p for p in parts if p])
+    return items
+
 def parse_resume(path: str) -> dict:
     """
     Master entrypoint:
@@ -250,6 +274,7 @@ def parse_resume(path: str) -> dict:
     name, location      = extract_name(text), extract_location(text)
     earned, in_prog     = extract_degrees(text)
     email               = extract_email(text)
+    skills              = extract_skills_section(text)
 
     # ── PROJECTS extraction ──────────────────────────────────────────
     # ── PROJECTS extraction via spaCy splitter ───────────────────────
@@ -290,7 +315,8 @@ def parse_resume(path: str) -> dict:
         "experience":  experience,
         "gpa": gpa,
         "degrees_earned": earned,
-        "degrees_in_progress": in_prog
+        "degrees_in_progress": in_prog,
+        "skills": skills
     }
 
 

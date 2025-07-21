@@ -1,0 +1,49 @@
+Jordan Kim
+Atlanta, GA | [jordan.kim@email.com](mailto:jordan.kim@email.com) | (404) 555-7632 | linkedin.com/in/jordankim | github.com/jordankimdev
+
+Education
+Bachelor of Science in Computer Science, Georgia Institute of Technology
+Expected Graduation: May 2025
+Relevant Coursework: Algorithms, Operating Systems, Database Systems, Web Programming, Software Engineering
+
+Technical Skills
+Languages: Java, Python, JavaScript, SQL
+Frameworks/Tools: React, Spring Boot, Node.js, Git, Docker, AWS
+Databases: MySQL, MongoDB
+Other: RESTful APIs, Agile Development, Unit Testing, Continuous Integration
+
+Projects
+Online Bookstore
+• Developed a full-stack online bookstore application using React and Spring Boot
+• Implemented features including user authentication, product catalog, shopping cart, and order processing
+• Deployed the app on AWS with a MySQL backend
+
+Campus Event Scheduler
+• Built a scheduling web app with Node.js and Express to manage and RSVP to campus events
+• Integrated calendar API and email notifications for reminders
+• Designed a responsive UI with React
+
+Budget Tracker
+• Created a personal budget tracking app using Python and Flask
+• Implemented features for income and expense tracking, category filtering, and data visualization
+• Hosted the app on Heroku with a MongoDB database
+
+Experience
+Software Engineering Intern, TechSolutions Inc. – Atlanta, GA
+June 2024 – August 2024
+• Developed backend services and REST APIs using Spring Boot
+• Collaborated with frontend developers to integrate APIs and improve user experience
+• Wrote unit and integration tests to ensure code quality
+• Participated in Agile sprint planning and daily stand-ups
+
+Teaching Assistant, Data Structures and Algorithms, Georgia Tech
+January 2024 – May 2024
+• Assisted students in understanding complex algorithm concepts and debugging code
+• Held weekly office hours and led review sessions before exams
+
+Leadership & Activities
+Member, Georgia Tech Association for Computing Machinery (ACM)
+HackGT Participant – Developed a prototype app for collaborative study groups during a 36-hour hackathon
+
+Additional Information
+Motivated software developer with a passion for building efficient, scalable applications. Strong problem-solving skills and experience working in collaborative agile teams.
