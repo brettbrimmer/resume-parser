@@ -122,8 +122,14 @@ export default function CandidatesTable({
             {/*<td className="col-id">{c.id}</td> */}
             {/*<td className="col-candidate">{c.name}</td> */}
             {/* <td className="col-candidate">Candidate {c.id}</td> */}
-            <td className="col-candidate">
-              {anonymize ? `C${c.id.toString().padStart(7, "0")}` : c.name}
+            <td
+              className="col-candidate"
+              style={{ cursor: "pointer" }}
+              onClick={() => onSelectRow(c.id)}
+            >
+              {anonymize 
+                ? `C${c.id.toString().padStart(7, "0")}` 
+                : c.name}
             </td>
             {/* …other columns… */}
             {/* <td className="col-candidate">
