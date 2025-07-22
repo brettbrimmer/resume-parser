@@ -136,16 +136,20 @@ async def upload(
 @app.get("/api/candidates")
 def list_candidates(
     jobId: Optional[int] = Query(None, alias="jobId"),
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
 ):
-    query = db.query(models.Candidate)
+    # start with all candidates
+    q = db.query(models.Candidate)
+
+    # if the client passed ?jobId=…, filter on that column
     if jobId is not None:
-        query = query.filter(models.Candidate.job_id == jobId)
-    rows = query.all()
+        q = q.filter(models.Candidate.job_id == jobId)
+
+    rows = q.all()
     return [
         {
             "id":                   r.id,
-            **json.loads(r.parsed_data),  # filename + size
+            **json.loads(r.parsed_data),
             "text":                 r.text,
             "name":                 r.name,
             "location":             r.location,
@@ -157,8 +161,8 @@ def list_candidates(
             "projects":             r.projects,
             "experience":           r.experience,
             "scores":               r.scores,
-            "skills":      r.skills,      # ← expose skills
-            "upload_date":          r.upload_date.isoformat()
+            "skills":               r.skills,
+            "upload_date":          r.upload_date.isoformat(),
         }
         for r in rows
     ]
