@@ -9,6 +9,9 @@ export default function JobsPage({ createOnly = false }) {
   const [showModal, setShowModal]     = useState(createOnly);
   const [title, setTitle]             = useState("");
   const [description, setDescription] = useState("");
+  // new state for description‐view modal
+  const [showDescModal, setShowDescModal] = useState(false);
+  const [activeJob, setActiveJob]         = useState(null);
   const navigate                      = useNavigate();
 
   // wrap fetchJobs in useCallback so we can safely list it in deps
@@ -47,7 +50,9 @@ export default function JobsPage({ createOnly = false }) {
       setTitle("");
       setDescription("");
       // navigate into the new job’s candidate page
-      navigate(`/jobs/${job.id}`);
+      // navigate(`/jobs/${job.id}`);
+      // refresh the jobs list
+      fetchJobs();
     } catch (err) {
       console.error("Create job failed:", err);
       alert("Could not create job");
@@ -73,6 +78,7 @@ export default function JobsPage({ createOnly = false }) {
             <th className="col-job-view">View</th>
             <th className="col-job-title">Job Title</th>
             <th className="col-job-description">Description</th>
+            <th className="col-job-view-description">View Description</th>
           </tr>
         </thead>
         <tbody>
@@ -88,7 +94,23 @@ export default function JobsPage({ createOnly = false }) {
                 </Button>
               </td>
               <td className="col-job-title">{job.title}</td>
-              <td className="col-job-description">{job.description}</td>
+              <td className="col-job-description">
+              {job.description.length > 70
+                ? `${job.description.slice(0, 70)}...`
+                : job.description}
+            </td>
+            <td className="col-job-view-description">
+              <Button
+                size="sm"
+                variant="outline-primary"
+                onClick={() => {
+                  setActiveJob(job);
+                  setShowDescModal(true);
+                }}
+              >
+                View Description
+              </Button>
+            </td>
             </tr>
           ))}
         </tbody>
@@ -108,7 +130,7 @@ export default function JobsPage({ createOnly = false }) {
             />
           </Form.Group>
           <Form.Group>
-            <Form.Label>Description</Form.Label>
+            <Form.Label>View Description</Form.Label>
             <Form.Control
               as="textarea"
               rows={3}
@@ -123,6 +145,27 @@ export default function JobsPage({ createOnly = false }) {
             Cancel
           </Button>
           <Button onClick={handleCreate}>Save</Button>
+        </Modal.Footer>
+      </Modal>
+
+      {/* ——— Job Description Modal ——— */}
+      <Modal
+        show={showDescModal}
+        onHide={() => setShowDescModal(false)}
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>{activeJob?.title}</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          {activeJob?.description}
+        </Modal.Body>
+        <Modal.Footer>
+          <Button
+            variant="secondary"
+            onClick={() => setShowDescModal(false)}
+          >
+            Close
+          </Button>
         </Modal.Footer>
       </Modal>
     </div>
