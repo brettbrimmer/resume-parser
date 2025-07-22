@@ -5,6 +5,8 @@ import { Navbar, Nav, Container } from "react-bootstrap";
 import { Routes, Route, Link } from "react-router-dom";
 import JobsPage from "./pages/JobsPage.jsx";
 import CandidatesPage from "./pages/CandidatesPage.jsx";
+import logo from "./images/resumeParserLogo.png";
+import "./App.css";
 
 function App() {
   return (
@@ -13,18 +15,11 @@ function App() {
       <Navbar bg="light" expand="lg" sticky="top" className="shadow-sm">
         <Container fluid className="justify-content-start">
           <Navbar.Brand as={Link} to="/">
-            <img
-              src="src/images/resumeParserLogo.png"
-              height="20"
-              alt="Resume Parser Logo"
-            />
+            <img src={logo} height="20" alt="Resume Parser Logo" />
           </Navbar.Brand>
           <Nav>
             <Nav.Link as={Link} to="/jobs" className="ms-3 pt-3">
               View Jobs
-            </Nav.Link>
-            <Nav.Link as={Link} to="/create" className="ms-3 pt-3">
-              Create Job
             </Nav.Link>
           </Nav>
         </Container>

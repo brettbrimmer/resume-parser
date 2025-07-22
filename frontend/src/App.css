@@ -97,6 +97,35 @@ html,
   text-align: center;
 }
 
+/* Make our table use fixed layout so widths are honored */
+.job-table {
+  table-layout: fixed;
+  width: 100%;
+}
+
+/* Now set each column’s width; apply to both header & cells */
+.job-table th.col-job-id,
+.job-table td.col-job-id {
+  width: 40px;
+  text-align: center;
+}
+
+.job-table th.col-job-title,
+.job-table td.col-job-title {
+  width: 150px;
+}
+
+.job-table th.col-job-view,
+.job-table td.col-job-view {
+  width: 40px;
+  text-align: center;
+}
+
+.job-table th.col-job-description,
+.job-table td.col-job-description {
+  width: 300px;
+}
+
 .col-upload-date {
   width: 80px;
   text-align: center;

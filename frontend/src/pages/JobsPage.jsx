@@ -61,22 +61,25 @@ export default function JobsPage({ createOnly = false }) {
         <Button onClick={openModal}>Create Job</Button>
       </div>
 
-      <Table hover bordered size="sm">
+      <Table
+        className="job-table"
+        hover
+        bordered
+        size="sm"
+      >
         <thead>
           <tr>
-            <th>Job ID</th>
-            <th>Job Title</th>
-            <th>Description</th>
-            <th>View</th>
+            <th className="col-job-id">Job ID</th>
+            <th className="col-job-view">View</th>
+            <th className="col-job-title">Job Title</th>
+            <th className="col-job-description">Description</th>
           </tr>
         </thead>
         <tbody>
           {jobs.map((job) => (
             <tr key={job.id}>
-              <td>{job.id}</td>
-              <td>{job.title}</td>
-              <td>{job.description}</td>
-              <td>
+              <td className="col-job-id">{job.id}</td>
+              <td className="col-job-view">
                 <Button
                   size="sm"
                   onClick={() => navigate(`/jobs/${job.id}`)}
@@ -84,6 +87,8 @@ export default function JobsPage({ createOnly = false }) {
                   View
                 </Button>
               </td>
+              <td className="col-job-title">{job.title}</td>
+              <td className="col-job-description">{job.description}</td>
             </tr>
           ))}
         </tbody>
