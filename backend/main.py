@@ -1,3 +1,4 @@
+# main.py
 from pathlib import Path
 from dotenv import load_dotenv
 
@@ -7,7 +8,7 @@ import shutil
 import re
 
 import openai
-from fastapi import FastAPI, UploadFile, File, Depends, HTTPException
+from fastapi import FastAPI, UploadFile, File, Depends, HTTPException, Query
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
@@ -19,7 +20,7 @@ from backend.resume_parser import parse_resume
 
 from datetime import datetime, timezone
 
-from typing import List
+from typing import List, Optional
 
 # ————————————————————————————————
 # 0. Load env + set OpenAI key
@@ -90,6 +91,7 @@ def extract_text(path: str) -> str:
 @app.post("/api/upload")
 async def upload(
     files: list[UploadFile] = File(...),
+    jobId: int = Query(..., alias="jobId"),
     db: Session = Depends(get_db)
 ):
     saved = []
@@ -117,8 +119,9 @@ async def upload(
             projects             = parsed.get("projects", []),
             experience           = parsed.get("experience", []),
             scores               = {},
-            skills              = parsed.get("skills", []),  # ← include skills
+            skills              = parsed.get("skills", []),
             upload_date          = datetime.now(timezone.utc),
+            job_id               = jobId
         )
         db.add(candidate)
         db.commit()
@@ -131,8 +134,14 @@ async def upload(
 # 4. List & get endpoints
 # ————————————————————————————————
 @app.get("/api/candidates")
-def list_candidates(db: Session = Depends(get_db)):
-    rows = db.query(models.Candidate).all()
+def list_candidates(
+    jobId: Optional[int] = Query(None, alias="jobId"),
+    db: Session = Depends(get_db)
+):
+    query = db.query(models.Candidate)
+    if jobId is not None:
+        query = query.filter(models.Candidate.job_id == jobId)
+    rows = query.all()
     return [
         {
             "id":                   r.id,
@@ -210,6 +219,42 @@ def get_candidate(cand_id: int, db: Session = Depends(get_db)):
     })
 
     return data
+
+# ──────────────────────────────────────────────────────────────────
+# Jobs endpoints
+# ──────────────────────────────────────────────────────────────────
+
+class JobCreate(BaseModel):
+    title: str
+    description: Optional[str] = None
+
+@app.get("/api/jobs")
+def list_jobs(db: Session = Depends(get_db)):
+    rows = db.query(models.Job).order_by(models.Job.created_at.desc()).all()
+    return [
+        {
+            "id":          j.id,
+            "title":       j.title,
+            "description": j.description,
+            "created_at":  j.created_at.isoformat(),
+        }
+        for j in rows
+    ]
+@app.post("/api/jobs")
+def create_job(job: JobCreate, db: Session = Depends(get_db)):
+    new_job = models.Job(
+        title       = job.title,
+        description = job.description,
+    )
+    db.add(new_job)
+    db.commit()
+    db.refresh(new_job)
+    return {
+        "id":          new_job.id,
+        "title":       new_job.title,
+        "description": new_job.description,
+        "created_at":  new_job.created_at.isoformat(),
+    }
 
 # ————————————————————————————————
 # 5. OpenAI scoring flow

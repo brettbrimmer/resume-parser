@@ -1,7 +1,24 @@
 from datetime import datetime, timezone
 from sqlalchemy import Column, Integer, String, Text, JSON, Float
+from sqlalchemy import DateTime, ForeignKey
 from backend.database import Base
 from sqlalchemy import DateTime
+from sqlalchemy.orm import relationship
+
+class Job(Base):
+    __tablename__ = "jobs"
+
+    id          = Column(Integer, primary_key=True, index=True)
+    title       = Column(Text, nullable=False)
+    description = Column(Text, nullable=True)
+    created_at  = Column(
+      DateTime(timezone=True),
+      default=lambda: datetime.now(timezone.utc),
+      nullable=False
+    )
+
+    # back‐reference to candidates
+    candidates  = relationship("Candidate", back_populates="job")
 
 class Candidate(Base):
     __tablename__ = "candidates"
@@ -37,5 +54,9 @@ class Candidate(Base):
             default=lambda: datetime.now(timezone.utc),
             nullable=False
         )
+    
+    # link each candidate to a job
+    job_id      = Column(Integer, ForeignKey("jobs.id", ondelete="CASCADE"), index=True)
+    job         = relationship("Job", back_populates="candidates")
     
     
