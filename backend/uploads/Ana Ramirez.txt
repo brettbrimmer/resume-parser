@@ -1,0 +1,48 @@
+ANA RAMIREZ
+Austin, TX |  (512) 555-4482 | [ana.ramirez@utexas.edu](mailto:ana.ramirez@utexas.edu)
+github.com/anaramirez | linkedin.com/in/ana-ramirez-dev | anaramirez.dev
+
+SKILLS
+Languages: C, C++, Python, Kotlin, JavaScript, Bash
+Platforms: Android Studio, Arduino, Raspberry Pi, Firebase, Git, Linux
+Technologies: Bluetooth LE, REST APIs, MQTT, SQLite, Firebase Auth
+Hardware: Oscilloscope, Logic Analyzer, 3D Printing, PCB Design (KiCad), Sensors (DHT11, MPU6050)
+
+EDUCATION
+The University of Texas at Austin
+Bachelor of Science in Electrical and Computer Engineering
+Aug 2022 – May 2025 (Expected)
+GPA: 3.68 / 4.0
+Focus: Embedded Systems, Mobile Development, Signal Processing
+
+Austin Community College
+Associate of Science in Computer Science
+Aug 2020 – May 2022
+GPA: 3.90 / 4.0
+
+PROJECTS
+FieldOps – Worksite Management Platform for Small Contractors
+Kotlin | Firebase | SQLite | REST APIs
+• Developed a mobile app to help independent electricians and plumbers manage job sites, inventory, and invoicing.
+• Integrated Firebase Auth for secure team access and real-time syncing between devices.
+• Onboarded three local contractors during pilot testing, collecting feedback and feature requests.
+
+SafeRoute – Personal Safety Tracker with Wearable Integration
+ESP32 | C++ | MQTT | Android Studio
+• Built a wearable panic button that sends GPS and status to an Android app via Bluetooth LE.
+• Deployed a cloud-connected backend using MQTT and Firebase for real-time alerts and location logging.
+• Showcased at a UT hardware showcase; received interest from a campus safety initiative.
+
+UT MakerSpace Team
+Team Lead, UT MakerSpace Team
+Sept 2023 – Present
+• Built automated compost sorter using machine vision and servo control.
+• Mentored new members on soldering, CAD, and prototyping safety.
+
+EXPERIENCE
+Software & Hardware Intern
+Lumos IoT Solutions – Austin, TX
+May 2024 – Aug 2024
+• Developed Android companion app for smart utility meters using Bluetooth LE.
+• Created CLI tools in Python for sensor diagnostics and firmware updates.
+• Assisted in debugging power-related PCB issues using oscilloscopes and logic analyzers.

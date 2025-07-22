@@ -1,5 +1,5 @@
 // App.jsx
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { getFullNameByCode } from "us-state-codes";
 import "bootstrap/dist/css/bootstrap.min.css";
 import {
@@ -54,6 +54,16 @@ function App() {
 
   const [sortColumn, setSortColumn] = useState(null); // e.g. "starred", "uploadDate", "score"
   const [sortDirection, setSortDirection] = useState("asc");
+
+  
+  // ─── Upload & Data States ────────────────────────────────────────────────
+  const [files, setFiles] = useState([]);
+  const [candidates, setCandidates] = useState([]);
+  // ─── Row Selection State ───────────────────────────────────────────────  
+  const [selectedRows, setSelectedRows] = useState([]);  
+
+  
+  
 
   // ——— Haversine distance helper (meters) ———
   const R = 6371e3; // meters
@@ -214,10 +224,6 @@ function App() {
     });
   }
 
-  // ─── Upload & Data States ────────────────────────────────────────────────
-  const [files, setFiles] = useState([]);
-  const [candidates, setCandidates] = useState([]);
-  const [selectedRows, setSelectedRows] = useState([]);
 
   // Fetch parsed candidates on mount
   useEffect(() => {
@@ -383,6 +389,24 @@ function App() {
     }
     return 0; // completely equal
   });
+
+  // ─── Select All / Deselect All Tri-state Logic ───────────────────────  
+  const selectAllRef = useRef(null);  
+  useEffect(() => {  
+    const all = selectedRows.length === displayed.length;  
+    const some = selectedRows.length > 0 && !all;  
+    if (selectAllRef.current) {  
+      selectAllRef.current.indeterminate = some;  
+    }  
+  }, [selectedRows, displayed.length]);  
+  
+  const handleSelectAll = () => {  
+    setSelectedRows(  
+      selectedRows.length > 0  
+        ? []  
+        : displayed.map((c) => c.id)  
+    );  
+  };  
 
   // ←—— Place your debug log here
   console.log(
@@ -608,6 +632,26 @@ function App() {
                 />
               </div>
             </div>
+
+            {/* ─── Select All / Deselect All Checkbox ────────────────────── */}
+        <div className="form-check mb-2">
+          <input
+            className="form-check-input"
+            type="checkbox"
+            id="select-all-checkbox"
+            ref={selectAllRef}
+            checked={selectedRows.length === displayed.length}
+            onChange={handleSelectAll}
+            style={{ cursor: "pointer" }}
+          />
+          <label
+            className="form-check-label"
+            htmlFor="select-all-checkbox"
+            style={{ cursor: "pointer" }}
+          >
+            {selectedRows.length === 0 ? "Select All" : "Deselect All"}
+          </label>
+        </div>
 
             <CandidatesTable
               candidates={displayed}

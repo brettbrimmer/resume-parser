@@ -1,0 +1,32 @@
+JORDAN CARTER
+San Jose, CA | (408) 555-1278 | [jordan.carter@email.com](mailto:jordan.carter@email.com)
+github.com/jordancarter | linkedin.com/in/jordancarter
+
+SKILLS
+Languages: Python, Java, JavaScript
+Frameworks & Tools: Flask, Firebase, Git, Android Studio
+Technologies: Firebase Auth, CRUD Operations, Mobile UI
+Platforms: Windows, macOS, Android
+
+EDUCATION
+San Jose State University – San Jose, CA
+Bachelor of Science in Software Engineering
+Aug 2021 – May 2025 (Expected)
+GPA: 2.9 / 4.0
+Relevant Coursework: Data Structures & Algorithms, Object-Oriented Programming, Software Engineering, Operating Systems
+
+PROJECTS
+Fitness Tracker App
+• Created an Android app to log workouts and track progress.
+• Used Firebase for authentication and data storage.
+
+Flashcard Study Tool
+• Built a web app for creating and reviewing flashcards with Python and Flask.
+• Implemented CRUD functionality and a simple user interface.
+
+EXPERIENCE
+IT Support Assistant (Part-time)
+San Jose State University – Campus Computing Services
+Sept 2022 – Present
+• Assisted students and staff with basic software and hardware troubleshooting.
+• Helped maintain computer labs and manage equipment.

@@ -198,3 +198,9 @@ html,
   white-space: pre-wrap; /* preserve line breaks */
   margin: 0.5rem 0; /* adjust spacing as needed */
 }
+
+/* remove focus glow on checkboxes */
+.form-check-input:focus {
+  box-shadow: none !important;
+  outline: none !important;
+}
