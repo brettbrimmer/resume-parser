@@ -47,7 +47,7 @@ export default function CandidatesTable({
       })
     : candidates;
   return (
-    <Table hover bordered responsive size="sm">
+    <Table hover bordered responsive size="sm" className="sortable-table">
       <thead>
         <tr>
           <th
@@ -72,6 +72,7 @@ export default function CandidatesTable({
               : " ▼"
             : ""}
         </th>
+        <th>Actions</th>
           {/* <th className="col-id">ID</th> */}
           {/* <th className="col-candidate">Candidate</th> */}
           <th className="col-candidate">Candidate</th>
@@ -125,7 +126,6 @@ export default function CandidatesTable({
                 : " ▼"
               : ""}
           </th>
-          <th>Actions</th>
         </tr>
       </thead>
       <tbody>
@@ -149,6 +149,14 @@ export default function CandidatesTable({
             {/*<td className="col-id">{c.id}</td> */}
             {/*<td className="col-candidate">{c.name}</td> */}
             {/* <td className="col-candidate">Candidate {c.id}</td> */}
+            <td className="col-view">
+              <button
+                className="btn btn-sm btn-outline-primary"
+                onClick={() => onViewCandidate(c.id)}
+              >
+                View
+              </button>
+            </td>
             <td
               className="col-candidate"
               style={{ cursor: "pointer" }}
@@ -213,14 +221,6 @@ export default function CandidatesTable({
               {c.upload_date
                 ? new Date(c.upload_date).toLocaleDateString()
                 : "—"}
-            </td>
-            <td className="col-view">
-              <button
-                className="btn btn-sm btn-outline-primary"
-                onClick={() => onViewCandidate(c.id)}
-              >
-                View
-              </button>
             </td>
           </tr>
         ))}

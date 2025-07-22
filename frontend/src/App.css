@@ -88,7 +88,7 @@ html,
 }
 
 .col-candidate {
-  width: 250px;
+  width: 150px;
   text-align: left;
 }
 
@@ -207,5 +207,15 @@ html,
 
 /* highlight sortable headers on hover */
 .sortable-header:hover {
-  background-color: #ececec;
+  /* background-color: #ececec; */
+  /* background-color: #f1f1f1; */
+  background-color: #f3f3f3 !important;
+}
+
+/* disable text‐selection for every header cell in our table */
+.sortable-table thead th {
+   user-select: none !important;
+   -webkit-user-select: none !important;
+   -moz-user-select: none !important;
+   -ms-user-select: none !important;
 }
