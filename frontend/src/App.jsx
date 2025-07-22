@@ -255,8 +255,8 @@ function App() {
     }
   }
 
-  // Upload resumes
-  async function uploadResumes() {
+  // Upload resumes immediately on file select
+  async function uploadResumes(files) {
     if (!files.length) return alert("Select at least one file!");
     const form = new FormData();
     Array.from(files).forEach((f) => form.append("files", f));
@@ -264,7 +264,7 @@ function App() {
       await axios.post("/api/upload", form);
       fetchCandidates();
     } catch (err) {
-      console.error(err);
+      console.error("Upload failed:", err);
       alert("Upload failed");
     }
   }
@@ -560,21 +560,14 @@ function App() {
           <Col xs={12} md={9}>
             <div className="toolbar mb-3 d-flex flex-wrap align-items-center">
               <label className="btn btn-primary me-2">
-                Choose Files
+                Upload Resumes
                 <input
                   type="file"
                   multiple
-                  onChange={(e) => setFiles(e.target.files)}
+                  onChange={(e) => uploadResumes(e.target.files)}
                   style={{ display: "none" }}
                 />
               </label>
-              <Button
-                variant="primary"
-                className="me-2"
-                onClick={uploadResumes}
-              >
-                Upload Resumes
-              </Button>
               <Button
                 variant="outline-secondary"
                 className="me-2"
