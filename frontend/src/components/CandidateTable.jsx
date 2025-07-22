@@ -51,7 +51,7 @@ export default function CandidatesTable({
       <thead>
         <tr>
           <th
-          className="col-select"
+          className="col-select sortable-header"
           style={{ cursor: "pointer" }}
           onClick={() => {
             if (sortColumn !== "selected") {
@@ -82,7 +82,7 @@ export default function CandidatesTable({
           {/* ))} */}
           <th>Badges</th>
           <th
-            className="col-star"
+            className="col-star sortable-header"
             style={{ cursor: "pointer" }}
             onClick={() => {
               if (sortColumn !== "starred") {
@@ -104,7 +104,7 @@ export default function CandidatesTable({
               : ""}
           </th>
           <th
-            className="col-upload-date"
+            className="col-upload-date sortable-header"
             style={{ cursor: "pointer" }}
             onClick={() => {
               if (sortColumn !== "uploadDate") {

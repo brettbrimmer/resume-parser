@@ -204,3 +204,8 @@ html,
   box-shadow: none !important;
   outline: none !important;
 }
+
+/* highlight sortable headers on hover */
+.sortable-header:hover {
+  background-color: #ececec;
+}
