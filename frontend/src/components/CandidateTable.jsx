@@ -23,6 +23,12 @@ export default function CandidatesTable({
     ? [...candidates].sort((a, b) => {
         let aVal, bVal;
         switch (sortColumn) {
+          case "selected":
+          // map selected → 0 (top), unselected → 1 (bottom)
+          aVal = selectedRows.includes(a.id) ? 0 : 1;
+          bVal = selectedRows.includes(b.id) ? 0 : 1;
+          break;
+
           case "starred":
             // map starred→0, unstarred→1 so asc (▲) shows ★ first
             aVal = a.starred ? 0 : 1;
@@ -44,7 +50,28 @@ export default function CandidatesTable({
     <Table hover bordered responsive size="sm">
       <thead>
         <tr>
-          <th className="col-select">Select</th>
+          <th
+          className="col-select"
+          style={{ cursor: "pointer" }}
+          onClick={() => {
+            if (sortColumn !== "selected") {
+              setSortColumn("selected");
+              setSortDirection("asc");
+            } else if (sortDirection === "asc") {
+              setSortDirection("desc");
+            } else {
+              setSortColumn(null);
+            }
+            onClearBadgeSort();
+          }}
+        >
+          Select
+          {sortColumn === "selected"
+            ? sortDirection === "asc"
+              ? " ▲"
+              : " ▼"
+            : ""}
+        </th>
           {/* <th className="col-id">ID</th> */}
           {/* <th className="col-candidate">Candidate</th> */}
           <th className="col-candidate">Candidate</th>
