@@ -39,7 +39,7 @@ export default function AppCandidates({ jobId }) {
   const [gpaError, setGpaError]               = useState(false);
   const [gpaListed, setGpaListed]             = useState(false);
   const [distance, setDistance]               = useState("");
-  const [location, setLocation]               = useState("Tempe, AZ");
+  const [location, setLocation]               = useState("");
   const [locationError, setLocationError]     = useState(false);
   const [reqText, setReqText]                 = useState("");
   const [nicknames, setNicknames]             = useState([]);
@@ -348,6 +348,20 @@ export default function AppCandidates({ jobId }) {
   // ── Effects ────────────────────────────────────────────────────
   useEffect(() => {
     fetchCandidates();
+  }, [jobId]);
+
+  // fetch this job’s details so we can prefill the location
+  useEffect(() => {
+    axios
+      .get("/api/jobs")
+      .then(({ data }) => {
+        const job = data.find((j) => j.id === jobId);
+        if (job?.location) {
+          setLocation(job.location);
+          setLocationError(false);
+        }
+      })
+      .catch((err) => console.error("Failed to load job:", err));
   }, [jobId]);
 
   useEffect(() => {

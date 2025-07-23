@@ -259,6 +259,7 @@ def list_jobs(db: Session = Depends(get_db)):
         {
             "id":          j.id,
             "title":       j.title,
+            "location":    j.location,
             "description": j.description,
             "created_at":  j.created_at.isoformat(),
         }
