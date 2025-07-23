@@ -421,10 +421,10 @@ export default function AppCandidates({ jobId }) {
 
     // keyword list (same as before)
     const keywords = [
-      "Founded", "Founder", "Co-founded", "Self-employed", "Sole proprietor", "Independent contractor", "Owner", "Operator", "Published", "Designed and marketed", "Creator of", "Produced original content", "Curated content", "Personal project", "Portfolio project", "Monetized", "Generated revenue", "Built a customer base", "Scaled a business", "Grew user base", "Started", "Launched", "Ran ads", "Managed ad campaigns", "Online marketplace", "Identified a market gap", "Spearheaded", "Pitched to investors", "Freelance", "Consultant", "Contract work", "Online business", "™", "®", "mentored"
-        , "Acquired Users", "Built a Customer Base", "market gap", "Sold", "Startup", "Microstartup", "Indie", "independently", "Acquisition offer", "ran", "owned", "managed", "from scratch", "scaled", "waitlist", "Built user base"
-        , "Patreon", "Kickstarter", "Kickstarted", "Indiegogo", "Gumroad", "Product Hunt", "Indie Hackers", "BetaList", "AppSumo", "Hacker News", "HN Launch", "Show HN", "MicroAcquire", "Acquire.com"
-        , "Shopify", "Etsy", "Teespring", "Printful", "RedBubble", "Big Cartel", "Sellfy", "Stripe", "Paddle", "Lemon Squeezy", "Podia", "ThriveCart", "SamCart"
+      "Founded", "Founder", "Co-founded", "Self-employed", "Sole proprietor", "Independent contractor", "Owner", "Operator", "Published", "Designed and marketed", "Creator of", "Produced original content", "Curated content", "Personal project", "Portfolio project", "Monetized", "Generated revenue", "Built a customer base", "Scaled a business", "Grew user base", "Started", "Launched", "Ran ads", "Managed ad campaigns", "Online marketplace", "Identified a market gap", "Spearheaded", "Pitched", "Investors", "Freelance", "Consultant", "Contract work", "Online business", "™", "®", "mentored",
+        "Acquired Users", "Built a Customer Base", "market gap", "Sold", "Startup", "Microstartup", "Indie", "independently", "Acquisition offer", "ran", "owned", "managed", "from scratch", "scaled", "waitlist", "Built user base",
+        "Patreon", "Kickstarter", "Kickstarted", "Indiegogo", "Gumroad", "Product Hunt", "Indie Hackers", "BetaList", "AppSumo", "Hacker News", "HN Launch", "Show HN", "MicroAcquire", "Acquire.com",
+        "Shopify", "Etsy", "Teespring", "Printful", "RedBubble", "Big Cartel", "Sellfy", "Stripe", "Paddle", "Lemon Squeezy", "Podia", "ThriveCart", "SamCart"
     ];
 
     const breakdowns = {};
