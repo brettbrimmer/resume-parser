@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Table, Badge, OverlayTrigger, Tooltip, Form } from "react-bootstrap";
 
 export default function CandidatesTable({
@@ -12,6 +12,7 @@ export default function CandidatesTable({
   showEntrepreneurial,
   entrepreneurialScores    
 }) {
+
   console.log(
     "Table rendering with order:",
     candidates.map((c) => c.id)
@@ -49,7 +50,13 @@ export default function CandidatesTable({
       })
     : candidates;
   return (
-    <Table hover bordered responsive size="sm" className="sortable-table">
+    <Table
+    hover
+    bordered
+    responsive
+    size="sm"
+    className="sortable-table"
+  >
       <thead>
         <tr>
           <th
@@ -201,6 +208,8 @@ export default function CandidatesTable({
                 return (
                   <OverlayTrigger
                     key={nick}
+                    container={document.body}
+                    transition={false}
                     placement="bottom"
                     flip={false}
                     delay={{ show: 0, hide: 0 }}
@@ -239,6 +248,8 @@ export default function CandidatesTable({
                 return (
                   <OverlayTrigger
                     key={`entrepreneurial-${c.id}`}
+                    transition={false}
+                    container={document.body}
                     placement="bottom"
                     flip={false}
                     delay={{ show: 0, hide: 0 }}

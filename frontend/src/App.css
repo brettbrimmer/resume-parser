@@ -259,3 +259,19 @@ html,
    -moz-user-select: none !important;
    -ms-user-select: none !important;
 }
+
+html {
+  overflow-y: scroll; /* always reserve space for the scrollbar */
+}
+.sortable-table th,
+.sortable-table td {
+  white-space: nowrap; /* prevent cells from wrapping on tooltip / badge hover */
+}
+
+html {
+  /* always reserve the vertical scrollbar gutter */
+  overflow-y: scroll;
+
+  /* even better: keep gutters stable on both edges when scrollbars appear */
+  scrollbar-gutter: stable both-edges;
+}

@@ -1,0 +1,83 @@
+JORDAN WILKES
+San Diego, CA • jordan.wilkes@email.com • (555) 123-4567
+linkedin.com/in/jordanwilkes • github.com/jordanwilkes
+
+EDUCATION
+University of California, San Diego — B.S. in Cognitive Science with Human-Computer Interaction
+Expected Graduation: June 2026
+
+EXPERIENCE
+Founder & CEO
+BlinkShelf — San Diego, CA | Jan 2022 – Present
+A niche e-commerce platform for minimalist furniture dropshipping and independent creators.
+
+Bootstrapped and launched the platform using Shopify + custom React components.
+
+Reached $10K in monthly revenue in under 4 months through TikTok influencer campaigns.
+
+Managed supplier relationships in the U.S. and Asia; integrated shipping APIs for real-time tracking.
+
+Designed and A/B tested high-converting landing pages (up to 6.7% CVR).
+
+Sold the platform in 2024 via MicroAcquire.
+
+Freelance Product Builder
+Remote | 2021 – Present
+Created and monetized a series of micro-startups, web apps, and creator tools.
+
+Launched LinkNest, a no-login link-in-bio tool with dynamic themes used by 5,000+ creators.
+
+Built Streakly, a personal habit-tracking tool that generated $1,800 in one-time purchases.
+
+Created PitchPrep, a real-time feedback tool for student startup pitches.
+
+Developed and sold DMDrip, a lightweight Twitter DM automation tool for niche brands.
+
+Built each MVP in <3 weeks using modern stacks (Next.js, Firebase, Vercel, Stripe).
+
+UX Consultant (Contract)
+ReelStory.ai – Remote | Summer 2023
+An AI-powered storytelling tool for podcasters.
+
+Conducted user interviews with 20+ creators to identify UX bottlenecks in onboarding.
+
+Redesigned the onboarding experience, reducing average setup time from 9 mins to 3.
+
+Proposed new freemium model tiers that increased retention by 18% MoM.
+
+PROJECTS
+CampusBazaar
+Peer-to-peer marketplace mobile app for college students
+
+Designed and launched MVP in 30 days using Flutter + Firebase.
+
+Enabled 1,500+ listings in first semester across 3 UC campuses.
+
+Implemented identity verification and dispute resolution system.
+
+QuoteSnipe
+Browser extension that overlays motivational quotes on new tab screens
+
+Coded in Vanilla JS + CSS, fully offline functionality
+
+Grew to 10K+ installs after viral Reddit post; featured on Product Hunt’s “Daily Top 5”
+
+DeckRunner
+A presentation rehearsal app that listens to your voice and gives real-time pacing feedback
+
+Built with Web Speech API and Node.js backend
+
+Used by 200+ university students to prepare for business competitions
+
+WordSprint
+A minimal writing app with a countdown timer for focused sprints
+
+Inspired by the Pomodoro method; used by writing communities on Discord
+
+Monetized via Gumroad as a “name your price” product — netted $3,000+
+
+SKILLS
+Languages: JavaScript, TypeScript, Python, Dart
+Frameworks: React, Next.js, Flutter, Node.js, Express
+Tools: Firebase, Stripe, Supabase, Figma, Git, MongoDB
+Focus Areas: Rapid MVP development, user research, growth hacking, landing page design
