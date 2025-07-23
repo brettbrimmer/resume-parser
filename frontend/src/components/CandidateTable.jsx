@@ -9,6 +9,8 @@ export default function CandidatesTable({
   onClearBadgeSort,
   selectedRows,
   onSelectRow,
+  showEntrepreneurial,
+  entrepreneurialScores    
 }) {
   console.log(
     "Table rendering with order:",
@@ -180,6 +182,7 @@ export default function CandidatesTable({
               </td>
             ))}*/}
             <td className="col-badge">
+              {/* AI-powered requirement badges */}
               {Object.entries(c.scores || {}).map(([nick, entry]) => {
                 const num = entry.score;
                 const reason = entry.reason;
@@ -209,6 +212,52 @@ export default function CandidatesTable({
                   </OverlayTrigger>
                 );
               })}
+              
+              {/* Entrepreneurial badge */}
+              {showEntrepreneurial && (() => {
+                // pull apart the breakdown object
+                const {
+                  uniqueness = 0,
+                  variety    = 0,
+                  keywords   = 0,
+                  total      = 0,
+                } = entrepreneurialScores[c.id] || {};
+
+                // same color logic as above, but on total
+                let variant = "secondary";
+                if (total <= 50) variant = "danger";
+                else if (total <= 70) variant = "warning";
+                else if (total <= 80) variant = "info";
+                else variant = "success";
+
+                let extraClass =
+                  total <= 50 ? "badge-score-low" :
+                  total <= 70 ? "badge-score-medium" :
+                  total <= 80 ? "badge-score-high" :
+                  "badge-score-veryhigh";
+
+                return (
+                  <OverlayTrigger
+                    key={`entrepreneurial-${c.id}`}
+                    placement="bottom"
+                    flip={false}
+                    delay={{ show: 0, hide: 0 }}
+                    overlay={
+                      <Tooltip id="tt-entrepreneurial">
+                        <div style={{ whiteSpace: "pre-line" }}>
+                          {`• Project Uniqueness Score: ${uniqueness}/33
+                            • Project Variety Score: ${variety}/33
+                            • Entrepreneurial Keywords Score: ${keywords}/33`}
+                        </div>
+                      </Tooltip>
+                    }
+                  >
+                    <Badge pill bg={variant} className={`me-1 mb-1 ${extraClass}`}>
+                      Entrepreneurial {total.toFixed(1)}
+                    </Badge>
+                  </OverlayTrigger>
+                );
+              })()}
             </td>
             <td
               className="col-star"

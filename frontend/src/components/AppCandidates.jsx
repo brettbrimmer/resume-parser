@@ -17,6 +17,20 @@ import { getDistance as geoGetDistance } from "geolib";
 import cities from "cities.json";
 import "react-bootstrap-typeahead/css/Typeahead.css";
 import { AsyncTypeahead } from "react-bootstrap-typeahead";
+import { compareTwoStrings } from "string-similarity";
+
+// if two texts share ≥8 distinct words, treat as maximally similar
+function compareEnhanced(a, b) {
+  const tokensA = Array.from(
+    new Set(a.toLowerCase().match(/\b\w+\b/g) || [])
+  );
+  const tokensB = Array.from(
+    new Set(b.toLowerCase().match(/\b\w+\b/g) || [])
+  );
+  const common = tokensA.filter((w) => tokensB.includes(w));
+  if (common.length >= 8) return 1;
+  return compareTwoStrings(a, b);
+}
 
 // only US + India
 const FILTERED_CITIES = cities.filter(
@@ -52,6 +66,8 @@ export default function AppCandidates({ jobId }) {
   const [distanceError, setDistanceError]     = useState(false);
   const [candidates, setCandidates]           = useState([]);
   const [selectedRows, setSelectedRows]       = useState([]);
+  // toggle our new Entrepreneurial badge
+  const [showEntrepreneurial, setShowEntrepreneurial] = useState(false);
   const [cityOptionsAsync, setCityOptionsAsync] = useState([]);
     const [cityLoading, setCityLoading]           = useState(false);
 
@@ -410,8 +426,14 @@ export default function AppCandidates({ jobId }) {
   });
   const displayed = [...filtered].sort((a, b) => {
     for (const [key, dir] of Object.entries(sortConfig)) {
-      const aVal = a.scores?.[key]?.score ?? 0;
-      const bVal = b.scores?.[key]?.score ?? 0;
+      let aVal, bVal;
+    if (key === "Entrepreneurial") {
+        aVal = entrepreneurialScores[a.id]?.total ?? 0;
+        bVal = entrepreneurialScores[b.id]?.total ?? 0;
+      } else {
+        aVal = a.scores?.[key]?.score ?? 0;
+        bVal = b.scores?.[key]?.score ?? 0;
+      }
 
       const cmp = dir * (bVal - aVal); // descending
       if (cmp !== 0) return cmp; // only return if there's a difference
@@ -428,6 +450,88 @@ export default function AppCandidates({ jobId }) {
       selectAllRef.current.indeterminate = some;  
     }  
   }, [selectedRows, displayed.length]);  
+
+  // ── Entrepreneurial Score Breakdown ────────────────────────────
+  const entrepreneurialScores = useMemo(() => {
+    if (!showEntrepreneurial) return {};
+
+    // build map of id → [{ firstLine, rest }]
+    const projMap = candidates.reduce((acc, c) => {
+      acc[c.id] = (c.projects || []).map((p) => {
+        const lines = p.split("\n").filter(Boolean);
+        const first = (lines[0] || "").replace(/\b\d{4}\b/g, "").trim();
+        const rest = lines.slice(1).join(" ").replace(/\b\d{4}\b/g, "").trim();
+        return { firstLine: first, rest };
+      });
+      return acc;
+    }, {});
+
+    // flatten all firstLines for cross-candidate comparison
+    const allFirsts = Object.values(projMap).flatMap((arr) =>
+      arr.map((x) => x.firstLine)
+    );
+
+    // keyword list (same as before)
+    const keywords = [
+      "Founded", "Founder", "Co-founded", "Self-employed", "Sole proprietor", "Independent contractor", "Owner", "Operator", "Published", "Designed and marketed", "Creator of", "Produced original content", "Curated content", "Personal project", "Portfolio project", "Monetized", "Generated revenue", "Built a customer base", "Scaled a business", "Grew user base", "Started", "Launched", "Ran ads", "Managed ad campaigns", "Online marketplace", "Identified a market gap", "Spearheaded", "Pitched to investors", "Freelance", "Consultant", "Contract work", "Online business", "™", "®", "mentored"
+    ];
+
+    const breakdowns = {};
+    for (const [id, arr] of Object.entries(projMap)) {
+      // 1) uniqueness
+      const uniqs = arr.map(({ firstLine }) => {
+        const sims = allFirsts.map((other) =>
+            compareEnhanced(firstLine, other)
+        );
+        const avgSim = sims.reduce((sum, v) => sum + v, 0) / sims.length || 0;
+        return 1 - avgSim;
+      });
+      const factor1 = uniqs.reduce((sum, v) => sum + v, 0) / (uniqs.length || 1);
+
+      // 2) variety
+       // 2) variety: weighted (80% title, 20% rest‐of‐text) across each project pair
+      const pairs = [];
+      for (let i = 0; i < arr.length; i++) {
+        for (let j = i + 1; j < arr.length; j++) {
+          // 1–sim on firstLine (heavier) + rest (lighter)
+          const w1 = 0.1 * (1 - compareEnhanced(arr[i].firstLine, arr[j].firstLine));
+            const w2 = 0.9 * (1 - compareEnhanced(arr[i].rest,      arr[j].rest));
+          pairs.push(w1 + w2);
+        }
+      }
+
+      const factor2 =
+        pairs.length > 0
+          ? pairs.reduce((sum, v) => sum + v, 0) / pairs.length
+          : 1;
+
+      // 3) keyword match on an exponential curve into 0–33 points
+      const allText = (candidates.find((c) => c.id === +id)?.projects || []).join(" ");
+      const hits = keywords.filter((kw) =>
+        new RegExp(`\\b${kw.replace(/[-/\\^$*+?.()|[\\]{}]/g, '\\$&')}\\b`, "i").test(allText)
+      ).length;
+      // exponential sensitivity control (lower → steeper)
+      const alpha = 1.8;
+      // raw [0–1]: 1 − e^(−hits/alpha)
+      const raw = 1 - Math.exp(-hits / alpha);
+      // scale into 0–33 point range
+      const keywordPoints = Math.round(raw * 33);
+      const factor3 = raw;
+
+      // convert each factor (0–1) into 0–33 slice, plus total
+      const u = Math.round(factor1 * 33);
+      const v = Math.round(factor2 * 33);
+      const k = Math.round(factor3 * 33);
+      breakdowns[id] = {
+        uniqueness: u,
+        variety:    v,
+        keywords:   k,
+        total:     Math.round(((factor1 + factor2 + factor3) / 3) * 100),
+      };
+    }
+    return breakdowns;
+  }, [candidates, showEntrepreneurial]);
+
 
   // ── Render ─────────────────────────────────────────────────────
   return (
@@ -580,74 +684,85 @@ export default function AppCandidates({ jobId }) {
         </Col>
 
         {/* ─── Main Panel ─────────────────────────────────────── */}
-          <Col xs={12} md={9}>
-            <div className="toolbar mb-3 d-flex flex-wrap align-items-center">
-              <label className="btn btn-primary me-2">
-                Upload Resumes
-                <input
-                  type="file"
-                  multiple
-                  onChange={(e) => uploadResumes(e.target.files)}
-                  style={{ display: "none" }}
-                />
-              </label>
-              <Button
-                variant="outline-secondary"
-                className="me-2"
-                onClick={exportSelectedToCsv}
-              >
-                Export Selected
-              </Button>
-              <Button
-                variant="outline-secondary"
-                className="me-2"
-                disabled={selectedRows.length === 0}
-                onClick={deleteSelected}
-              >
-                Delete Selected
-              </Button>
-              {/* requirement-sorting badges */}
-              {nicknames.map((nick) => {
-                const dir = sortConfig[nick] || 0;
-                const arrow = dir === 1 ? "↑" : dir === -1 ? "↓" : "";
-                const variant = dir ? "primary" : "secondary";
-                return (
-                  <OverlayTrigger
-                    key={nick}
-                    placement="bottom"
-                    flip={false}
-                    delay={{ show: 2000, hide: 0 }}
-                    overlay={
-                      <Tooltip id={`tt-${nick}`}>
-                        {mapping[nick]
-                          // inject real line breaks before every bullet
-                          .replace(/•\s*/g, "\n• ")
-                          .trim()}
-                      </Tooltip>
-                    }
-                  >
-                    <Badge
-                      bg={variant}
-                      className="me-2 mb-2"
-                      style={{ cursor: "pointer" }}
-                      onClick={() => handleBadgeClick(nick)}
-                    >
-                      {nick} {arrow}
-                    </Badge>
-                  </OverlayTrigger>
-                );
-              })}
+        <Col xs={12} md={9}>
+          <div className="toolbar mb-3 d-flex flex-wrap align-items-center">
+            <Form.Check
+              type="checkbox"
+              label="Entrepreneurial"
+              className="me-3"
+              checked={showEntrepreneurial}
+              onChange={(e) => setShowEntrepreneurial(e.target.checked)}
+            />
 
-              {/* anonymize toggle, pushed to right */}
-              <div className="ms-auto">
-                <Form.Check
-                  type="checkbox"
-                  label="Anonymize Candidate Data"
-                  checked={anonymize}
-                  onChange={(e) => setAnonymize(e.target.checked)}
-                />
-              </div>
+            <label className="btn btn-primary me-2">
+              Upload Resumes
+              <input
+                type="file"
+                multiple
+                onChange={(e) => uploadResumes(e.target.files)}
+                style={{ display: "none" }}
+              />
+            </label>
+            <Button
+              variant="outline-secondary"
+              className="me-2"
+              onClick={exportSelectedToCsv}
+            >
+              Export Selected
+            </Button>
+            <Button
+              variant="outline-secondary"
+              className="me-2"
+              disabled={selectedRows.length === 0}
+              onClick={deleteSelected}
+            >
+              Delete Selected
+            </Button>
+
+            {/* requirement‐sorting badges */}
+            {[
+              ...nicknames,
+              ...(showEntrepreneurial ? ["Entrepreneurial"] : []),
+            ].map((nick) => {
+              const dir = sortConfig[nick] || 0;
+              const arrow = dir === 1 ? "↑" : dir === -1 ? "↓" : "";
+              const variant = dir ? "primary" : "secondary";
+
+              const tooltipText =
+                nick === "Entrepreneurial"
+                  ? "Score based on project uniqueness, variety, and keywords"
+                  : mapping[nick].replace(/•\s*/g, "\n• ").trim();
+
+              return (
+                <OverlayTrigger
+                  key={nick}
+                  placement="bottom"
+                  flip={false}
+                  delay={{ show: 2000, hide: 0 }}
+                  overlay={<Tooltip id={`tt-${nick}`}>{tooltipText}</Tooltip>}
+                >
+                  <Badge
+                    bg={variant}
+                    className="me-2 mb-2"
+                    style={{ cursor: "pointer" }}
+                    onClick={() => handleBadgeClick(nick)}
+                  >
+                    {nick} {arrow}
+                  </Badge>
+                </OverlayTrigger>
+              );
+            })}
+
+            {/* anonymize toggle, pushed to right */}
+            <div className="ms-auto">
+              <Form.Check
+                type="checkbox"
+                label="Anonymize Candidate Data"
+                checked={anonymize}
+                onChange={(e) => setAnonymize(e.target.checked)}
+              />
             </div>
+          </div>
 
             {/* ─── Select All / Deselect All Checkbox ────────────────────── */}
         <div className="form-check mb-2">
@@ -676,6 +791,8 @@ export default function AppCandidates({ jobId }) {
             selectedRows={selectedRows}
             onSelectRow={onSelectRow}
             onClearBadgeSort={() => setSortConfig({})}
+            showEntrepreneurial={showEntrepreneurial}
+            entrepreneurialScores={entrepreneurialScores}
           />
         </Col>
       </Row>
