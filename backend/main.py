@@ -22,6 +22,25 @@ from datetime import datetime, timezone
 
 from typing import List, Optional
 
+def anonymize_text(
+    full_text: str,
+    name: Optional[str],
+    email: Optional[str],
+    phone: Optional[str],
+    location: Optional[str],
+) -> str:
+    """
+    Remove name, email, phone and location from full_text by replacing
+    any exact matches (case-insensitive) with [REDACTED].
+    """
+    clean = full_text or ""
+    for val in (name, email, phone, location):
+        if not val:
+            continue
+        # escape special chars, redact all occurrences
+        clean = re.sub(re.escape(val), "[REDACTED]", clean, flags=re.IGNORECASE)
+    return clean
+
 # ————————————————————————————————
 # 0. Load env + set OpenAI key
 # ————————————————————————————————
@@ -373,10 +392,19 @@ async def process_requirements(
         # build output list with both score & reason for each req
         output = []
         for c in rows:
+            # redact PII using the parsed model fields
+            anonymizedResume = anonymize_text(
+                c.text,
+                c.name,
+                c.email,
+                c.phone,
+                c.location,
+            )
+            print(f"Anonymized resume: {anonymizedResume}")
             per_req: dict[str, dict] = {}
-            for original, nick in mapping.items():
-                score  = await score_requirement(original, c.text or "")
-                reason = await explain_requirement(original, c.text or "")
+            for jobRequirement, nick in mapping.items():
+                score  = await score_requirement(jobRequirement, anonymizedResume)
+                reason = await explain_requirement(jobRequirement, anonymizedResume)
 
                 per_req[nick] = { "score": score, "reason": reason }
                 c.scores[nick] = score    # still persist numeric score only

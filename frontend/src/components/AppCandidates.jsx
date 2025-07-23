@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useMemo } from "react";
 import axios from "axios";
 import {
   Container,
@@ -15,9 +15,23 @@ import {
 import CandidatesTable from "./CandidateTable.jsx";
 import { getDistance as geoGetDistance } from "geolib";
 import cities from "cities.json";
+import "react-bootstrap-typeahead/css/Typeahead.css";
+import { AsyncTypeahead } from "react-bootstrap-typeahead";
+
+// only US + India
+const FILTERED_CITIES = cities.filter(
+  (c) => c.country === "US" || c.country === "IN"
+);
+
+// flatten to "City, State" strings
+const cityOptions = FILTERED_CITIES.map((c) => `${c.name}, ${c.admin1}`);
+
+
 import { unparse } from "papaparse";
 
 export default function AppCandidates({ jobId }) {
+    
+
   // ── State Hooks ───────────────────────────────────────────────
   const [searchTerm, setSearchTerm]           = useState("");
   const [requireAll, setRequireAll]           = useState(false);
@@ -26,6 +40,7 @@ export default function AppCandidates({ jobId }) {
   const [gpaListed, setGpaListed]             = useState(false);
   const [distance, setDistance]               = useState("");
   const [location, setLocation]               = useState("Tempe, AZ");
+  const [locationError, setLocationError]     = useState(false);
   const [reqText, setReqText]                 = useState("");
   const [nicknames, setNicknames]             = useState([]);
   const [mapping, setMapping]                 = useState({});
@@ -37,19 +52,44 @@ export default function AppCandidates({ jobId }) {
   const [distanceError, setDistanceError]     = useState(false);
   const [candidates, setCandidates]           = useState([]);
   const [selectedRows, setSelectedRows]       = useState([]);
+  const [cityOptionsAsync, setCityOptionsAsync] = useState([]);
+    const [cityLoading, setCityLoading]           = useState(false);
 
   // ── Helpers ───────────────────────────────────────────────────
   function lookupCoords(address) {
     const [cityName, stateAbbr] = address
       .split(",")
       .map((s) => s.trim().toLowerCase());
-    const rec = cities.find(
+    const rec = FILTERED_CITIES.find(
       (c) =>
         c.name.toLowerCase() === cityName &&
         c.country === "US" &&
         c.admin1.toLowerCase() === stateAbbr
     );
     return rec ? { lat: +rec.lat, lng: +rec.lng } : null;
+  }
+
+  // bucket by first char for ultra-fast per-keystroke filtering
+  const prefixMap = useMemo(() => {
+    return cityOptions.reduce((map, label) => {
+      const key = label.charAt(0).toLowerCase();
+      (map[key] ||= []).push(label);
+      return map;
+    }, {});
+  }, []);
+
+  // AsyncTypeahead loader (only scans small bucket + slices to 10)
+  function handleCitySearch(query) {
+    console.log("Searching cities for:", query);
+    setCityLoading(true);
+    const key = query.charAt(0).toLowerCase();
+    const bucket = prefixMap[key] || cityOptions; 
+    console.log("   bucket size:", bucket.length)
+    const matches = bucket
+      .filter((lbl) => lbl.toLowerCase().startsWith(query.toLowerCase()))
+      .slice(0, 10);
+    setCityOptionsAsync(matches);
+    setCityLoading(false);
   }
 
   function makeCsv(rows) {
@@ -407,37 +447,73 @@ export default function AppCandidates({ jobId }) {
                   <hr />
 
                   {/* Location */}
-                  <Form.Group
-                    controlId="locationFilter"
-                    className="mb-3 d-flex flex-wrap align-items-center"
-                  >
-                    <Form.Label className="me-2 mb-0">Within</Form.Label>
-                    <Form.Control
-                      type="text"
-                      size="sm"
-                      className="w-auto me-2 mb-1"
-                      placeholder="Miles"
-                      value={distance}
-                      onChange={handleDistanceChange}
-                      isInvalid={distanceError}
-                      style={{ maxWidth: "4rem" }}
-                    />
-                    <span className="me-2">miles</span>
-                    <Form.Control.Feedback type="invalid">
-                      Enter a whole number
-                    </Form.Control.Feedback>
-                    <span className="mx-2">miles of</span>
-                    <Form.Select
-                      size="sm"
-                      value={location}
-                      onChange={(e) => setLocation(e.target.value)}
-                      className="w-auto mb-1"
-                    >
-                      <option>Tempe, AZ</option>
-                      <option>Phoenix, AZ</option>
-                      <option>Chicago, IL</option>
-                    </Form.Select>
-                  </Form.Group>
+<Form.Group
+  controlId="locationFilter"
+  className="mb-3 d-flex flex-wrap align-items-center"
+>
+  <Form.Label className="me-2 mb-0">Within</Form.Label>
+  <Form.Control
+    type="text"
+    size="sm"
+    className="w-auto me-2 mb-1"
+    placeholder="Miles"
+    value={distance}
+    onChange={handleDistanceChange}
+    isInvalid={distanceError}
+    style={{ maxWidth: "4rem" }}
+  />
+  <span className="me-2">miles</span>
+  <Form.Control.Feedback type="invalid">
+    Enter a whole number
+  </Form.Control.Feedback>
+  <span className="mx-2">miles of</span>
+
+  <div style={{ flex: "1 1 auto", minWidth: "10rem" }}>
+    <AsyncTypeahead
+      id="city-async-typeahead"
+      isLoading={cityLoading}
+      // filterBy={() => true}         // disable AsyncTypeahead’s built-in filter
+      minLength={2}                    // fire on every char (for debugging)
+        delay={200}                      // debounce your onSearch
+      onSearch={handleCitySearch}
+      options={cityOptionsAsync}
+      placeholder="Enter city, state"
+      flip
+      selected={location ? [location] : []}
+      onChange={(sel) => {
+            if (sel.length) {
+            setLocation(sel[0]);
+            } else {
+            setLocation("");
+            }
+            setLocationError(false);
+        }}
+      onBlur={() => {
+            // no error if empty
+            if (!location.trim()) {
+            setLocationError(false);
+            return;
+            }
+            const ok = cityOptions.includes(location);
+            setLocationError(!ok);
+        }}
+      inputProps={{
+        className: locationError
+          ? "form-control-sm is-invalid"
+          : "form-control-sm",
+      }}
+      renderMenuItemChildren={(opt) => <span>{opt}</span>}
+    />
+
+    {locationError && (
+      <div className="invalid-feedback d-block">
+        Please select a valid city (e.g. “Tempe, AZ”)
+      </div>
+    )}
+  </div>
+</Form.Group>
+
+            {/* ─────────────────────────────────────────────────── */}
 
                   <hr />
 
