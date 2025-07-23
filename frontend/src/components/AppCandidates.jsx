@@ -462,7 +462,6 @@ export default function AppCandidates({ jobId }) {
     isInvalid={distanceError}
     style={{ maxWidth: "4rem" }}
   />
-  <span className="me-2">miles</span>
   <Form.Control.Feedback type="invalid">
     Enter a whole number
   </Form.Control.Feedback>

@@ -121,6 +121,11 @@ html,
   text-align: center;
 }
 
+.job-table th.col-job-location,
+.job-table td.col-job-location {
+  width: 80px;
+}
+
 .job-table th.col-job-description,
 .job-table td.col-job-description {
   width: 250px;

@@ -1,6 +1,7 @@
 // src/pages/JobsPage.jsx
 import React, { useEffect, useState, useCallback } from "react";
 import axios from "axios";
+import LocationTypeahead from "../components/LocationTypeahead";
 import { Table, Button, Modal, Form } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 
@@ -9,6 +10,9 @@ export default function JobsPage({ createOnly = false }) {
   const [showModal, setShowModal]     = useState(createOnly);
   const [title, setTitle]             = useState("");
   const [description, setDescription] = useState("");
+  // Location autocomplete state
+  const [location, setLocation]           = useState("");
+  const [locationError, setLocationError] = useState(false);
   // new state for description‐view modal
   const [showDescModal, setShowDescModal] = useState(false);
   const [activeJob, setActiveJob]         = useState(null);
@@ -41,10 +45,15 @@ export default function JobsPage({ createOnly = false }) {
   async function handleCreate() {
     if (!title.trim()) return alert("Job title is required");
     try {
-      const { data: job } = await axios.post("/api/jobs", {
-        title,
-        description,
-      });
+      if (!location.trim() || locationError) {
+      setLocationError(true);
+      return;
+    }
+    const { data: job } = await axios.post("/api/jobs", {
+      title,
+      description,
+      location,
+    });
       setShowModal(false);
       // clear form fields
       setTitle("");
@@ -77,6 +86,7 @@ export default function JobsPage({ createOnly = false }) {
             <th className="col-job-id">Job ID</th>
             <th className="col-job-view">View</th>
             <th className="col-job-title">Job Title</th>
+            <th className="col-job-location">Location</th>
             <th className="col-job-description">Description</th>
             <th className="col-job-view-description">View Description</th>
           </tr>
@@ -94,6 +104,7 @@ export default function JobsPage({ createOnly = false }) {
                 </Button>
               </td>
               <td className="col-job-title">{job.title}</td>
+              <td className="col-job-location">{job.location}</td>
               <td className="col-job-description">
               {job.description.length > 70
                 ? `${job.description.slice(0, 70)}...`
@@ -138,6 +149,18 @@ export default function JobsPage({ createOnly = false }) {
               value={description}
               onChange={(e) => setDescription(e.target.value)}
             />
+          </Form.Group>
+          <Form.Group className="mb-3">
+            <Form.Label>Location</Form.Label>
+            <LocationTypeahead
+              value={location}
+              onChange={setLocation}
+              isInvalid={locationError}
+              onValidate={setLocationError}
+            />
+            <Form.Control.Feedback type="invalid">
+              Please select a valid city (e.g. “Tempe, AZ”)
+            </Form.Control.Feedback>
           </Form.Group>
         </Modal.Body>
         <Modal.Footer>
