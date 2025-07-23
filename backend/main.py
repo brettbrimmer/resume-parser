@@ -250,6 +250,7 @@ def get_candidate(cand_id: int, db: Session = Depends(get_db)):
 class JobCreate(BaseModel):
     title: str
     description: Optional[str] = None
+    location: str
 
 @app.get("/api/jobs")
 def list_jobs(db: Session = Depends(get_db)):
@@ -268,6 +269,7 @@ def create_job(job: JobCreate, db: Session = Depends(get_db)):
     new_job = models.Job(
         title       = job.title,
         description = job.description,
+        location    = job.location
     )
     db.add(new_job)
     db.commit()
@@ -275,6 +277,7 @@ def create_job(job: JobCreate, db: Session = Depends(get_db)):
     return {
         "id":          new_job.id,
         "title":       new_job.title,
+        "location":    new_job.location,
         "description": new_job.description,
         "created_at":  new_job.created_at.isoformat(),
     }

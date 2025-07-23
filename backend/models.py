@@ -16,6 +16,8 @@ class Job(Base):
       default=lambda: datetime.now(timezone.utc),
       nullable=False
     )
+    # store job location (e.g. "Tempe, AZ")
+    location    = Column(String, nullable=False, index=True)
 
     # back‐reference to candidates
     candidates  = relationship("Candidate", back_populates="job")
