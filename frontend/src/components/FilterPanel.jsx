@@ -1,7 +1,9 @@
 // src/components/Filters/FilterPanel.jsx
-import React from "react";
+import React, { memo } from "react";
 import { Card, Form, Button, Spinner } from "react-bootstrap";
 import { AsyncTypeahead } from "react-bootstrap-typeahead";
+import PropTypes from "prop-types";
+import classNames from "classnames";
 
 /**
  * FilterPanel
@@ -110,9 +112,9 @@ export default function FilterPanel({
                 onChange={onLocationChange}
                 onBlur={onLocationBlur}
                 inputProps={{
-                  className: locationError
-                    ? "form-control-sm is-invalid"
-                    : "form-control-sm",
+                  className: classNames("form-control-sm", {
+                    "is-invalid": locationError,
+                  }),
                 }}
                 renderMenuItemChildren={(opt) => <span>{opt}</span>}
               />
