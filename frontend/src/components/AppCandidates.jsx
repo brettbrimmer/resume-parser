@@ -710,6 +710,11 @@ export default function AppCandidates({ jobId }) {
             cityLoading={cityLoading}
             onCitySearch={handleCitySearch}
             cityOptions={cityOptions}
+            gpaListed={gpaListed}
+            onGpaListedChange={(e) => setGpaListed(e.target.checked)}
+            minGpaText={minGpaText}
+            onMinGpaTextChange={handleGpaChange}
+            gpaError={gpaError}
             /* ─── Requirements props ───────────────────────── */
             reqText={reqText}
             onReqTextChange={(e) => setReqText(e.target.value)}

@@ -35,6 +35,13 @@ export default function FilterPanel({
   onCitySearch,
   cityOptions,
 
+  // GPA filter props
+  gpaListed,
+  onGpaListedChange,
+  minGpaText,
+  onMinGpaTextChange,
+  gpaError,
+
   // the four props for the Requirements box
   reqText,
   onReqTextChange,
@@ -124,18 +131,18 @@ export default function FilterPanel({
             <Form.Check
               type="checkbox"
               label="Has GPA Listed"
-              checked={false /* you'll wire this in later */}
-              onChange={() => {}}
+              checked={gpaListed}
+              onChange={onGpaListedChange}
             />
             <div className="d-flex align-items-center mt-2">
               <Form.Label className="me-2 mb-0">Min GPA</Form.Label>
               <Form.Control
                 type="text"
                 placeholder="e.g. 3.5"
-                value={""}
-                onChange={() => {}}
+                value={minGpaText}
+                onChange={onMinGpaTextChange}
                 size="sm"
-                isInvalid={false}
+                isInvalid={gpaError}
                 className="w-auto"
                 style={{ maxWidth: "6rem" }}
               />
