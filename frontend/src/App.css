@@ -264,3 +264,12 @@ html,
 .sortable-table td {
   white-space: nowrap; /* prevent cells from wrapping on tooltip / badge hover */
 }
+
+@keyframes pulse {
+  0% { box-shadow: 0 0 0 0 rgba(255, 193, 7, 0.5); }
+  70% { box-shadow: 0 0 0 10px rgba(255, 193, 7, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(255, 193, 7, 0); }
+}
+.btn-pulse {
+  animation: pulse 1.5s infinite;
+}

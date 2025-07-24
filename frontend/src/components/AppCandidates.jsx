@@ -7,6 +7,7 @@ import {
   Card,
   Form,
   Button,
+  Spinner,
   Badge,
   OverlayTrigger,
   Tooltip,
@@ -73,6 +74,8 @@ export default function AppCandidates({ jobId }) {
   const [jobLocationDefault, setJobLocationDefault] = useState("");
   const [reqText, setReqText]                 = useState("");
   const [nicknames, setNicknames]             = useState([]);
+  // loading flag for Add Requirement
+  const [isApplyingReq, setIsApplyingReq]     = useState(false);
   const [mapping, setMapping]                 = useState({});
   const [sortConfig, setSortConfig]           = useState({});
   const [showModal, setShowModal]             = useState(false);
@@ -184,9 +187,9 @@ export default function AppCandidates({ jobId }) {
   // Apply requirements → OpenAI scoring
   async function applyRequirements() {
     const lines = reqText
-      .split("\n")
-      .map((l) => l.trim())
-      .filter(Boolean);
+    .split("\n")
+    .map((l) => l.trim())
+    .filter(Boolean);
     // treat the whole textarea as a single requirement
     //const trimmed = reqText.trim();
     //const lines = trimmed ? [trimmed] : [];
@@ -194,10 +197,13 @@ export default function AppCandidates({ jobId }) {
       alert("Enter at least one requirement.");
       return;
     }
+    setIsApplyingReq(true);
     try {
-      const { data } = await axios.post("/api/requirements", {
-        requirements: lines,
-      });
+      // now include jobId so backend only processes that job’s resumes
+    const { data } = await axios.post(
+      `/api/requirements?jobId=${jobId}`,
+      { requirements: lines }
+    );
       // clear the requirements textarea after sending
       setReqText("");
       // invert label→key into key→label:
@@ -216,7 +222,9 @@ export default function AppCandidates({ jobId }) {
     } catch (err) {
       console.error(err);
       alert("Failed applying requirements");
-    }
+    } finally {
+        setIsApplyingReq(false);
+   }
   }
 
   // ─── Delete Selected Resumes ─────────────────────────────────────────
@@ -721,9 +729,24 @@ export default function AppCandidates({ jobId }) {
                     />
                   </Form.Group>
                   <div className="d-grid">
-                    <Button variant="primary" onClick={applyRequirements}>
-                      Add Requirement
-                    </Button>
+                    <Button
+                  onClick={applyRequirements}
+                  disabled={isApplyingReq}
+                  variant={isApplyingReq ? "warning" : "primary"}
+                  className={isApplyingReq ? "btn-pulse" : ""}
+                >
+                  {isApplyingReq && (
+                    <Spinner
+                      as="span"
+                      animation="border"
+                      size="sm"
+                      role="status"
+                      aria-hidden="true"
+                      className="me-2"
+                    />
+                  )}
+                  {isApplyingReq ? "Adding…" : "Add Requirement"}
+                </Button>
                   </div>
                 </Form>
                 <hr />
@@ -786,7 +809,6 @@ export default function AppCandidates({ jobId }) {
                 <OverlayTrigger
               key={nick}
               transition={false}
-                  container={document.body}
                   placement="bottom"
                   flip={false}
                   delay={{ show: 2000, hide: 0 }}

@@ -380,8 +380,10 @@ async def explain_requirement(req: str, resume: str) -> str:
     return resp.choices[0].message.content.strip()
 
 @app.post("/api/requirements")
+@app.post("/api/requirements")
 async def process_requirements(
     body: ReqModel,
+    jobId: int = Query(..., alias="jobId", description="Only score resumes for this job"),
     db: Session = Depends(get_db)
 ):
     try:
@@ -391,7 +393,12 @@ async def process_requirements(
 
         mapping = await generate_nicknames(reqs)
 
-        rows = db.query(models.Candidate).all()
+        # only fetch candidates tied to this job
+        rows = (
+          db.query(models.Candidate)
+            .filter(models.Candidate.job_id == jobId)
+            .all()
+        )
 
         # build output list with both score & reason for each req
         output = []
