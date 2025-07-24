@@ -254,10 +254,10 @@ html,
 
 /* disable text‐selection for every header cell in our table */
 .sortable-table thead th {
-   user-select: none !important;
-   -webkit-user-select: none !important;
-   -moz-user-select: none !important;
-   -ms-user-select: none !important;
+  user-select: none !important;
+  -webkit-user-select: none !important;
+  -moz-user-select: none !important;
+  -ms-user-select: none !important;
 }
 
 .sortable-table th,
@@ -266,10 +266,25 @@ html,
 }
 
 @keyframes pulse {
-  0% { box-shadow: 0 0 0 0 rgba(255, 193, 7, 0.5); }
-  70% { box-shadow: 0 0 0 10px rgba(255, 193, 7, 0); }
-  100% { box-shadow: 0 0 0 0 rgba(255, 193, 7, 0); }
+  0% {
+    box-shadow: 0 0 0 0 rgba(255, 193, 7, 0.5);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(255, 193, 7, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(255, 193, 7, 0);
+  }
 }
 .btn-pulse {
   animation: pulse 1.5s infinite;
+}
+
+/* FilterPanel.jsx styles */
+.distance-input {
+  max-width: 4rem;
+}
+
+.min-gpa-input {
+  max-width: 6rem;
 }

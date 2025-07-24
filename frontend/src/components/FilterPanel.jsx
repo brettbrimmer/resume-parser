@@ -1,45 +1,45 @@
-// src/components/Filters/FilterPanel.jsx
+// FilterPanel.jsx
+
 import React, { memo } from "react";
 import { Card, Form, Button, Spinner } from "react-bootstrap";
 import { AsyncTypeahead } from "react-bootstrap-typeahead";
-import PropTypes from "prop-types";
 import classNames from "classnames";
 
 /**
  * FilterPanel
  *
- * Provides UI controls to filter candidates by:
- *   • Search terms (with “require all” option)
- *   • Location radius (miles from a city)
- *   • GPA presence and minimum value
- *   • A free-form requirement prompt
+ * Provides user interface controls for filtering candidates by:
+ *   • Search keywords (with optional “require all” constraint)
+ *   • Location radius in miles from a selected city
+ *   • GPA presence and minimum GPA value
+ *   • Free-form requirement text
  *   • Entrepreneurial badge toggle
  *
- * @param {string} searchTerm       current search text
- * @param {() => void} onSearchChange handler for search input
- * @param {boolean} requireAll      whether every term must match
- * @param {() => void} onRequireAllChange toggle for requireAll
- * @param {string} distance         distance in miles
- * @param {() => void} onDistanceChange distance input handler
- * @param {boolean} distanceError   invalid distance flag
- * @param {string} location         selected “City, ST”
- * @param {() => void} onLocationChange location picker handler
- * @param {() => void} onLocationBlur   blur handler for typeahead
- * @param {boolean} locationError   invalid location flag
- * @param {string[]} cityOptionsAsync async options for cities
- * @param {boolean} cityLoading      loading indicator for cities
- * @param {() => void} onCitySearch async search callback
- * @param {boolean} gpaListed       whether to filter only listed GPAs
- * @param {() => void} onGpaListedChange toggle for gpaListed
- * @param {string} minGpaText       minimum GPA text input
- * @param {() => void} onMinGpaTextChange handler for minGpaText
- * @param {boolean} gpaError        invalid GPA flag
- * @param {string} reqText          free-form requirement text
- * @param {() => void} onReqTextChange requirement text handler
- * @param {boolean} isApplyingReq   spinner state for “Add Requirement”
- * @param {() => void} onApplyRequirements click handler for apply
- * @param {boolean} showEntrepreneurial toggle for badges
- * @param {() => void} onShowEntrepreneurialChange handler for toggle
+ * @param {string} searchTerm                      Current search text
+ * @param {() => void} onSearchChange              Handler for search input changes
+ * @param {boolean} requireAll                     Flag to require all search terms
+ * @param {() => void} onRequireAllChange          Handler to toggle requireAll
+ * @param {string} distance                        Distance in miles
+ * @param {() => void} onDistanceChange            Handler for distance input
+ * @param {boolean} distanceError                  Flag indicating invalid distance
+ * @param {string} location                        Selected city (formatted as “City, ST”)
+ * @param {() => void} onLocationChange            Handler for city selection
+ * @param {() => void} onLocationBlur              Handler for typeahead blur event
+ * @param {boolean} locationError                  Flag indicating invalid location
+ * @param {string[]} cityOptionsAsync              Asynchronous city options
+ * @param {boolean} cityLoading                    Loading indicator for city search
+ * @param {() => void} onCitySearch                Callback for async city search
+ * @param {boolean} gpaListed                      Filter for candidates with GPA listed
+ * @param {() => void} onGpaListedChange           Handler to toggle gpaListed
+ * @param {string} minGpaText                      Minimum GPA input text
+ * @param {() => void} onMinGpaTextChange          Handler for minimum GPA input
+ * @param {boolean} gpaError                       Flag indicating invalid GPA
+ * @param {string} reqText                         Free-form requirement text
+ * @param {() => void} onReqTextChange             Handler for requirement text
+ * @param {boolean} isApplyingReq                  Spinner state for applying requirement
+ * @param {() => void} onApplyRequirements         Handler for applying requirement
+ * @param {boolean} showEntrepreneurial            Toggle for entrepreneurial badge filter
+ * @param {() => void} onShowEntrepreneurialChange Handler for entrepreneurial toggle
  */
 export default function FilterPanel({
   searchTerm,
@@ -59,20 +59,18 @@ export default function FilterPanel({
   cityOptionsAsync,
   cityLoading,
   onCitySearch,
-  cityOptions,
 
-  // GPA filter props
   gpaListed,
   onGpaListedChange,
   minGpaText,
   onMinGpaTextChange,
   gpaError,
 
-  // the four props for the Requirements box
   reqText,
   onReqTextChange,
   isApplyingReq,
   onApplyRequirements,
+
   showEntrepreneurial,
   onShowEntrepreneurialChange,
 }) {
@@ -81,7 +79,7 @@ export default function FilterPanel({
       <Card.Header as="h5">Filters</Card.Header>
       <Card.Body>
         <Form>
-          {/* Search */}
+          {/* Search section */}
           <Form.Group controlId="searchResumes" className="mb-3">
             <Form.Label>Search Resumes</Form.Label>
             <Form.Control
@@ -90,7 +88,7 @@ export default function FilterPanel({
               value={searchTerm}
               onChange={onSearchChange}
             />
-            {/* “Require all” search terms toggle */}
+            {/* Option to require all search terms */}
             <Form.Check
               type="checkbox"
               label="Require all search terms"
@@ -102,7 +100,7 @@ export default function FilterPanel({
 
           <hr />
 
-          {/* Location & Distance */}
+          {/* Location and distance filter */}
           <Form.Group
             controlId="locationFilter"
             className="mb-3 d-flex flex-wrap align-items-center"
@@ -153,7 +151,7 @@ export default function FilterPanel({
 
           <hr />
 
-          {/* GPA */}
+          {/* GPA filter */}
           <Form.Group controlId="gpaFilter" className="mb-3">
             <Form.Check
               type="checkbox"
@@ -179,8 +177,9 @@ export default function FilterPanel({
             </div>
           </Form.Group>
 
-          {/* ─── Requirements ─────────────────────────────────── */}
           <hr />
+
+          {/* Add Requirement */}
           <Form.Group controlId="requirements" className="mb-3">
             <Form.Label>Requirement</Form.Label>
             <Form.Control
@@ -212,8 +211,9 @@ export default function FilterPanel({
             </Button>
           </div>
 
-          {/* ─── Entrepreneurial Toggle ──────────────────────── */}
           <hr />
+
+          {/* Entrepreneurial badge toggle */}
           <Form.Group controlId="entrepreneurialToggle" className="mb-3">
             <Form.Check
               type="checkbox"
