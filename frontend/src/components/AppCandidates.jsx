@@ -69,6 +69,8 @@ export default function AppCandidates({ jobId }) {
   const [distance, setDistance]               = useState("");
   const [location, setLocation]               = useState("");
   const [locationError, setLocationError]     = useState(false);
+  const [jobTitle, setJobTitle]               = useState("");
+  const [jobLocationDefault, setJobLocationDefault] = useState("");
   const [reqText, setReqText]                 = useState("");
   const [nicknames, setNicknames]             = useState([]);
   const [mapping, setMapping]                 = useState({});
@@ -386,10 +388,14 @@ export default function AppCandidates({ jobId }) {
       .get("/api/jobs")
       .then(({ data }) => {
         const job = data.find((j) => j.id === jobId);
-        if (job?.location) {
-          setLocation(job.location);
-          setLocationError(false);
-        }
+      if (job?.location) {
+        setLocation(job.location);
+        setJobLocationDefault(job.location);
+        setLocationError(false);
+      }
+      if (job?.title) {
+         setJobTitle(job.title);
+       }
       })
       .catch((err) => console.error("Failed to load job:", err));
   }, [jobId]);
@@ -570,7 +576,14 @@ export default function AppCandidates({ jobId }) {
   // ── Render ─────────────────────────────────────────────────────
   return (
     <Container fluid className="py-4" style={{ marginTop: "1rem" }}>
-      <h3>Job #{jobId} Candidates</h3>
+      <h3 className="d-flex align-items-baseline">
+        {jobTitle ? jobTitle : `Job #${jobId}`} Candidates
+        {jobLocationDefault && (
+          <span className="fs-6 text-muted ms-2">
+            ({jobLocationDefault})
+          </span>
+        )}
+      </h3>
       <Row>
         {/* ─── Sidebar Filters ─────────────────────────────────── */}
         <Col xs={12} md={2}>
@@ -713,6 +726,15 @@ export default function AppCandidates({ jobId }) {
                     </Button>
                   </div>
                 </Form>
+                <hr />
+                <Form.Group controlId="entrepreneurialToggle" className="mb-3">
+                  <Form.Check
+                    type="checkbox"
+                    label="Premade Badges"
+                    checked={showEntrepreneurial}
+                    onChange={(e) => setShowEntrepreneurial(e.target.checked)}
+                  />
+                </Form.Group>
               </Card.Body>
             </Card>
         </Col>
@@ -720,13 +742,6 @@ export default function AppCandidates({ jobId }) {
         {/* ─── Main Panel ─────────────────────────────────────── */}
         <Col xs={12} md={9}>
           <div className="toolbar mb-3 d-flex flex-wrap align-items-center">
-            <Form.Check
-              type="checkbox"
-              label="Entrepreneurial"
-              className="me-3"
-              checked={showEntrepreneurial}
-              onChange={(e) => setShowEntrepreneurial(e.target.checked)}
-            />
 
             <label className="btn btn-primary me-2">
               Upload Resumes
@@ -742,7 +757,7 @@ export default function AppCandidates({ jobId }) {
               className="me-2"
               onClick={exportSelectedToCsv}
             >
-              Export Selected
+              Export Selected (CSV)
             </Button>
             <Button
               variant="outline-secondary"
@@ -803,19 +818,20 @@ export default function AppCandidates({ jobId }) {
             {/* ─── Select All / Deselect All Checkbox ────────────────────── */}
         <div className="form-check mb-2">
           <input
-            className="form-check-input"
-            type="checkbox"
-            id="select-all-checkbox"
-            ref={selectAllRef}
-            checked={selectedRows.length === displayed.length}
-            onChange={handleSelectAll}
-            style={{ cursor: "pointer" }}
-          />
+          className="form-check-input"
+          type="checkbox"
+          id="select-all-checkbox"
+          ref={selectAllRef}
+          checked={displayed.length > 0 && selectedRows.length === displayed.length}
+          disabled={displayed.length === 0}
+          onChange={handleSelectAll}
+          style={{ cursor: displayed.length === 0 ? "not-allowed" : "pointer" }}
+        />
           <label
-            className="form-check-label"
-            htmlFor="select-all-checkbox"
-            style={{ cursor: "pointer" }}
-          >
+          className={`form-check-label ${displayed.length === 0 ? "text-muted" : ""}`}
+          htmlFor="select-all-checkbox"
+          style={{ cursor: displayed.length === 0 ? "not-allowed" : "pointer" }}
+        >
             {selectedRows.length === 0 ? "Select All" : "Deselect All"}
           </label>
         </div>
