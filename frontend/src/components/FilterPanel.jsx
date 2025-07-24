@@ -8,14 +8,38 @@ import classNames from "classnames";
 /**
  * FilterPanel
  *
- * Renders search, location/distance, and GPA filters.
+ * Provides UI controls to filter candidates by:
+ *   • Search terms (with “require all” option)
+ *   • Location radius (miles from a city)
+ *   • GPA presence and minimum value
+ *   • A free-form requirement prompt
+ *   • Entrepreneurial badge toggle
  *
- * Props:
- * - searchTerm, onSearchChange
- * - requireAll, onRequireAllChange
- * - distance, onDistanceChange, distanceError
- * - location, onLocationChange, onLocationBlur, locationError
- * - cityOptionsAsync, cityLoading, onCitySearch
+ * @param {string} searchTerm       current search text
+ * @param {() => void} onSearchChange handler for search input
+ * @param {boolean} requireAll      whether every term must match
+ * @param {() => void} onRequireAllChange toggle for requireAll
+ * @param {string} distance         distance in miles
+ * @param {() => void} onDistanceChange distance input handler
+ * @param {boolean} distanceError   invalid distance flag
+ * @param {string} location         selected “City, ST”
+ * @param {() => void} onLocationChange location picker handler
+ * @param {() => void} onLocationBlur   blur handler for typeahead
+ * @param {boolean} locationError   invalid location flag
+ * @param {string[]} cityOptionsAsync async options for cities
+ * @param {boolean} cityLoading      loading indicator for cities
+ * @param {() => void} onCitySearch async search callback
+ * @param {boolean} gpaListed       whether to filter only listed GPAs
+ * @param {() => void} onGpaListedChange toggle for gpaListed
+ * @param {string} minGpaText       minimum GPA text input
+ * @param {() => void} onMinGpaTextChange handler for minGpaText
+ * @param {boolean} gpaError        invalid GPA flag
+ * @param {string} reqText          free-form requirement text
+ * @param {() => void} onReqTextChange requirement text handler
+ * @param {boolean} isApplyingReq   spinner state for “Add Requirement”
+ * @param {() => void} onApplyRequirements click handler for apply
+ * @param {boolean} showEntrepreneurial toggle for badges
+ * @param {() => void} onShowEntrepreneurialChange handler for toggle
  */
 export default function FilterPanel({
   searchTerm,
@@ -66,6 +90,7 @@ export default function FilterPanel({
               value={searchTerm}
               onChange={onSearchChange}
             />
+            {/* “Require all” search terms toggle */}
             <Form.Check
               type="checkbox"
               label="Require all search terms"
