@@ -738,12 +738,16 @@ export default function AppCandidates({ jobId }) {
   // ── Render ─────────────────────────────────────────────────────
   return (
     <Container fluid className="py-4" style={{ marginTop: "1rem" }}>
-      <h3 className="d-flex align-items-baseline">
-        {jobTitle ? jobTitle : `Job #${jobId}`} Candidates
+      <Card className="mb-3 d-inline-block w-auto">
+        <Card.Header className="bg-white">
+          <h3 className="d-flex align-items-baseline mb-0">
+        {jobTitle ? jobTitle : `Job #${jobId}`}{/* Candidates */}
         {jobLocationDefault && (
           <span className="fs-6 text-muted ms-2">({jobLocationDefault})</span>
         )}
       </h3>
+        </Card.Header>
+      </Card>
       <Row>
         {/* Sidebar Filters */}
         <Col xs={12} md={2}>
