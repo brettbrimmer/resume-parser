@@ -247,8 +247,8 @@ export default function AppCandidates({ jobId }) {
   // ── Other Handlers ─────────────────────────────────────────────
   // Copy & paste your implementations of:
   // Apply requirements → OpenAI scoring
-  async function applyRequirements() {
-    const lines = reqText
+  async function applyRequirements(text = reqText) {
+    const lines = text
       .split("\n")
       .map((l) => l.trim())
       .filter(Boolean);
@@ -262,9 +262,10 @@ export default function AppCandidates({ jobId }) {
     setIsApplyingReq(true);
     try {
       // now include jobId so backend only processes that job’s resumes
-      const { data } = await axios.post(`/api/requirements?jobId=${jobId}`, {
-        requirements: lines,
-      });
+      const { data } = await axios.post(
+        `/api/requirements?jobId=${jobId}`, 
+        { requirements: lines }
+      );
       // clear the requirements textarea after sending
       setReqText("");
       // invert label→key into key→label:
