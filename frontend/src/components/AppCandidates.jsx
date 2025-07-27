@@ -882,33 +882,29 @@ export default function AppCandidates({ jobId }) {
 
         {/* per-badge “…” overflow button */}
         <Button
-          variant="link"
-          className="text-secondary p-0 ms-1"
-          onClick={() => {
-            setBadgeToSave({ title: nick, reqText: mapping[nick] });
-           setShowSaveModal(true);
-          }}
-          aria-label={`More actions for ${nick}`}
-        >
-          &hellip;
-        </Button>
+   variant="outline-secondary"
+   size="sm"
+   className="ms-1"
+   style={{
+     width: '2rem',
+     height: '1.25rem',
+     padding: 0,
+     display: 'flex',
+     alignItems: 'center',
+     justifyContent: 'center',
+     borderRadius: '0.5rem'   // small corner radius
+   }}
+   onClick={() => {
+     setBadgeToSave({ title: nick, reqText: mapping[nick] });
+     setShowSaveModal(true);
+   }}
+   aria-label={`More actions for ${nick}`}
+ >
+   ...
+ </Button>
       </div>
     );
   })}
-
-            {/* “…” overflow / Save-Badge menu */}
-            <Button
-              variant="link"
-              className="text-secondary ms-2 p-0"
-              onClick={() => {
-                // set up whatever you need, then…
-                setBadgeToSave({ title: "My Badge", reqText });
-                setShowSaveModal(true);
-              }}
-              aria-label="More actions"
-            >
-              &hellip;
-            </Button>
 
             {/* anonymize toggle, pushed to right */}
             <div className="ms-auto"> 

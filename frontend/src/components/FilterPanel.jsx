@@ -76,7 +76,7 @@ export default function FilterPanel({
 }) {
   return (
     <Card className="mb-4">
-      <Card.Header as="h5">Filters</Card.Header>
+      {/* <Card.Header as="h5">Filters</Card.Header> Now a duplicate since we have a collapsible header*/}
       <Card.Body>
         <Form>
           {/* Search section */}
