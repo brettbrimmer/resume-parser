@@ -7,6 +7,10 @@ html,
   font-family: Arial, sans-serif;
 }
 
+body {
+  background-color: #f8f9fa; /* Bootstrap’s $gray-100 */
+}
+
 .app-container {
   display: flex;
   height: 100vh;
@@ -200,7 +204,7 @@ html,
 .navbar .nav-link {
   position: relative;
   padding-bottom: 0.5rem;
-  color: #333;
+  color: #ccc;
   text-shadow: none;
 
   /* set up a transparent bottom border that becomes visible on hover */
@@ -287,4 +291,49 @@ html,
 
 .min-gpa-input {
   max-width: 6rem;
+}
+
+.btn-primary {
+  background-color: #212aa3 !important;
+  border-color:   #212aa3 !important;  /* slightly darker for border */
+  color:          #fff !important;     /* ensure readable text */
+}
+
+.btn-primary:hover,
+.btn-primary:focus {
+  background-color: #4760a5 !important;
+  border-color:     #4760a5 !important;
+}
+
+/* Base outline-primary button */
+.btn-outline-primary {
+  color: #212aa3 !important;
+  border-color: #212aa3 !important;
+  background-color: transparent !important;
+}
+
+/* Hover & focus */
+.btn-outline-primary:hover,
+.btn-outline-primary:focus {
+  color: #fff !important;
+  background-color: #212aa3 !important;
+  border-color: #4760a5 !important;
+}
+
+/* Active / pressed / dropdown toggle */
+.btn-outline-primary:active,
+.btn-outline-primary.active,
+.show > .btn-outline-primary.dropdown-toggle {
+  color: #fff !important;
+  background-color: #4760a5 !important;
+  border-color: #4760a5 !important;
+}
+
+/* Optional: focus ring to match your blue */
+.btn-outline-primary:focus-visible {
+  box-shadow: 0 0 0 0.25rem rgba(16, 26, 165, 0.5) !important;
+}
+
+.navbar-custom {
+  background-color: #080c4d;
 }

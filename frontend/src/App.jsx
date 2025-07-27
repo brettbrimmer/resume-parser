@@ -12,7 +12,11 @@ function App() {
   return (
     <>
       {/* ─── Top Navbar ───────────────────────────────────────────── */}
-      <Navbar bg="light" expand="lg" sticky="top" className="shadow-sm">
+      <Navbar
+  className="navbar-custom navbar-dark shadow-sm"
+  expand="lg"
+  sticky="top"
+>
         <Container fluid className="justify-content-start">
           <Navbar.Brand as={Link} to="/">
             <img src={logo} height="20" alt="Resume Parser Logo" />
