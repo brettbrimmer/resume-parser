@@ -262,60 +262,7 @@ export default function CandidatesTable({
                 })()}
               </td>
 
-            {/* -- entrepreneurial */}
-            {showEntrepreneurial && (
-              <td className="col-badge text-nowrap">
-                {(() => {
-                  const {
-                    uniqueness = 0,
-                    variety = 0,
-                    keywords = 0,
-                    total = 0,
-                  } = entrepreneurialScores[c.id] || {};
-                  const variant =
-                    total <= 50
-                      ? "danger"
-                      : total <= 70
-                      ? "warning"
-                      : total <= 80
-                      ? "info"
-                      : "success";
-                  const extraClass =
-                    total <= 50
-                      ? "badge-score-low"
-                      : total <= 70
-                      ? "badge-score-medium"
-                      : total <= 80
-                      ? "badge-score-high"
-                      : "badge-score-veryhigh";
-
-                  return (
-                    <OverlayTrigger
-                      container={document.body}
-                      transition={false}
-                      placement="bottom"
-                      flip={false}
-                      delay={{ show: 0, hide: 0 }}
-                      overlay={
-                        <Tooltip id="tt-entrepreneurial">
-                          {`• Project Uniqueness: ${uniqueness}/33
-• Project Variety: ${variety}/33
-• Keywords: ${keywords}/33`}
-                        </Tooltip>
-                      }
-                    >
-                      <Badge
-                        pill
-                        bg={variant}
-                        className={`me-1 mb-1 ${extraClass}`}
-                      >
-                        Entrepreneurial {total.toFixed(1)}
-                      </Badge>
-                    </OverlayTrigger>
-                  );
-                })()}
-              </td>
-            )}
+            
 
             {/* -- star */}
             <td

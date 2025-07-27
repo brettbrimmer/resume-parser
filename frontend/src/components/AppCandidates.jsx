@@ -849,49 +849,75 @@ export default function AppCandidates({ jobId }) {
               Delete Selected
             </Button>
 
-            {/* requirement‐sorting badges */}
-            {[
-              ...nicknames,
-              ...(showEntrepreneurial ? ["Entrepreneurial"] : []),
-            ].map((nick) => {
-              const dir = sortConfig[nick] || 0;
-              const arrow = dir === 1 ? "↑" : dir === -1 ? "↓" : "";
-              const variant = dir ? "primary" : "secondary";
+  {/* requirement-sorting badges + per-badge overflow menu */}
+  {[...nicknames, ...(showEntrepreneurial ? ["Entrepreneurial"] : [])].map((nick) => {
+    const dir = sortConfig[nick] || 0;
+    const arrow = dir === 1 ? "↑" : dir === -1 ? "↓" : "";
+    const variant = dir ? "primary" : "secondary";
+    const tooltipText =
+      nick === "Entrepreneurial"
+        ? "Score based on project uniqueness, variety, and keywords"
+        : mapping[nick].replace(/•\s*/g, "\n• ").trim();
 
-              const tooltipText =
-                nick === "Entrepreneurial"
-                  ? "Score based on project uniqueness, variety, and keywords"
-                  : mapping[nick].replace(/•\s*/g, "\n• ").trim();
+    return (
+      <div
+        key={nick}
+        className="me-2 mb-2 d-flex align-items-center"
+      >
+        <OverlayTrigger
+          placement="bottom"
+          flip={false}
+          delay={{ show: 2000, hide: 0 }}
+          overlay={<Tooltip id={`tt-${nick}`}>{tooltipText}</Tooltip>}
+        >
+          <Badge
+            bg={variant}
+            className="me-2 mb-0"
+            style={{ cursor: "pointer" }}
+            onClick={() => handleBadgeClick(nick)}
+          >
+            {nick} {arrow}
+          </Badge>
+        </OverlayTrigger>
 
-              return (
-                <OverlayTrigger
-                  key={nick}
-                  transition={false}
-                  placement="bottom"
-                  flip={false}
-                  delay={{ show: 2000, hide: 0 }}
-                  overlay={<Tooltip id={`tt-${nick}`}>{tooltipText}</Tooltip>}
-                >
-                  <Badge
-                    bg={variant}
-                    className="me-2 mb-2"
-                    style={{ cursor: "pointer" }}
-                    onClick={() => handleBadgeClick(nick)}
-                  >
-                    {nick} {arrow}
-                  </Badge>
-                </OverlayTrigger>
-              );
-            })}
+        {/* per-badge “…” overflow button */}
+        <Button
+          variant="link"
+          className="text-secondary p-0 ms-1"
+          onClick={() => {
+            setBadgeToSave({ title: nick, reqText: mapping[nick] });
+           setShowSaveModal(true);
+          }}
+          aria-label={`More actions for ${nick}`}
+        >
+          &hellip;
+        </Button>
+      </div>
+    );
+  })}
+
+            {/* “…” overflow / Save-Badge menu */}
+            <Button
+              variant="link"
+              className="text-secondary ms-2 p-0"
+              onClick={() => {
+                // set up whatever you need, then…
+                setBadgeToSave({ title: "My Badge", reqText });
+                setShowSaveModal(true);
+              }}
+              aria-label="More actions"
+            >
+              &hellip;
+            </Button>
 
             {/* anonymize toggle, pushed to right */}
-            <div className="ms-auto">
-              <Form.Check
-                type="checkbox"
-                label="Anonymize Candidate Data"
-                checked={anonymize}
-                onChange={(e) => setAnonymize(e.target.checked)}
-              />
+            <div className="ms-auto"> 
+            <Form.Check
+              type="checkbox"
+              label="Anonymize Candidate Data"
+              checked={anonymize}
+              onChange={(e) => setAnonymize(e.target.checked)}
+            />
             </div>
           </div>
 
