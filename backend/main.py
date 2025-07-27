@@ -13,6 +13,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
+from fastapi import status
 
 from backend import models
 from backend.database import SessionLocal, engine
@@ -282,6 +283,52 @@ def create_job(job: JobCreate, db: Session = Depends(get_db)):
         "description": new_job.description,
         "created_at":  new_job.created_at.isoformat(),
     }
+
+from typing import List
+
+# ──────────────────────────────────────────────────────────────────
+# Badge schemas
+# ──────────────────────────────────────────────────────────────────
+class BadgeBase(BaseModel):
+    title: str
+    reqText: str
+
+class BadgeCreate(BadgeBase):
+    pass
+
+class Badge(BadgeBase):
+    id: int
+    created_at: datetime
+
+    class Config:
+        orm_mode = True
+
+@app.get(
+    "/api/badges",
+    response_model=List[Badge],
+)
+def read_badges(db: Session = Depends(get_db)):
+    return db.query(models.Badge).all()
+
+@app.post(
+    "/api/badges",
+    response_model=Badge,
+    status_code=status.HTTP_201_CREATED
+)
+def create_badge(
+    badge: BadgeCreate,
+    db: Session = Depends(get_db),
+):
+    # map reqText → reqText in your SQLAlchemy model
+    db_badge = models.Badge(
+        title=badge.title,
+        reqText=badge.reqText
+    )
+    db.add(db_badge)
+    db.commit()
+    db.refresh(db_badge)
+    return db_badge
+
 
 # ————————————————————————————————
 # 5. OpenAI scoring flow

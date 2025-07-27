@@ -1,67 +1,55 @@
-import React, { useState } from "react";
-import { Table, Badge, OverlayTrigger, Tooltip, Form } from "react-bootstrap";
+import * as React from "react";
+import { useState } from "react";
+import {
+  Table,
+  Badge,
+  OverlayTrigger,
+  Tooltip,
+  Form,
+  Button,
+} from "react-bootstrap";
+import { ThreeDots } from "react-bootstrap-icons";
 import PropTypes from "prop-types";
 
-/**
- * CandidatesTable
- *
- * Displays a sortable table of candidate rows with options to:
- *   - Select candidates
- *   - Star/unstar candidates
- *   - View candidate details
- *   - Display AI requirement badges and optional entrepreneurial badge
- *
- * Props:
- *   @param {Array}   candidates             List of candidate objects
- *   @param {boolean} anonymize              Whether to anonymize candidate names
- *   @param {Function} onToggleStar          Toggle handler for star icon
- *   @param {Function} onViewCandidate       Handler to view candidate details
- *   @param {Function} onClearBadgeSort      Handler to clear badge sorting
- *   @param {Array}   selectedRows           IDs of selected candidates
- *   @param {Function} onSelectRow           Handler to select/deselect a row
- *   @param {boolean} showEntrepreneurial    Show entrepreneurial badge toggle
- *   @param {Object}  entrepreneurialScores  Entrepreneurial scores by candidate ID
- */
 export default function CandidatesTable({
   candidates,
   anonymize,
   onToggleStar,
   onViewCandidate,
+  onSortByBadge,
+  badgeRequirements = {},
+  setBadgeToSave,       // ( { title, reqText } ) => void
+  setShowSaveModal,     // (bool) => void
   onClearBadgeSort,
   selectedRows,
   onSelectRow,
   showEntrepreneurial,
   entrepreneurialScores,
 }) {
-  // State for sorting column and direction
   const [sortColumn, setSortColumn] = useState(null);
   const [sortDirection, setSortDirection] = useState("asc");
 
-  // Compute sorted list if a column is selected for sorting
+  // derive the header order from your requirements map
+  // this will be ['FirstReq', 'SecondReq', ...]
+  const badgeOrder = Object.keys(badgeRequirements || {})
+
+  // now you can safely badgeOrder.map(...) below
+
+  // compute sortedCandidates...
   const sortedCandidates = sortColumn
     ? [...candidates].sort((a, b) => {
-        let aVal, bVal;
-        switch (sortColumn) {
-          case "selected":
-            // Selected rows appear first
-            aVal = selectedRows.includes(a.id) ? 0 : 1;
-            bVal = selectedRows.includes(b.id) ? 0 : 1;
-            break;
-
-          case "starred":
-            // Starred rows appear first
-            aVal = a.starred ? 0 : 1;
-            bVal = b.starred ? 0 : 1;
-            break;
-
-          case "uploadDate":
-            // Newer uploads appear first
-            aVal = a.upload_date ? new Date(a.upload_date).getTime() : 0;
-            bVal = b.upload_date ? new Date(b.upload_date).getTime() : 0;
-            break;
-
-          default:
-            return 0;
+        // your existing switch on sortColumn…
+        let aVal = 0,
+          bVal = 0;
+        if (sortColumn === "selected") {
+          aVal = selectedRows.includes(a.id) ? 0 : 1;
+          bVal = selectedRows.includes(b.id) ? 0 : 1;
+        } else if (sortColumn === "starred") {
+          aVal = a.starred ? 0 : 1;
+          bVal = b.starred ? 0 : 1;
+        } else if (sortColumn === "uploadDate") {
+          aVal = a.upload_date ? new Date(a.upload_date).getTime() : 0;
+          bVal = b.upload_date ? new Date(b.upload_date).getTime() : 0;
         }
         return sortDirection === "asc" ? aVal - bVal : bVal - aVal;
       })
@@ -71,19 +59,16 @@ export default function CandidatesTable({
     <Table hover bordered responsive size="sm" className="sortable-table">
       <thead>
         <tr>
-          {/* Selection column */}
+          {/* -- select */}
           <th
             className="col-select sortable-header"
             style={{ cursor: "pointer" }}
             onClick={() => {
-              if (sortColumn !== "selected") {
-                setSortColumn("selected");
-                setSortDirection("asc");
-              } else if (sortDirection === "asc") {
-                setSortDirection("desc");
-              } else {
-                setSortColumn(null);
-              }
+              const nextCol = sortColumn !== "selected" ? "selected" : null;
+              const nextDir =
+                sortColumn !== "selected" ? "asc" : sortDirection === "asc" ? "desc" : "asc";
+              setSortColumn(nextCol);
+              setSortDirection(nextDir);
               onClearBadgeSort();
             }}
           >
@@ -95,28 +80,80 @@ export default function CandidatesTable({
               : ""}
           </th>
 
-          {/* Actions */}
+          {/* -- actions */}
           <th>Actions</th>
 
-          {/* Candidate name */}
+          {/* -- name */}
           <th className="col-candidate">Candidate</th>
 
-          {/* Requirement badges */}
-          <th>Badges</th>
+          {/* -- badges header (you can also add per-badge sort + ellipsis here) */}
+          <th className="col-badge text-nowrap">
+            {badgeOrder.map(nick => {
+              // derive arrow if currently sorting by this badge
+              const isSorted = sortColumn === nick;
+              const arrow = isSorted
+                ? sortDirection === "asc"
+                  ? " ▲"
+                  : " ▼"
+                : "";
 
-          {/* Starred column */}
+              return (
+                <div key={nick} className="d-inline-block me-2 align-middle">
+                  <OverlayTrigger
+                    container={document.body}
+                    placement="bottom"
+                    transition={false}
+                    overlay={<Tooltip id={`tt-hdr-${nick}`}>{badgeRequirements[nick]}</Tooltip>}
+                  >
+                    <span
+                      className="badge badge-pill bg-light text-dark"
+                      style={{ cursor: "pointer", padding: "0.35em 0.65em" }}
+                      onClick={() => {
+                        // toggle badge sort
+                        if (sortColumn !== nick) {
+                          setSortColumn(nick);
+                          setSortDirection("asc");
+                        } else if (sortDirection === "asc") {
+                          setSortDirection("desc");
+                        } else {
+                          setSortColumn(null);
+                        }
+                        onClearBadgeSort();
+                      }}
+                    >
+                      {nick}{arrow}
+                    </span>
+                  </OverlayTrigger>
+
+                  <button
+    className="btn btn-link btn-sm p-1"
+    onClick={e => {
+      e.stopPropagation();
+      setBadgeToSave({
+        title: nick,
+        // if badgeRequirements[nick] is missing, use empty string
+        reqText: badgeRequirements[nick] ?? "",
+      });
+      setShowSaveModal(true);
+    }}
+  >
+    <ThreeDots />
+  </button>
+                </div>
+              );
+            })}
+          </th>
+
+          {/* -- starred */}
           <th
             className="col-star sortable-header"
             style={{ cursor: "pointer" }}
             onClick={() => {
-              if (sortColumn !== "starred") {
-                setSortColumn("starred");
-                setSortDirection("asc");
-              } else if (sortDirection === "asc") {
-                setSortDirection("desc");
-              } else {
-                setSortColumn(null);
-              }
+              const nextCol = sortColumn !== "starred" ? "starred" : null;
+              const nextDir =
+                sortColumn !== "starred" ? "asc" : sortDirection === "asc" ? "desc" : "asc";
+              setSortColumn(nextCol);
+              setSortDirection(nextDir);
               onClearBadgeSort();
             }}
           >
@@ -128,19 +165,16 @@ export default function CandidatesTable({
               : ""}
           </th>
 
-          {/* Upload date column */}
+          {/* -- upload date */}
           <th
             className="col-upload-date sortable-header"
             style={{ cursor: "pointer" }}
             onClick={() => {
-              if (sortColumn !== "uploadDate") {
-                setSortColumn("uploadDate");
-                setSortDirection("asc");
-              } else if (sortDirection === "asc") {
-                setSortDirection("desc");
-              } else {
-                setSortColumn(null);
-              }
+              const nextCol = sortColumn !== "uploadDate" ? "uploadDate" : null;
+              const nextDir =
+                sortColumn !== "uploadDate" ? "asc" : sortDirection === "asc" ? "desc" : "asc";
+              setSortColumn(nextCol);
+              setSortDirection(nextDir);
               onClearBadgeSort();
             }}
           >
@@ -157,7 +191,7 @@ export default function CandidatesTable({
       <tbody>
         {sortedCandidates.map((c) => (
           <tr key={c.id}>
-            {/* Select checkbox */}
+            {/* -- checkbox */}
             <td
               className="col-select"
               style={{ cursor: "pointer" }}
@@ -166,7 +200,7 @@ export default function CandidatesTable({
               <Form.Check
                 type="checkbox"
                 checked={selectedRows.includes(c.id)}
-                readOnly // avoid React warning
+                readOnly
                 onClick={(e) => {
                   e.stopPropagation();
                   onSelectRow(c.id);
@@ -174,7 +208,7 @@ export default function CandidatesTable({
               />
             </td>
 
-            {/* View action */}
+            {/* -- view button */}
             <td className="col-view">
               <button
                 className="btn btn-sm btn-outline-primary"
@@ -184,70 +218,87 @@ export default function CandidatesTable({
               </button>
             </td>
 
-            {/* Candidate name (or anonymized ID) */}
+            {/* -- name */}
             <td
               className="col-candidate"
               style={{ cursor: "pointer" }}
               onClick={() => onSelectRow(c.id)}
             >
-              {anonymize ? `C${c.id.toString().padStart(7, "0")}` : c.name}
+              {anonymize
+                ? `C${c.id.toString().padStart(7, "0")}`
+                : c.name}
             </td>
 
-            {/* Requirement badges */}
-            <td className="col-badge">
-              {Object.entries(c.scores || {}).map(([nick, entry]) => {
-                const num = entry.score;
-                const reason = entry.reason;
-
-                let variant = "secondary";
-                if (num <= 50) variant = "danger";
-                else if (num <= 70) variant = "warning";
-                else if (num <= 80) variant = "info";
-                else variant = "success";
-
-                let extraClass =
-                  num <= 50
+            {/* -- requirement badges + save “…” */}
+            <td className="col-badge text-nowrap">
+              {Object.entries(c.scores || {}).map(([nick, { score, reason }]) => {
+                const extraClass =
+                  score <= 50
                     ? "badge-score-low"
-                    : num <= 70
+                    : score <= 70
                     ? "badge-score-medium"
-                    : num <= 80
+                    : score <= 80
                     ? "badge-score-high"
                     : "badge-score-veryhigh";
 
                 return (
-                  <OverlayTrigger
-                    key={nick}
-                    container={document.body}
-                    transition={false}
-                    placement="bottom"
-                    flip={false}
-                    delay={{ show: 0, hide: 0 }}
-                    overlay={<Tooltip id={`tt-${nick}`}>{reason}</Tooltip>}
-                  >
-                    <Badge pill className={`me-1 mb-1 ${extraClass}`}>
-                      {nick} {num.toFixed(1)}
-                    </Badge>
-                  </OverlayTrigger>
+                  <div key={nick} className="d-inline-block me-1 mb-1">
+                    <OverlayTrigger
+                      container={document.body}
+                      transition={false}
+                      placement="bottom"
+                      flip={false}
+                      delay={{ show: 0, hide: 0 }}
+                      overlay={<Tooltip id={`tt-${nick}`}>{reason}</Tooltip>}
+                    >
+                      <span
+                        className={`badge badge-pill ${extraClass}`}
+                        style={{ cursor: "pointer", padding: "0.35em 0.65em" }}
+                        onClick={() => onSortByBadge(nick)}
+                      >
+                        {nick} {score.toFixed(1)}
+                      </span>
+                    </OverlayTrigger>
+
+                    <Button
+                      variant="link"
+                      size="sm"
+                      className="ms-1 align-middle p-1"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setBadgeToSave({
+                          title: nick,
+                          reqText: badgeRequirements[nick],
+                        });
+                        setShowSaveModal(true);
+                      }}
+                    >
+                      <ThreeDots />
+                    </Button>
+                  </div>
                 );
               })}
+            </td>
 
-              {/* Entrepreneurial badge */}
-              {showEntrepreneurial &&
-                (() => {
+            {/* -- entrepreneurial */}
+            {showEntrepreneurial && (
+              <td className="col-badge text-nowrap">
+                {(() => {
                   const {
                     uniqueness = 0,
                     variety = 0,
                     keywords = 0,
                     total = 0,
                   } = entrepreneurialScores[c.id] || {};
-
-                  let variant = "secondary";
-                  if (total <= 50) variant = "danger";
-                  else if (total <= 70) variant = "warning";
-                  else if (total <= 80) variant = "info";
-                  else variant = "success";
-
-                  let extraClass =
+                  const variant =
+                    total <= 50
+                      ? "danger"
+                      : total <= 70
+                      ? "warning"
+                      : total <= 80
+                      ? "info"
+                      : "success";
+                  const extraClass =
                     total <= 50
                       ? "badge-score-low"
                       : total <= 70
@@ -258,19 +309,16 @@ export default function CandidatesTable({
 
                   return (
                     <OverlayTrigger
-                      key={`entrepreneurial-${c.id}`}
-                      transition={false}
                       container={document.body}
+                      transition={false}
                       placement="bottom"
                       flip={false}
                       delay={{ show: 0, hide: 0 }}
                       overlay={
                         <Tooltip id="tt-entrepreneurial">
-                          <div style={{ whiteSpace: "pre-line" }}>
-                            {`• Project Uniqueness Score: ${uniqueness}/33
-                              • Project Variety Score: ${variety}/33
-                              • Entrepreneurial Keywords Score: ${keywords}/33`}
-                          </div>
+                          {`• Project Uniqueness: ${uniqueness}/33
+• Project Variety: ${variety}/33
+• Keywords: ${keywords}/33`}
                         </Tooltip>
                       }
                     >
@@ -284,9 +332,10 @@ export default function CandidatesTable({
                     </OverlayTrigger>
                   );
                 })()}
-            </td>
+              </td>
+            )}
 
-            {/* Star toggle */}
+            {/* -- star */}
             <td
               className="col-star"
               style={{ textAlign: "center", cursor: "pointer" }}
@@ -295,7 +344,7 @@ export default function CandidatesTable({
               {c.starred ? "★" : "☆"}
             </td>
 
-            {/* Upload date */}
+            {/* -- upload date */}
             <td className="col-upload-date">
               {c.upload_date
                 ? new Date(c.upload_date).toLocaleDateString()
@@ -313,9 +362,13 @@ CandidatesTable.propTypes = {
   anonymize: PropTypes.bool.isRequired,
   onToggleStar: PropTypes.func.isRequired,
   onViewCandidate: PropTypes.func.isRequired,
+  onSortByBadge: PropTypes.func.isRequired,
+  badgeRequirements: PropTypes.objectOf(PropTypes.string).isRequired,
+  setBadgeToSave: PropTypes.func.isRequired,
+  setShowSaveModal: PropTypes.func.isRequired,
   onClearBadgeSort: PropTypes.func.isRequired,
   selectedRows: PropTypes.array.isRequired,
   onSelectRow: PropTypes.func.isRequired,
   showEntrepreneurial: PropTypes.bool.isRequired,
-  entrepreneurialScores: PropTypes.object.isRequired,
+  entrepreneurialScores: PropTypes.object.isRequired
 };

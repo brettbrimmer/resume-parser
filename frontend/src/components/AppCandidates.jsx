@@ -1,4 +1,7 @@
 import React, { useState, useEffect, useRef, useMemo } from "react";
+import { Collapse } from "react-bootstrap";
+import SavedBadgesPanel from "./SavedBadgesPanel";
+import SaveBadgeModal   from "./SaveBadgeModal";
 import axios from "axios";
 import {
   Container,
@@ -111,6 +114,42 @@ export default function AppCandidates({ jobId }) {
   const [showEntrepreneurial, setShowEntrepreneurial] = useState(false);
   const [cityOptionsAsync, setCityOptionsAsync] = useState([]);
   const [cityLoading, setCityLoading] = useState(false);
+
+  // collapse state
+  const [filtersCollapsed, setFiltersCollapsed] = useState(false);
+
+  // Saved badges loaded from DB
+  const [savedBadges, setSavedBadges] = useState([]);
+
+  // Modal state
+  const [showSaveModal, setShowSaveModal] = useState(false);
+  const [badgeToSave, setBadgeToSave]     = useState({ title: "", reqText: "" });
+
+  // Fetch saved badges on mount
+  useEffect(() => {
+    fetch("/api/badges")
+      .then((res) => res.json())
+      .then((data) => setSavedBadges(data))
+      .catch(console.error);
+  }, []);
+
+  // handler to save a new badge
+  const handleSaveBadge = async ({ title, reqText }) => {
+    await fetch("/api/badges", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ title, reqText }),
+    });
+    // reload list
+    const data = await (await fetch("/api/badges")).json();
+    setSavedBadges(data);
+  };
+
+  // when you click a saved badge, re-apply its reqText
+  const handleApplySavedBadge = ({ reqText }) => {
+    setReqText(reqText);
+    applyRequirements();  // your existing function
+  };
 
   // ── Helpers ───────────────────────────────────────────────────
   function lookupCoords(address) {
@@ -688,7 +727,22 @@ export default function AppCandidates({ jobId }) {
       <Row>
         {/* Sidebar Filters */}
         <Col xs={12} md={2}>
-          <FilterPanel
+          <Card className="mb-3">
+            <Card.Header
+              onClick={() => setFiltersCollapsed(f => !f)}
+              style={{ cursor: "pointer" }}
+            >
+              <h5>
+                Filters
+                <span className="float-end">
+                  {filtersCollapsed ? "+" : "–"}
+                </span>
+              </h5>
+            </Card.Header>
+
+            <Collapse in={!filtersCollapsed}>
+              <div>
+                <FilterPanel
             searchTerm={searchTerm}
             onSearchChange={(e) => setSearchTerm(e.target.value)}
             requireAll={requireAll}
@@ -725,6 +779,25 @@ export default function AppCandidates({ jobId }) {
             onShowEntrepreneurialChange={(e) =>
               setShowEntrepreneurial(e.target.checked)
             }
+                />
+              </div>
+            </Collapse>
+          </Card>
+
+          <SavedBadgesPanel
+            badges={savedBadges}
+            onApplyBadge={handleApplySavedBadge}
+          />
+
+          <SaveBadgeModal
+            show={showSaveModal}
+            onHide={() => setShowSaveModal(false)}
+            title={badgeToSave.title}
+            reqText={badgeToSave.reqText}
+            onSave={async () => {
+              await handleSaveBadge(badgeToSave);
+              setShowSaveModal(false);
+            }}
           />
         </Col>
 
@@ -831,16 +904,23 @@ export default function AppCandidates({ jobId }) {
             </label>
           </div>
           <CandidatesTable
-            candidates={displayed}
-            anonymize={anonymize}
-            onToggleStar={toggleStar}
-            onViewCandidate={handleViewCandidate}
-            selectedRows={selectedRows}
-            onSelectRow={onSelectRow}
-            onClearBadgeSort={() => setSortConfig({})}
-            showEntrepreneurial={showEntrepreneurial}
-            entrepreneurialScores={entrepreneurialScores}
-          />
+      candidates={displayed}
+      anonymize={anonymize}
+      onToggleStar={toggleStar}
+      onViewCandidate={handleViewCandidate}
+      // ← badge sorting callback
+      onSortByBadge={handleBadgeClick}
+      // ← map of key → label for each dynamic badge
+      badgeRequirements={mapping}
+      // ← these control your “Save Badge” modal
+      setBadgeToSave={setBadgeToSave}
+      setShowSaveModal={setShowSaveModal}
+      selectedRows={selectedRows}
+      onSelectRow={onSelectRow}
+      onClearBadgeSort={() => setSortConfig({})}
+      showEntrepreneurial={showEntrepreneurial}
+      entrepreneurialScores={entrepreneurialScores}
+    />
         </Col>
       </Row>
 

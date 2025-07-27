@@ -1,6 +1,6 @@
 from datetime import datetime, timezone
 from sqlalchemy import Column, Integer, String, Text, JSON, Float
-from sqlalchemy import DateTime, ForeignKey
+from sqlalchemy import DateTime, ForeignKey, func
 from backend.database import Base
 from sqlalchemy import DateTime
 from sqlalchemy.orm import relationship
@@ -61,4 +61,11 @@ class Candidate(Base):
     job_id      = Column(Integer, ForeignKey("jobs.id", ondelete="CASCADE"), index=True)
     job         = relationship("Job", back_populates="candidates")
     
+class Badge(Base):
+    __tablename__ = "badges"
+
+    id         = Column(Integer, primary_key=True, index=True)
+    title      = Column(String(255), nullable=False)
+    reqText   = Column(Text, nullable=False)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
     
