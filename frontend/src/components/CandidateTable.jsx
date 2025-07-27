@@ -162,6 +162,7 @@ export default function CandidatesTable({
                 className="btn btn-sm btn-outline-primary"
                 onClick={() => onViewCandidate(c.id)}
               >
+                <i class="bi bi-eye"> </i>
                 View
               </button>
             </td>

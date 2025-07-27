@@ -100,6 +100,7 @@ export default function JobsPage({ createOnly = false }) {
                   size="sm"
                   onClick={() => navigate(`/jobs/${job.id}`)}
                 >
+                  <i class="bi bi-eye"> </i>
                   View
                 </Button>
               </td>
@@ -119,6 +120,7 @@ export default function JobsPage({ createOnly = false }) {
                   setShowDescModal(true);
                 }}
               >
+                <i class="bi bi-body-text"> </i>
                 View Description
               </Button>
             </td>

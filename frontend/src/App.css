@@ -204,7 +204,8 @@ body {
 .navbar .nav-link {
   position: relative;
   padding-bottom: 0.5rem;
-  color: #ccc;
+  /* color: #ccc; */
+  color: #fcfcfd;
   text-shadow: none;
 
   /* set up a transparent bottom border that becomes visible on hover */

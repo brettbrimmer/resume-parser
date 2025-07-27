@@ -829,6 +829,7 @@ export default function AppCandidates({ jobId }) {
         <Col xs={12} md={9}>
           <div className="toolbar mb-3 d-flex flex-wrap align-items-center">
             <label className="btn btn-primary me-2">
+              <i class="bi bi-upload"> </i>
               Upload Resumes
               <input
                 type="file"
@@ -842,6 +843,7 @@ export default function AppCandidates({ jobId }) {
               className="me-2"
               onClick={exportSelectedToCsv}
             >
+              <i class="bi bi-filetype-csv"> </i>
               Export Selected (CSV)
             </Button>
             <Button
@@ -850,6 +852,7 @@ export default function AppCandidates({ jobId }) {
               disabled={selectedRows.length === 0}
               onClick={deleteSelected}
             >
+              <i class="bi bi-x-circle"> </i>
               Delete Selected
             </Button>
 
