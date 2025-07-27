@@ -135,20 +135,25 @@ export default function AppCandidates({ jobId }) {
 
   // handler to save a new badge
   const handleSaveBadge = async ({ title, reqText }) => {
-    await fetch("/api/badges", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ title, reqText }),
-    });
-    // reload list
-    const data = await (await fetch("/api/badges")).json();
-    setSavedBadges(data);
+    // 1) POST and grab the new badge back, instead of re-fetching the whole list
+  const res = await fetch("/api/badges", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ title, reqText }),
+  });
+  const payload = await res.json();
+
+  setSavedBadges(prev =>
+    // if payload is an array, concat flattens it;
+    // if it’s a single object, it just appends it
+    prev.concat(payload)
+  );
   };
 
   // when you click a saved badge, re-apply its reqText
   const handleApplySavedBadge = ({ reqText }) => {
     setReqText(reqText);
-    applyRequirements();  // your existing function
+    applyRequirements();
   };
 
   // ── Helpers ───────────────────────────────────────────────────
@@ -273,14 +278,28 @@ export default function AppCandidates({ jobId }) {
         (acc, [label, key]) => ({ ...acc, [key]: label }),
         {}
       );
-      setMapping(flipped);
-      setNicknames(Object.keys(flipped));
-      setCandidates((prev) =>
-        prev.map((c) => {
-          const scored = data.candidates.find((x) => x.id === c.id);
-          return { ...c, scores: scored?.results || {} };
-        })
-      );
+      // 1) Merge new mappings into existing ones
+   setMapping(prev => ({ ...prev, ...flipped }));
+
+   // 2) Append only brand-new requirement keys
+   setNicknames(prev => [
+     ...prev,
+     ...Object.keys(flipped).filter(k => !prev.includes(k))
+   ]);
+
+   // 3) Merge each candidate’s new scores into existing scores
+   setCandidates(prev =>
+     prev.map(c => {
+       const scored = data.candidates.find(x => x.id === c.id);
+       return {
+         ...c,
+         scores: {
+           ...c.scores,               // keep old badges
+           ...(scored?.results || {}) // add new ones
+         }
+       };
+     })
+   );
     } catch (err) {
       console.error(err);
       alert("Failed applying requirements");

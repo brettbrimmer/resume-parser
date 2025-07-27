@@ -192,7 +192,7 @@ export default function FilterPanel({
           </Form.Group>
           <div className="d-grid mb-3">
             <Button
-              onClick={onApplyRequirements}
+              onClick={() => onApplyRequirements()}
               disabled={isApplyingReq}
               variant={isApplyingReq ? "warning" : "primary"}
               className={isApplyingReq ? "btn-pulse" : ""}

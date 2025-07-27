@@ -87,61 +87,9 @@ export default function CandidatesTable({
           <th className="col-candidate">Candidate</th>
 
           {/* -- badges header (you can also add per-badge sort + ellipsis here) */}
+          {/* -- single Badges header */}
           <th className="col-badge text-nowrap">
-            {badgeOrder.map(nick => {
-              // derive arrow if currently sorting by this badge
-              const isSorted = sortColumn === nick;
-              const arrow = isSorted
-                ? sortDirection === "asc"
-                  ? " ▲"
-                  : " ▼"
-                : "";
-
-              return (
-                <div key={nick} className="d-inline-block me-2 align-middle">
-                  <OverlayTrigger
-                    container={document.body}
-                    placement="bottom"
-                    transition={false}
-                    overlay={<Tooltip id={`tt-hdr-${nick}`}>{badgeRequirements[nick]}</Tooltip>}
-                  >
-                    <span
-                      className="badge badge-pill bg-light text-dark"
-                      style={{ cursor: "pointer", padding: "0.35em 0.65em" }}
-                      onClick={() => {
-                        // toggle badge sort
-                        if (sortColumn !== nick) {
-                          setSortColumn(nick);
-                          setSortDirection("asc");
-                        } else if (sortDirection === "asc") {
-                          setSortDirection("desc");
-                        } else {
-                          setSortColumn(null);
-                        }
-                        onClearBadgeSort();
-                      }}
-                    >
-                      {nick}{arrow}
-                    </span>
-                  </OverlayTrigger>
-
-                  <button
-    className="btn btn-link btn-sm p-1"
-    onClick={e => {
-      e.stopPropagation();
-      setBadgeToSave({
-        title: nick,
-        // if badgeRequirements[nick] is missing, use empty string
-        reqText: badgeRequirements[nick] ?? "",
-      });
-      setShowSaveModal(true);
-    }}
-  >
-    <ThreeDots />
-  </button>
-                </div>
-              );
-            })}
+            Badges
           </th>
 
           {/* -- starred */}
@@ -229,9 +177,10 @@ export default function CandidatesTable({
                 : c.name}
             </td>
 
-            {/* -- requirement badges + save “…” */}
+            {/* -- single unified badges cell */}
             <td className="col-badge text-nowrap">
               {Object.entries(c.scores || {}).map(([nick, { score, reason }]) => {
+                if (score <= 0) return null;
                 const extraClass =
                   score <= 50
                     ? "badge-score-low"
@@ -240,45 +189,78 @@ export default function CandidatesTable({
                     : score <= 80
                     ? "badge-score-high"
                     : "badge-score-veryhigh";
-
                 return (
-                  <div key={nick} className="d-inline-block me-1 mb-1">
-                    <OverlayTrigger
-                      container={document.body}
-                      transition={false}
-                      placement="bottom"
-                      flip={false}
-                      delay={{ show: 0, hide: 0 }}
-                      overlay={<Tooltip id={`tt-${nick}`}>{reason}</Tooltip>}
+                  <OverlayTrigger
+                    key={nick}
+                    container={document.body}
+                    placement="bottom"
+                    transition={false}
+                    flip={false}
+                    delay={{ show: 0, hide: 0 }}
+                    overlay={<Tooltip id={`tt-${nick}`}>{reason}</Tooltip>}
+                  >
+                    <span
+                      className={`badge badge-pill ${extraClass} me-1 mb-1`}
+                      style={{ cursor: "pointer", padding: "0.35em 0.65em" }}
+                      onClick={() => onSortByBadge(nick)}
                     >
-                      <span
-                        className={`badge badge-pill ${extraClass}`}
-                        style={{ cursor: "pointer", padding: "0.35em 0.65em" }}
-                        onClick={() => onSortByBadge(nick)}
-                      >
-                        {nick} {score.toFixed(1)}
-                      </span>
-                    </OverlayTrigger>
-
-                    <Button
-                      variant="link"
-                      size="sm"
-                      className="ms-1 align-middle p-1"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setBadgeToSave({
-                          title: nick,
-                          reqText: badgeRequirements[nick],
-                        });
-                        setShowSaveModal(true);
-                      }}
-                    >
-                      <ThreeDots />
-                    </Button>
-                  </div>
+                      {nick} {score.toFixed(1)}
+                    </span>
+                  </OverlayTrigger>
                 );
               })}
-            </td>
+
+              {showEntrepreneurial &&
+                (() => {
+                  const {
+                    uniqueness = 0,
+                    variety = 0,
+                    keywords = 0,
+                    total = 0,
+                  } = entrepreneurialScores[c.id] || {};
+                  if (total <= 0) return null;
+                  const variant =
+                    total <= 50
+                      ? "danger"
+                      : total <= 70
+                      ? "warning"
+                      : total <= 80
+                      ? "info"
+                      : "success";
+                  const extraClass =
+                    total <= 50
+                      ? "badge-score-low"
+                      : total <= 70
+                      ? "badge-score-medium"
+                      : total <= 80
+                      ? "badge-score-high"
+                      : "badge-score-veryhigh";
+                  return (
+                    <OverlayTrigger
+                      container={document.body}
+                      placement="bottom"
+                      transition={false}
+                      flip={false}
+                      delay={{ show: 0, hide: 0 }}
+                      overlay={
+                        <Tooltip id="tt-entrepreneurial">
+                          {`• Project Uniqueness: ${uniqueness}/33
+ • Project Variety: ${variety}/33
+ • Keywords: ${keywords}/33`}
+                        </Tooltip>
+                      }
+                    >
+                      <Badge
+                        pill
+                        bg={variant}
+                        className={`me-1 mb-1 ${extraClass}`}
+                      >
+                        Entrepreneurial {total.toFixed(1)}
+                      </Badge>
+                    </OverlayTrigger>
+                  );
+                })()}
+              </td>
 
             {/* -- entrepreneurial */}
             {showEntrepreneurial && (
