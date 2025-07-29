@@ -1,0 +1,41 @@
+EMILY SANTOS
+Denver, CO | (303) 555-6731 | [emily.santos@email.com](mailto:emily.santos@email.com)
+github.com/emilysantosdev | linkedin.com/in/emilysantos
+
+SKILLS
+Languages: Ruby, Java, HTML/CSS
+Frameworks & Tools: Ruby on Rails, Git, MySQL, IntelliJ
+Technologies: MVC Architecture, REST APIs, Responsive Design
+Platforms: Windows, Linux, Netlify
+
+EDUCATION
+University of Colorado Boulder – Boulder, CO
+Bachelor of Science in Computer Science
+Aug 2019 – May 2023
+GPA: 3.6
+Relevant Coursework: Web Development, Software Engineering, Operating Systems, Algorithms
+
+PROJECTS
+Book Review Platform
+• Built a full-stack web app using Ruby on Rails to allow users to write and share book reviews.
+• Integrated third-party APIs to fetch book data and cover images.
+• Designed user-friendly UI with responsive layouts using HTML/CSS.
+
+Class Scheduler Tool
+• Developed a Java-based desktop application to help students generate optimal class schedules.
+• Implemented filtering logic and conflict detection algorithms.
+• Stored user preferences and data using MySQL.
+
+EXPERIENCE
+Software Developer Intern
+Summit Logic LLC – Denver, CO
+Jun 2022 – Aug 2022
+• Contributed to the development of a scheduling module in a logistics web platform.
+• Wrote controller and model logic in Ruby on Rails and added automated tests.
+• Collaborated with senior developers in Agile sprint planning and reviews.
+
+Peer Mentor
+University of Colorado – CS Department
+Sep 2021 – May 2023
+• Mentored first-year students in introductory computer science courses.
+• Led weekly office hours and helped students with programming assignments and study strategies.

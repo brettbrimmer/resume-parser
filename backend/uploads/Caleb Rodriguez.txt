@@ -1,0 +1,41 @@
+CALEB RODRIGUEZ
+Charlotte, NC | (704) 555-9821 | [caleb.rodriguez@email.com](mailto:caleb.rodriguez@email.com)
+github.com/calebrodriguez | linkedin.com/in/calebrodriguez
+
+SKILLS
+Languages: Python, JavaScript, Go
+Frameworks & Tools: Django, Vue.js, Git, Docker
+Technologies: REST APIs, OAuth 2.0, PostgreSQL
+Platforms: Linux, macOS, AWS
+
+EDUCATION
+University of North Carolina at Charlotte – Charlotte, NC
+Bachelor of Science in Computer Science
+Aug 2019 – May 2023
+GPA: 3.55
+Relevant Coursework: Software Engineering, Web Development, Cloud Computing, Database Systems
+
+PROJECTS
+Task Automation Platform
+• Developed a Django-based web app to automate repetitive workflows for small businesses.
+• Created RESTful APIs and integrated OAuth 2.0 for secure user authentication.
+• Designed frontend with Vue.js to provide a clean, responsive UI.
+
+Social Media Sentiment Analyzer
+• Built a Python tool using NLP libraries to analyze sentiment of Twitter data streams.
+• Visualized results with dynamic charts and graphs for trend insights.
+
+EXPERIENCE
+Backend Developer Intern
+Bright Horizon Tech – Charlotte, NC
+Jun 2022 – Aug 2022
+• Designed and implemented REST APIs using Django REST Framework.
+• Improved application scalability by refactoring key backend services.
+• Collaborated with frontend developers and product managers in Agile environment.
+
+IT Support Assistant
+UNC Charlotte – Information Technology Services
+Sep 2020 – May 2022
+• Provided technical assistance to students and faculty on software and hardware issues.
+• Assisted in computer lab setup and maintenance.
+• Documented common support cases to improve help desk efficiency.

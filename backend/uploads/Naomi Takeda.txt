@@ -1,0 +1,42 @@
+NAOMI TAKEDA
+Portland, OR | (971) 555-3880 | [naomi.takeda@email.com](mailto:naomi.takeda@email.com)
+github.com/naomitakeda | linkedin.com/in/naomitakeda
+
+SKILLS
+Languages: Python, Swift, HTML/CSS
+Frameworks & Tools: Flask, Xcode, Git, SQLite
+Technologies: REST APIs, User Authentication, UI Design
+Platforms: iOS, macOS, Linux
+
+EDUCATION
+Oregon State University – Corvallis, OR
+Bachelor of Science in Computer Science
+Sep 2020 – Jun 2024 (Expected)
+GPA: 3.7
+Relevant Coursework: Software Engineering, Mobile App Development, Databases, Data Structures
+
+PROJECTS
+Language Learning App
+• Designed an iOS app using Swift for practicing vocabulary with spaced repetition.
+• Integrated user progress tracking and local notifications for study reminders.
+• Used Core Data for offline storage of words and stats.
+
+Campus Services Web Portal
+• Built a web application in Python and Flask to streamline student service requests.
+• Included ticket creation, tracking, and admin panel for support staff.
+• Implemented login system and secure session handling.
+
+EXPERIENCE
+iOS Developer Intern
+Mapletree Solutions – Portland, OR
+Jun 2023 – Aug 2023
+• Built new features and UI screens in a Swift-based social networking app.
+• Wrote unit tests and participated in code reviews and QA testing cycles.
+• Collaborated with product designers to improve onboarding flow.
+
+Computer Science Tutor
+Oregon State University – College of Engineering
+Oct 2022 – May 2024
+• Provided one-on-one and group tutoring in Python, data structures, and algorithms.
+• Assisted students with debugging and test-driven development practices.
+• Helped prepare coding challenges for lab sections.

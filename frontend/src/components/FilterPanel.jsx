@@ -81,7 +81,7 @@ export default function FilterPanel({
         <Form>
           {/* Search section */}
           <Form.Group controlId="searchResumes" className="mb-3">
-            <Form.Label><i class="bi bi-search"> </i>
+            <Form.Label><i className="bi bi-search"> </i>
             Search Resumes</Form.Label>
             <Form.Control
               type="text"
@@ -107,7 +107,7 @@ export default function FilterPanel({
             className="mb-3 d-flex flex-wrap align-items-center"
           >
             <Form.Label className="me-2 mb-0">
-              <i class="bi bi-geo-alt"> </i>
+              <i className="bi bi-geo-alt"> </i>
               Within</Form.Label>
             <Form.Control
               type="text"
@@ -164,7 +164,7 @@ export default function FilterPanel({
             />
             <div className="d-flex align-items-center mt-2">
               <Form.Label className="me-2 mb-0">
-                <i class="bi bi-bank"> </i> {/* University icon */}
+                <i className="bi bi-bank"> </i> {/* University icon */}
               Min GPA</Form.Label>
               <Form.Control
                 type="text"
@@ -187,7 +187,7 @@ export default function FilterPanel({
           {/* Add Requirement */}
           <Form.Group controlId="requirements" className="mb-3">
             <Form.Label>
-              <i class="bi bi-bullseye"> </i>
+              <i className="bi bi-bullseye"> </i>
               (AI) Smart Requirement</Form.Label>
             <Form.Control
               as="textarea"

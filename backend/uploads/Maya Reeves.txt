@@ -1,0 +1,41 @@
+MAYA REEVES
+Seattle, WA | (206) 555-8439 | maya.reeves@email.com
+github.com/mayareeves | linkedin.com/in/mayareeves
+
+SKILLS
+Languages: C++, Python, TypeScript
+Frameworks & Tools: React, Node.js, Git, Docker
+Technologies: REST APIs, SQL, OAuth 2.0
+Platforms: Linux, Windows, AWS
+
+EDUCATION
+University of Washington – Seattle, WA
+Bachelor of Science in Computer Science
+Sep 2020 – Jun 2024 (Expected)
+GPA: 3.4 / 4.0
+Relevant Coursework: Database Systems, Computer Networks, Web Development, Software Design Patterns
+
+PROJECTS
+Recipe Share Platform
+• Developed a full-stack web application where users can upload and browse recipes.
+• Built the backend with Node.js and Express; used MongoDB for data storage.
+• Implemented user authentication with OAuth 2.0 via Google login.
+
+Real-Time Chat App
+• Created a React-based frontend with a WebSocket-powered backend in Python.
+• Deployed the app using Docker containers on AWS EC2.
+
+EXPERIENCE
+Software Engineering Intern
+CodeStream Inc. – Remote
+Jun 2023 – Aug 2023
+• Designed and implemented new features for a team collaboration tool using React.
+• Wrote unit and integration tests to improve test coverage by 35%.
+• Participated in daily standups and weekly sprint planning using Agile methodology.
+
+Computer Science Tutor (Part-time)
+University of Washington – Computer Science & Engineering Dept.
+Oct 2022 – Present
+• Tutored undergraduate students in data structures, algorithms, and C++ programming.
+• Led weekly study sessions and helped students debug assignments.
+
