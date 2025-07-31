@@ -8,7 +8,7 @@ html,
 }
 
 body {
-  background-color: #f8f9fa; /* Bootstrap’s $gray-100 */
+  background-color: #f8f9fa;
 }
 
 .app-container {
@@ -71,6 +71,7 @@ body {
   color: black !important;
 }
 
+/* Column widths */
 .col-star {
   width: 80px;
   text-align: center;
@@ -101,13 +102,13 @@ body {
   text-align: center;
 }
 
-/* Make our table use fixed layout so widths are honored */
+/* Make table use fixed layout so widths are honored */
 .job-table {
   table-layout: fixed;
   width: 100%;
 }
 
-/* Now set each column’s width; apply to both header & cells */
+/* Set up each column's width */
 .job-table th.col-job-id,
 .job-table td.col-job-id {
   width: 40px;
@@ -195,25 +196,21 @@ body {
   font-style: italic !important;
 }
 
-/* push the modal-dialog down from the very top */
+/* push the modal-dialog down */
 .modal-top {
-  margin-top: 1rem; /* tweak this value to taste */
+  margin-top: 1rem;
 }
 
 /* base styles for nav links */
 .navbar .nav-link {
   position: relative;
   padding-bottom: 0.5rem;
-  /* color: #ccc; */
   color: #fcfcfd;
   text-shadow: none;
 
-  /* set up a transparent bottom border that becomes visible on hover */
+  /* transparent bottom border that becomes visible on hover */
   border-bottom: 2px solid transparent;
   transition: none;
-
-  /* always show a light gray underline */
-  /* border-bottom: 2px solid #ccc; */
 }
 
 /* on hover: text glow + instant underline */
@@ -225,7 +222,6 @@ body {
   border-bottom-color: #007bff;
 }
 
-/* remove the old pseudo-element rule entirely if you had one */
 .navbar .nav-link::after {
   content: none;
 }
@@ -233,15 +229,15 @@ body {
 /* force Bootstrap tooltips to honor newlines */
 .tooltip-inner {
   white-space: pre-wrap !important;
-  text-align: left; /* so your bullets line up nicely */
+  text-align: left;
 }
 
 .resume-section .resume-skills-block {
-  font-family: inherit; /* inherit whatever your resume is using */
-  font-size: inherit; /* match your body text size */
-  line-height: 1.5; /* match your section line-height */
-  white-space: pre-wrap; /* preserve line breaks */
-  margin: 0.5rem 0; /* adjust spacing as needed */
+  font-family: inherit;
+  font-size: inherit;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  margin: 0.5rem 0;
 }
 
 /* remove focus glow on checkboxes */
@@ -252,12 +248,10 @@ body {
 
 /* highlight sortable headers on hover */
 .sortable-header:hover {
-  /* background-color: #ececec; */
-  /* background-color: #f1f1f1; */
   background-color: #f3f3f3 !important;
 }
 
-/* disable text‐selection for every header cell in our table */
+/* disable text‐selection for every header cell in table */
 .sortable-table thead th {
   user-select: none !important;
   -webkit-user-select: none !important;
@@ -330,7 +324,6 @@ body {
   border-color: #4760a5 !important;
 }
 
-/* Optional: focus ring to match your blue */
 .btn-outline-primary:focus-visible {
   box-shadow: 0 0 0 0.25rem rgba(16, 26, 165, 0.5) !important;
 }

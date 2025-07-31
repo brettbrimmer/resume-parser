@@ -86,7 +86,7 @@ export default function CandidatesTable({
           {/* -- name */}
           <th className="col-candidate">Candidate</th>
 
-          {/* -- badges header (you can also add per-badge sort + ellipsis here) */}
+          {/* -- badges header */}
           {/* -- single Badges header */}
           <th className="col-badge text-nowrap">
             Badges
@@ -256,14 +256,12 @@ export default function CandidatesTable({
                         bg={variant}
                         className={`me-1 mb-1 ${extraClass}`}
                       >
-                        Entrepreneurial {total.toFixed(1)}
+                        _Entrepreneurial {total.toFixed(1)}
                       </Badge>
                     </OverlayTrigger>
                   );
                 })()}
               </td>
-
-            
 
             {/* -- star */}
             <td

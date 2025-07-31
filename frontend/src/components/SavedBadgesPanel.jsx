@@ -1,40 +1,52 @@
 // src/components/Filters/SavedBadgesPanel.jsx
-import React from "react";
-import { Card, Badge, OverlayTrigger, Tooltip } from "react-bootstrap";
 
+import React from 'react';
+import { Card, Badge, OverlayTrigger, Tooltip } from 'react-bootstrap';
+
+/**
+ * SavedBadgesPanel
+ *
+ * Displays a list of saved requirement badges with tooltips and click handlers.
+ * If no badges are present, a placeholder message is shown instead.
+ *
+ * @param {Object} props
+ * @param {Array<{ id: string|number, title: string, reqText: string }>} props.badges - List of saved badges.
+ * @param {function(Object): void} props.onApplyBadge - Callback triggered when a badge is selected.
+ * @returns {JSX.Element} Rendered panel of saved badges or an empty state message.
+ */
 export default function SavedBadgesPanel({ badges, onApplyBadge }) {
-  if (badges.length === 0) {
-    return (
-      <Card className="mb-4">
-        <Card.Header as="h6">Saved Badges</Card.Header>
-        <Card.Body>
-          <small className="text-muted">No badges saved yet.</small>
-        </Card.Body>
-      </Card>
-    );
-  }
-
-  return (
+  const renderEmptyState = () => (
     <Card className="mb-4">
       <Card.Header as="h6">Saved Badges</Card.Header>
       <Card.Body>
-        {badges.map((b) => (
+        <small className="text-muted">No badges saved yet.</small>
+      </Card.Body>
+    </Card>
+  );
+
+  const renderBadges = () => (
+    <Card className="mb-4">
+      <Card.Header as="h6">Saved Badges</Card.Header>
+      <Card.Body>
+        {badges.map((badge) => (
           <OverlayTrigger
-            key={b.id}
+            key={badge.id}
             placement="top"
-            overlay={<Tooltip>{b.reqText}</Tooltip>}
+            overlay={<Tooltip>{badge.reqText}</Tooltip>}
           >
             <Badge
               bg="secondary"
               className="me-2 mb-2"
-              style={{ cursor: "pointer" }}
-              onClick={() => onApplyBadge(b)}
+              style={{ cursor: 'pointer' }}
+              onClick={() => onApplyBadge(badge)}
             >
-              {b.title}
+              {badge.title}
             </Badge>
           </OverlayTrigger>
         ))}
       </Card.Body>
     </Card>
   );
+
+  return badges.length === 0 ? renderEmptyState() : renderBadges();
 }

@@ -75,7 +75,7 @@ function compareEnhanced(a, b) {
   return compareTwoStrings(a, b);
 }
 
-// only US + India
+// US + India
 const FILTERED_CITIES = cities.filter(
   (c) => c.country === "US" || c.country === "IN"
 );
@@ -711,7 +711,7 @@ export default function AppCandidates({ jobId }) {
   const displayed = [...filtered].sort((a, b) => {
     for (const [key, dir] of Object.entries(sortConfig)) {
       let aVal, bVal;
-      if (key === "Entrepreneurial") {
+      if (key === "_Entrepreneurial") {
         aVal = entrepreneurialScores[a.id]?.total ?? 0;
         bVal = entrepreneurialScores[b.id]?.total ?? 0;
       } else {
@@ -857,12 +857,12 @@ export default function AppCandidates({ jobId }) {
             </Button>
 
   {/* requirement-sorting badges + per-badge overflow menu */}
-  {[...nicknames, ...(showEntrepreneurial ? ["Entrepreneurial"] : [])].map((nick) => {
+  {[...nicknames, ...(showEntrepreneurial ? ["_Entrepreneurial"] : [])].map((nick) => {
     const dir = sortConfig[nick] || 0;
     const arrow = dir === 1 ? "↑" : dir === -1 ? "↓" : "";
     const variant = dir ? "primary" : "secondary";
     const tooltipText =
-      nick === "Entrepreneurial"
+      nick === "_Entrepreneurial"
         ? "Score based on project uniqueness, variety, and keywords"
         : mapping[nick].replace(/•\s*/g, "\n• ").trim();
 

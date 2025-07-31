@@ -6,67 +6,79 @@ import { Table, Button, Modal, Form } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 
 export default function JobsPage({ createOnly = false }) {
-  const [jobs, setJobs]               = useState([]);
-  const [showModal, setShowModal]     = useState(createOnly);
-  const [title, setTitle]             = useState("");
+  const [jobs, setJobs] = useState([]);
+  const [showModal, setShowModal] = useState(createOnly);
+  const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  // Location autocomplete state
-  const [location, setLocation]           = useState("");
+  const [location, setLocation] = useState("");
   const [locationError, setLocationError] = useState(false);
-  // new state for description‐view modal
   const [showDescModal, setShowDescModal] = useState(false);
-  const [activeJob, setActiveJob]         = useState(null);
-  const navigate                      = useNavigate();
+  const [activeJob, setActiveJob] = useState(null);
+  const navigate = useNavigate();
 
-  // wrap fetchJobs in useCallback so we can safely list it in deps
+  /**
+   * Fetches the list of job postings from the backend.
+   */
   const fetchJobs = useCallback(async () => {
     try {
       const { data } = await axios.get("/api/jobs");
       setJobs(data);
     } catch (err) {
-      console.error("Failed loading jobs:", err);
+      console.error("Failed to load jobs:", err);
     }
   }, []);
 
-  // fetch on mount (unless createOnly)
+  /**
+   * Triggers job list fetch on component mount unless in create-only mode.
+   */
   useEffect(() => {
     if (!createOnly) {
       fetchJobs();
     }
   }, [createOnly, fetchJobs]);
 
-  // open modal and reset fields
+  /**
+   * Opens the job creation modal and resets form fields.
+   */
   const openModal = () => {
     setTitle("");
     setDescription("");
+    setLocation("");
+    setLocationError(false);
     setShowModal(true);
   };
 
-  async function handleCreate() {
-    if (!title.trim()) return alert("Job title is required");
-    try {
-      if (!location.trim() || locationError) {
+  /**
+   * Handles job creation by validating input and posting to the backend.
+   */
+  const handleCreate = async () => {
+    if (!title.trim()) {
+      alert("Job title is required");
+      return;
+    }
+
+    if (!location.trim() || locationError) {
       setLocationError(true);
       return;
     }
-    const { data: job } = await axios.post("/api/jobs", {
-      title,
-      description,
-      location,
-    });
+
+    try {
+      const { data: job } = await axios.post("/api/jobs", {
+        title,
+        description,
+        location,
+      });
+
       setShowModal(false);
-      // clear form fields
       setTitle("");
       setDescription("");
-      // navigate into the new job’s candidate page
-      // navigate(`/jobs/${job.id}`);
-      // refresh the jobs list
+      setLocation("");
       fetchJobs();
     } catch (err) {
-      console.error("Create job failed:", err);
+      console.error("Failed to create job:", err);
       alert("Could not create job");
     }
-  }
+  };
 
   return (
     <div className="container py-4">
@@ -75,12 +87,7 @@ export default function JobsPage({ createOnly = false }) {
         <Button onClick={openModal}>Create Job</Button>
       </div>
 
-      <Table
-        className="job-table"
-        hover
-        bordered
-        size="sm"
-      >
+      <Table className="job-table" hover bordered size="sm">
         <thead>
           <tr>
             <th className="col-job-id">Job ID</th>
@@ -94,36 +101,31 @@ export default function JobsPage({ createOnly = false }) {
         <tbody>
           {jobs.map((job) => (
             <tr key={job.id}>
-              <td className="col-job-id">{job.id}</td>
-              <td className="col-job-view">
-                <Button
-                  size="sm"
-                  onClick={() => navigate(`/jobs/${job.id}`)}
-                >
-                  <i class="bi bi-eye"> </i>
-                  View
+              <td>{job.id}</td>
+              <td>
+                <Button size="sm" onClick={() => navigate(`/jobs/${job.id}`)}>
+                  <i className="bi bi-eye" /> View
                 </Button>
               </td>
-              <td className="col-job-title">{job.title}</td>
-              <td className="col-job-location">{job.location}</td>
-              <td className="col-job-description">
-              {job.description.length > 70
-                ? `${job.description.slice(0, 70)}...`
-                : job.description}
-            </td>
-            <td className="col-job-view-description">
-              <Button
-                size="sm"
-                variant="outline-primary"
-                onClick={() => {
-                  setActiveJob(job);
-                  setShowDescModal(true);
-                }}
-              >
-                <i class="bi bi-body-text"> </i>
-                View Description
-              </Button>
-            </td>
+              <td>{job.title}</td>
+              <td>{job.location}</td>
+              <td>
+                {job.description.length > 70
+                  ? `${job.description.slice(0, 70)}...`
+                  : job.description}
+              </td>
+              <td>
+                <Button
+                  size="sm"
+                  variant="outline-primary"
+                  onClick={() => {
+                    setActiveJob(job);
+                    setShowDescModal(true);
+                  }}
+                >
+                  <i className="bi bi-body-text" /> View Description
+                </Button>
+              </td>
             </tr>
           ))}
         </tbody>
@@ -142,8 +144,8 @@ export default function JobsPage({ createOnly = false }) {
               onChange={(e) => setTitle(e.target.value)}
             />
           </Form.Group>
-          <Form.Group>
-            <Form.Label>View Description</Form.Label>
+          <Form.Group className="mb-3">
+            <Form.Label>Job Description</Form.Label>
             <Form.Control
               as="textarea"
               rows={3}
@@ -161,7 +163,7 @@ export default function JobsPage({ createOnly = false }) {
               onValidate={setLocationError}
             />
             <Form.Control.Feedback type="invalid">
-              Please select a valid city (e.g. “Tempe, AZ”)
+              Please select a valid city (e.g. "Tempe, AZ")
             </Form.Control.Feedback>
           </Form.Group>
         </Modal.Body>
@@ -173,22 +175,13 @@ export default function JobsPage({ createOnly = false }) {
         </Modal.Footer>
       </Modal>
 
-      {/* ——— Job Description Modal ——— */}
-      <Modal
-        show={showDescModal}
-        onHide={() => setShowDescModal(false)}
-      >
+      <Modal show={showDescModal} onHide={() => setShowDescModal(false)}>
         <Modal.Header closeButton>
           <Modal.Title>{activeJob?.title}</Modal.Title>
         </Modal.Header>
-        <Modal.Body>
-          {activeJob?.description}
-        </Modal.Body>
+        <Modal.Body>{activeJob?.description}</Modal.Body>
         <Modal.Footer>
-          <Button
-            variant="secondary"
-            onClick={() => setShowDescModal(false)}
-          >
+          <Button variant="secondary" onClick={() => setShowDescModal(false)}>
             Close
           </Button>
         </Modal.Footer>
