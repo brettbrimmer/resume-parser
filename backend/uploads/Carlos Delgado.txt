@@ -1,0 +1,42 @@
+CARLOS DELGADO
+Phoenix, AZ |  (602) 555-3321 |  [carlos.delgado@asu.edu](mailto:carlos.delgado@asu.edu)
+github.com/carlosdelgado
+
+SKILLS
+Languages: Go, JavaScript, Python
+Frameworks & Tools: Gin, React, Git, Docker
+Technologies: REST APIs, Microservices, Kubernetes
+Platforms: Linux, Windows, Google Cloud
+
+EDUCATION
+Ohio State University – Columbus, OH
+Bachelor of Science in Computer Science
+Aug 2019 – May 2023
+GPA: 3.5
+Relevant Coursework: Distributed Systems, Software Engineering, Cloud Computing, Algorithms
+
+PROJECTS
+Microblogging Platform
+• Developed a scalable microblogging site backend using Go and Gin framework.
+• Created React frontend with real-time updates via WebSocket integration.
+• Deployed services using Docker containers and Kubernetes on Google Cloud.
+
+Automated Deployment Tool
+• Built a Python CLI tool to automate deployment workflows for containerized applications.
+• Integrated with Kubernetes APIs to manage clusters and services.
+• Enhanced error handling and logging to improve reliability.
+
+EXPERIENCE
+Cloud Engineering Intern
+Nimbus Cloud Services – Columbus, OH
+Jun 2022 – Aug 2022
+• Assisted in designing microservices and container orchestration using Kubernetes.
+• Monitored application performance and troubleshot deployment issues.
+• Documented best practices and contributed to internal knowledge base.
+
+IT Help Desk Technician
+Ohio State University – IT Services
+Sep 2020 – May 2022
+• Provided technical support for students and faculty, resolving hardware and software issues.
+• Assisted with setup and maintenance of computer labs.
+• Trained new technicians on ticketing system and troubleshooting processes.

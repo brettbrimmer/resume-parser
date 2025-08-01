@@ -1,0 +1,41 @@
+CHRIS DONOVAN
+Columbus, OH | (614) 555-3975 | [chris.donovan@email.com](mailto:chris.donovan@email.com)
+github.com/chrisdonovan | linkedin.com/in/chrisdonovan
+
+SKILLS
+Languages: Python, JavaScript, HTML, CSS
+Technologies: Local Storage, CLI Tools
+Platforms: Windows, macOS
+Tools: Git, VS Code, Ticketing Systems
+
+EDUCATION
+Arizona State University – Tempe, AZ
+Bachelor of Science in Computer Science
+Aug 2021 – May 2025 (Expected)
+GPA: 2.78 / 4.00
+Relevant Courses: Introduction to Programming, Web Development I, Database Systems, Computer Networks
+
+EXPERIENCE
+IT Support Assistant
+ASU Tech Help Desk – Tempe, AZ
+Oct 2023 – May 2024
+• Provided basic technical support to students and faculty with software installations and account issues
+• Logged support tickets and assisted with resetting devices across campus
+• Learned to troubleshoot Windows and macOS systems in a team setting
+
+Fast Food Crew Member
+Burger House – Phoenix, AZ
+Jun 2022 – Aug 2023
+• Worked register and food prep during summer breaks
+• Handled customer orders and cleaned kitchen stations
+• Practiced communication and teamwork in a fast-paced environment
+
+PROJECTS
+Simple Task Tracker
+HTML | CSS | JavaScript
+• Built a basic to-do list app to help manage class assignments
+• Used local storage to save tasks between sessions
+
+Student Budget Calculator
+• Wrote a script to help estimate monthly spending and visualize costs using text-based menus
+• Created during a school assignment and improved after feedback

@@ -1,0 +1,60 @@
+RYAN THOMPKINS
+Chicago, IL | (312) 555-4812 | ryan.thompkins@email.com
+github.com/ryanthompkins | linkedin.com/in/ryanthompkins
+
+SKILLS
+Languages: Python, Kotlin, SQL
+Frameworks & Tools: Django, SQLite, Git, Android Studio
+Technologies: REST APIs, Unit Testing, Mobile Development
+Platforms: Android, Linux, Windows
+
+EDUCATION
+DePaul University – Chicago, IL
+Bachelor of Science in Software Engineering
+Sep 2020 – Jun 2024 (Expected)
+GPA: 3.6
+Relevant Coursework: Mobile Application Development, Software Architecture, Databases, Data Structures
+
+PROJECTS
+MicroPost – Mobile Microblogging Platform
+
+• Built a mobile-first microblogging app in Kotlin allowing users to post short text updates with optional images.
+
+• Designed a real-time feed and notifications system using Firebase for seamless multi-device syncing.
+
+• Integrated SQLite for offline post storage and implemented post likes, comments, and user profiles.
+
+Threadly – Web-Based Microblogging CMS
+
+• Developed a microblogging content management platform in Django for creating and managing short-form posts.
+
+• Implemented secure user authentication, role-based permissions, and post formatting with markdown.
+
+• Added live feed updates, comment threads, and media uploads to mirror mobile app feature set.
+
+ChirpFeed – Cross-Platform Microblogging Tool
+
+• Designed and developed a cross-platform microblogging application enabling users to share short text updates, images, and threaded conversations.
+
+• Implemented a synchronized real-time feed with notifications using Firebase for consistent multi-device access.
+
+• Integrated SQLite for offline storage and Django-based APIs for secure user authentication, post management, and media uploads.
+
+EXPERIENCE
+Mobile App Developer Intern
+LoopTech Labs – Chicago, IL
+May 2023 – Aug 2023
+
+• Designed and implemented new features in an Android budgeting app using Kotlin.
+
+• Refactored UI components to improve accessibility and responsiveness.
+
+• Collaborated with UX team to test and iterate on user feedback.
+
+Technical Support Assistant
+DePaul University – College of Computing and Digital Media
+Sep 2022 – May 2023
+
+• Assisted with lab maintenance and software setup for classroom computers.
+
+• Helped students troubleshoot development environments and project configurations.

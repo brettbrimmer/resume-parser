@@ -70,6 +70,8 @@ import { unparse } from "papaparse";
 export default function AppCandidates({ jobId }) {
   // ── State Hooks ───────────────────────────────────────────────
   const [searchTerm, setSearchTerm] = useState("");
+  // track whether we have an OpenAI key configured
+  const [hasOpenAIKey, setHasOpenAIKey] = useState(null);
   const [requireAll, setRequireAll] = useState(false);
   const [minGpaText, setMinGpaText] = useState("");
   const [gpaError, setGpaError] = useState(false);
@@ -113,6 +115,14 @@ export default function AppCandidates({ jobId }) {
       .then((res) => res.json())
       .then((data) => setSavedBadges(data))
       .catch(console.error);
+  }, []);
+
+  // Fetch backend config to see if OPENAI_KEY is present
+  useEffect(() => {
+    fetch("/api/config")
+      .then(res => res.json())
+      .then(data => setHasOpenAIKey(data.hasOpenAIKey))
+      .catch(() => setHasOpenAIKey(false));
   }, []);
 
   // handler to save a new badge
@@ -748,11 +758,12 @@ const cand = candidates.find((c) => c.id === +id) || {};
             minGpaText={minGpaText}
             onMinGpaTextChange={handleGpaChange}
             gpaError={gpaError}
-            /* ─── Requirements props ───────────────────────── */
-            reqText={reqText}
-            onReqTextChange={(e) => setReqText(e.target.value)}
-            isApplyingReq={isApplyingReq}
-            onApplyRequirements={applyRequirements}
+          /* ─── Requirements props ───────────────────────── */
+          hasOpenAIKey={hasOpenAIKey}
+          reqText={reqText}
+          onReqTextChange={(e) => setReqText(e.target.value)}
+          isApplyingReq={isApplyingReq}
+          onApplyRequirements={applyRequirements}
             /* ─── Entrepreneurial toggle props ───────────── */
             showEntrepreneurial={showEntrepreneurial}
             onShowEntrepreneurialChange={(e) =>

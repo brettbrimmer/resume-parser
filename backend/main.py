@@ -79,7 +79,7 @@ def calc_uniq_score(
     # 3) Invoke Node helper
     try:
         result = subprocess.run(
-            ["node", "calc_uniq.js", tmp_path],
+            ["node", "utils/calc_uniq.js", tmp_path],
             capture_output=True,
             text=True,
             check=True
@@ -105,7 +105,7 @@ def calc_variety_score(this_projects: list[str]) -> float:
     # 2) Call Node helper
     try:
         result = subprocess.run(
-            ["node", "calc_variety.js", tmp_path],
+            ["node", "utils/calc_variety.js", tmp_path],
             capture_output=True, text=True, check=True
         )
         score = float(result.stdout.strip())
@@ -119,9 +119,9 @@ def calc_variety_score(this_projects: list[str]) -> float:
 env_path = Path(__file__).resolve().parent / ".env"
 load_dotenv(env_path)
 
+# initialize OpenAI key (but don’t crash if missing)
 openai.api_key = os.getenv("OPENAI_API_KEY")
-if not openai.api_key:
-    raise RuntimeError("OPENAI_API_KEY not found. Ensure /backend/.env exists and is excluded from version control.")
+has_openai_key = bool(openai.api_key)
 
 
 # Initialize FastAPI application with CORS middleware
@@ -134,6 +134,10 @@ app.add_middleware(
     allow_credentials=True,
 )
 
+# expose key‐presence to frontend
+@app.get("/api/config")
+def get_config():
+    return {"hasOpenAIKey": has_openai_key}
 
 # Initialize database schema
 models.Base.metadata.create_all(bind=engine)
@@ -649,6 +653,10 @@ async def process_requirements(
     job_id: int = Query(..., alias="jobId", description="Only score resumes for this job"),
     db: Session = Depends(get_db)
 ):
+    # fail early if no key configured
+    if not has_openai_key:
+        raise HTTPException(status_code=503, detail="OpenAI API key not configured.")
+
     """
     Processes a list of job requirements and scores all candidates for a given job
     using OpenAI. Also generates concise explanations for each score.

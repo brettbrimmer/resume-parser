@@ -71,6 +71,7 @@ export default function FilterPanel({
   isApplyingReq,
   onApplyRequirements,
 
+  hasOpenAIKey,
   showEntrepreneurial,
   onShowEntrepreneurialChange,
 }) {
@@ -184,39 +185,50 @@ export default function FilterPanel({
 
           <hr />
 
-          {/* Add Requirement */}
-          <Form.Group controlId="requirements" className="mb-3">
-            <Form.Label>
-              <i className="bi bi-bullseye"> </i>
-              (AI) Smart Requirement</Form.Label>
-            <Form.Control
-              as="textarea"
-              rows={5}
-              placeholder="Enter a detailed requirement for the AI to score each resume on…"
-              value={reqText}
-              onChange={onReqTextChange}
-            />
-          </Form.Group>
-          <div className="d-grid mb-3">
-            <Button
-              onClick={() => onApplyRequirements()}
-              disabled={isApplyingReq}
-              variant={isApplyingReq ? "warning" : "primary"}
-              className={isApplyingReq ? "btn-pulse" : ""}
-            >
-              {isApplyingReq && (
-                <Spinner
-                  as="span"
-                  animation="border"
-                  size="sm"
-                  role="status"
-                  aria-hidden="true"
-                  className="me-2"
+          {/* AI Requirements: either controls or “no key” warning */}
+          {hasOpenAIKey === false ? (
+            <div className="p-3 text-muted mb-3">
+              (No OpenAI key found. For (AI) Smart Requirements Search, add a{" "}
+              <code>.env</code> to root/backend with{" "}
+              OPENAI_KEY="[your_key_here]".)
+            </div>
+          ) : (
+            <>
+              <Form.Group controlId="requirements" className="mb-3">
+                <Form.Label>
+                  <i className="bi bi-bullseye"> </i>
+                  (AI) Smart Requirement
+                </Form.Label>
+                <Form.Control
+                  as="textarea"
+                  rows={5}
+                  placeholder="Enter a detailed requirement for the AI to score each resume on…"
+                  value={reqText}
+                  onChange={onReqTextChange}
                 />
-              )}
-              {isApplyingReq ? "Applying…" : "Add Requirement"}
-            </Button>
-          </div>
+              </Form.Group>
+              <div className="d-grid mb-3">
+                <Button
+                  onClick={() => onApplyRequirements()}
+                  disabled={isApplyingReq}
+                  variant={isApplyingReq ? "warning" : "primary"}
+                  className={isApplyingReq ? "btn-pulse" : ""}
+                >
+                  {isApplyingReq && (
+                    <Spinner
+                      as="span"
+                      animation="border"
+                      size="sm"
+                      role="status"
+                      aria-hidden="true"
+                      className="me-2"
+                    />
+                  )}
+                  {isApplyingReq ? "Applying…" : "Add Requirement"}
+                </Button>
+              </div>
+            </>
+          )}
 
           <hr />
 

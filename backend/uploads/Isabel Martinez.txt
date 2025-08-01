@@ -1,0 +1,42 @@
+ISABEL MARTINEZ
+Houston, TX | (713) 555-2479 | [isabel.martinez@email.com](mailto:isabel.martinez@email.com)
+github.com/isabelmartinez | linkedin.com/in/isabelmartinez
+
+SKILLS
+Languages: Python, JavaScript, C++
+Frameworks & Tools: Django, React, Git, Jenkins
+Technologies: REST APIs, CI/CD, Unit Testing
+Platforms: Linux, Windows, AWS
+
+EDUCATION
+University of Houston – Houston, TX
+Bachelor of Science in Computer Science
+Aug 2019 – May 2023
+GPA: 3.7
+Relevant Coursework: Software Engineering, Cloud Computing, Data Structures, Web Development
+
+PROJECTS
+E-Commerce Recommendation System
+• Built a Python-based recommendation engine using collaborative filtering algorithms.
+• Integrated with a Django web app to provide personalized product suggestions.
+• Optimized data processing pipelines for faster recommendations.
+
+Personal Budget Tracker
+• Developed a React frontend and Django REST API backend for tracking expenses and budgets.
+• Implemented user authentication and secure session management.
+• Designed responsive UI for mobile and desktop devices.
+
+EXPERIENCE
+Software Development Intern
+TechVantage Solutions – Houston, TX
+Jun 2022 – Aug 2022
+• Assisted in developing backend services using Django and PostgreSQL.
+• Wrote unit tests and participated in code reviews.
+• Collaborated with cross-functional teams in Agile development cycles.
+
+IT Support Assistant
+University of Houston – Information Technology Services
+Sep 2020 – May 2022
+• Supported hardware and software troubleshooting for students and faculty.
+• Maintained computer labs and updated software installations.
+• Created documentation to streamline common support requests.

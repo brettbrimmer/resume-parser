@@ -5,8 +5,14 @@ An intuitive, full-stack web application designed to simplify and streamline can
 Key Features
 
 Resume Management:
-- Upload, manage, and delete multiple candidate resumes.
-- Preview full-page resumes directly within the app.
+- Create a job bin with the job's description & location.
+- Upload, manage, and delete candidate resumes to the job.
+- Resumes are parsed on upload, then the user can view the full-page parsed resumes.
+- Resumes can be anonymized to prevent bias.
+
+Responsive UI:
+- Interactive, sortable candidate tables with real-time visual feedback.
+- Fully responsive design using React-Bootstrap.
 
 Advanced Candidate Filtering:
 - Full-text keyword search with flexible "match any" or "match all" logic.
@@ -14,8 +20,11 @@ Advanced Candidate Filtering:
 - GPA-based filters (minimum GPA or presence of GPA).
 
 AI-Powered Requirement Scoring:
-- Generate custom requirement badges scored via OpenAI.
-- Highlight entrepreneurial candidates based on project uniqueness, variety, and keyword frequency.
+- Generate custom AI Smart Requirement badges scored via OpenAI.
+- AI Badges give reasons for their score when moused over.
+- Can sort candidates by AI badge score.
+- AI badges can be saved for later.
+- Likewise there is a premade badge (uses NLP, not AI) that highlights entrepreneurial candidates based on project uniqueness, variety, and keyword frequency.
 
 Efficient Selection Workflow:
 - Star/unstar candidates for quick reference.
@@ -23,11 +32,8 @@ Efficient Selection Workflow:
 - Export candidate data directly to CSV format.
 
 Privacy and Fairness:
-- Automatic anonymization of sensitive candidate information.
-
-Responsive UI:
-- Interactive, sortable candidate tables with real-time visual feedback.
-- Fully responsive design using React-Bootstrap.
+- Anonymization of sensitive candidate information.
+- AI Smart Requirements feature inherently ignores misspellings and detects synonyms (i.e. Visual Studio Code == VS Code).
 
 Technology Stack
 
@@ -35,7 +41,8 @@ Component            Technologies
 ---------            ------------
 Backend              FastAPI, SQLAlchemy, Uvicorn
 Frontend             React, Vite, React-Bootstrap, react-bootstrap-typeahead
-Scoring & NLP        OpenAI API, string-similarity, custom NLP, geolib
+Resume Parser        PyMuPDF, easyocr, spacy, dateparser, python-docx
+Scoring & NLP        OpenAI API, natural (provides TfIdf), compute-cosine-similarity, custom NLP, geolib
 CSV Export           PapaParse / File System Access API
 
 Prerequisites
@@ -84,6 +91,9 @@ Project Structure
 .
 ├── backend
 │   ├── uploads                       - Folder for storing uploaded resumes
+│   ├── utils                         - Contains utils for tfidf/cosine similarity
+│   │   └── calc_uniq.jsx             - Calculates "Project Uniqueness" score with tfidf/cosine similarity (for non-AI Entrepreneurship badge)
+│   │   └── calc_variety.jsx          - Calculates "Project Variety" score with tfidf/cosine similarity (for non-AI Entrepreneurship badge)
 │   ├── main.py                       - FastAPI entrypoint and API endpoints
 │   ├── models.py                     - Defines database models for jobs and candidates
 │   └── resume_parser                 - Resume parsing and scoring logic
@@ -115,7 +125,7 @@ Step 1: Select a Job
 Click "Create Job", fill in the information, then click "Save".
 
 Step 2: Upload, View, and Anonymize Resumes
-Click the "Upload Resumes" button then select resumes to upload.
+Click the "Upload Resumes" button then select resumes to upload (.pdf, .docx, images, .txt)
 Click "View" next to a candidate to view their resume.
 Click the "Anonymize Candidates" checkbox to anonymize candidate data.
 
@@ -134,3 +144,13 @@ Use checkboxes and the intuitive tri-state "Select All" for bulk actions.
 
 Step 7: Export
 Preview full resumes in-app, then export selected candidates directly to CSV for external use.
+
+Next Steps
+
+-QA testing for multiple resume formats.
+-Additional fallback logic in resume_parser.py for multiple resume formats.
+-Detection of additional section headers and aliases (EXTRACURRICULAR ACTIVIES, LEADERSHIP & ACTIVITIES, etc.)
+-Additional synonym and misspelling detection. These are inherent in the AI Smart Requirements feature but could be added for resume parsing. Might be preferable to have AI perform this task so that the words are changed based on context, and not just string similarity. (For example a non-AI feature might correct "git" to "get".)
+-Post-parsing resume editing could be added.
+-Plenty of small improvements could be added like more filters, deleting badges and saved badges, report generation, etc.
+-Resume upload delay could be slightly improved if the "_Entrepreneurship" badge was removed. This badge uses NLP to assign a score to candidates based on Entrepreneurship ability, but the "AI Smart Requirements" search does it just as well, and gives reasons for its scoring. So this feature could be deprecated to improve resume upload speed. Would make a difference on large batches of resumes.

@@ -1,0 +1,63 @@
+ANA RAMIREZ
+Austin, TX | (512) 555-4482 | ana.ramirez@utexas.edu
+github.com/anaramirez | linkedin.com/in/ana-ramirez-dev | anaramirez.dev
+
+SKILLS
+Languages: C, C++, Python, Kotlin, JavaScript, Bash
+Platforms: Android Studio, Arduino, Raspberry Pi, Firebase, Git, Linux
+Technologies: Bluetooth LE, REST APIs, MQTT, SQLite, Firebase Auth
+Hardware: Oscilloscope, Logic Analyzer, 3D Printing, PCB Design (KiCad), Sensors (DHT11, MPU6050)
+
+EDUCATION
+The University of Texas at Austin
+Bachelor of Science in Electrical and Computer Engineering
+Aug 2022 – May 2025 (Expected)
+GPA: 3.68 / 4.0
+Focus: Embedded Systems, Mobile Development, Signal Processing
+
+Austin Community College
+Associate of Science in Computer Science
+Aug 2020 – May 2022
+GPA: 3.90 / 4.0
+
+PROJECTS
+FieldOps – Founder & CEO
+
+• Founded a SaaS startup providing independent contractors with a mobile-first worksite management platform.
+
+• Led the full product lifecycle — from ideation and MVP build to customer acquisition and iteration.
+
+• Secured three pilot customers pre-launch, collecting market feedback that directly shaped product roadmap.
+
+• Architected secure real-time collaboration features using Firebase Auth and multi-device sync, enabling scalable adoption.
+
+SafeRoute – Founder & Product Visionary
+
+• Conceived, engineered, and market-tested a wearable safety system integrating Bluetooth LE and real-time cloud alerts.
+
+• Built and validated MVP in under 6 weeks, winning attention from campus safety groups and early investors.
+
+• Designed scalable backend architecture with MQTT + Firebase to support instant GPS and status updates.
+
+• Pitched at UT Hardware Startup Showcase, positioning SafeRoute as a high-impact student-led venture.
+
+UT MakerSpace Team – Startup Product Lead
+
+• Directed a hardware startup-style project developing an automated compost sorter with computer vision.
+
+• Implemented lean product development practices, reducing prototype costs by 30% and accelerating iteration.
+
+• Mentored peers on founder-level skills including rapid prototyping, go-to-market thinking, and early-stage fundraising prep.
+
+EXPERIENCE
+Software & Hardware Intern – Entrepreneur in Residence (Product Focus)
+Lumos IoT Solutions – Austin, TX
+May 2024 – Aug 2024
+
+• Operated as a mini-startup within the company, owning the design and launch of a next-gen smart meter Android companion app.
+
+• Designed Python-based automation tools for diagnostics and firmware deployment, significantly shortening release cycles.
+
+• Bridged hardware-software integration efforts, diagnosing PCB power issues and enabling faster market rollout.
+
+• Partnered with leadership to identify new IoT product opportunities, applying lean startup methodology to internal R&D.

@@ -1,0 +1,42 @@
+DYLAN HARRIS
+Raleigh, NC | (919) 555-6083 | [dylan.harris@email.com](mailto:dylan.harris@email.com)
+github.com/dylanharris | linkedin.com/in/dylanharris
+
+SKILLS
+Languages: Python, Ruby, JavaScript
+Frameworks & Tools: Ruby on Rails, React, Git, PostgreSQL
+Technologies: REST APIs, OAuth, Responsive Web Design
+Platforms: Linux, macOS, Heroku
+
+EDUCATION
+North Carolina State University – Raleigh, NC
+Bachelor of Science in Computer Science
+Aug 2020 – May 2024 (Expected)
+GPA: 3.45
+Relevant Coursework: Web Development, Software Engineering, Database Systems, Network Security
+
+PROJECTS
+Community Forum
+• Built a full-stack web application using Ruby on Rails for community discussions and user posts.
+• Implemented user authentication with OAuth and role-based permissions.
+• Designed responsive UI with React for a seamless experience across devices.
+
+Fitness Meal Planner
+• Developed a Python Flask app to generate personalized meal plans based on user preferences and goals.
+• Integrated third-party nutrition APIs to fetch calorie and macro information.
+• Added CRUD operations for user data and meal customization.
+
+EXPERIENCE
+Software Engineering Intern
+BrightPath Software – Raleigh, NC
+May 2023 – Aug 2023
+• Developed backend REST APIs using Ruby on Rails for an educational platform.
+• Collaborated with frontend developers to integrate API endpoints.
+• Participated in Agile ceremonies and contributed to sprint planning and retrospectives.
+
+Technical Support Specialist
+NCSU – IT Help Desk
+Sep 2021 – May 2023
+• Provided technical support for software installations, network issues, and hardware troubleshooting.
+• Documented common solutions and improved ticket resolution time by 15%.
+• Assisted in training new help desk staff.
