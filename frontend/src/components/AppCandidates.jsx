@@ -21,7 +21,6 @@ import { getDistance as geoGetDistance } from "geolib";
 import cities from "cities.json";
 import "react-bootstrap-typeahead/css/Typeahead.css";
 import { AsyncTypeahead } from "react-bootstrap-typeahead";
-import { compareTwoStrings } from "string-similarity";
 import FilterPanel from "./FilterPanel.jsx";
 
 const STOPWORDS = new Set([
@@ -56,23 +55,6 @@ function distill(text) {
   return (text.toLowerCase().match(/\b\w+\b/g) || [])
     .filter((w) => w.length > 3 && !STOPWORDS.has(w))
     .join(" ");
-}
-
-// if two texts share ≥8 distinct words, treat as maximally similar
-function compareEnhanced(a, b) {
-  const tokensA = Array.from(
-    new Set(
-      (a.toLowerCase().match(/\b\w+\b/g) || []).filter((w) => !STOPWORDS.has(w))
-    )
-  );
-  const tokensB = Array.from(
-    new Set(
-      (b.toLowerCase().match(/\b\w+\b/g) || []).filter((w) => !STOPWORDS.has(w))
-    )
-  );
-  const common = tokensA.filter((w) => tokensB.includes(w));
-  if (common.length >= 15) return 1;
-  return compareTwoStrings(a, b);
 }
 
 // US + India
@@ -181,11 +163,11 @@ export default function AppCandidates({ jobId }) {
 
   // AsyncTypeahead loader (only scans small bucket + slices to 10)
   function handleCitySearch(query) {
-    console.log("Searching cities for:", query);
+    // console.log("Searching cities for:", query);
     setCityLoading(true);
     const key = query.charAt(0).toLowerCase();
     const bucket = prefixMap[key] || cityOptions;
-    console.log("   bucket size:", bucket.length);
+    // console.log("   bucket size:", bucket.length);
     const matches = bucket
       .filter((lbl) => lbl.toLowerCase().startsWith(query.toLowerCase()))
       .slice(0, 10);
@@ -599,41 +581,14 @@ export default function AppCandidates({ jobId }) {
 
     const breakdowns = {};
     for (const [id, arr] of Object.entries(projMap)) {
-      // 1) uniqueness
-      const uniqs = arr.map(({ firstLine }) => {
-        const sims = allFirsts.map((other) =>
-          compareEnhanced(firstLine, other)
-        );
-        const avgSim = sims.reduce((sum, v) => sum + v, 0) / sims.length || 0;
-        return 1 - avgSim;
-      });
-      const factor1 =
-        uniqs.reduce((sum, v) => sum + v, 0) / (uniqs.length || 1);
+const cand = candidates.find((c) => c.id === +id) || {};
 
-      // 2) variety: 30% title, 70% distilled‐rest comparison
-      const distilledRests = arr.map(({ rest }) => distill(rest));
-      const pairs = [];
-      for (let i = 0; i < arr.length; i++) {
-        for (let j = i + 1; j < arr.length; j++) {
-          const simTitle = compareEnhanced(arr[i].firstLine, arr[j].firstLine);
-          // compare on distilled text so generic verbs don’t dominate
-          const simRest = compareTwoStrings(
-            distilledRests[i],
-            distilledRests[j]
-          );
-          const w1 = 0.3 * (1 - simTitle);
-          const w2 = 0.7 * (1 - simRest);
-          pairs.push(w1 + w2);
-        }
-      }
-
-      const factor2 =
-        pairs.length > 0
-          ? pairs.reduce((sum, v) => sum + v, 0) / pairs.length
-          : 1;
+      // 1) & 2) pull from backend (always 80)
+    
+    const factor1 = (cand.project_uniqueness ?? 80) / 100;
+    const factor2 = (cand.project_variety   ?? 80) / 100;
 
       // 3) keyword match over the entire resume text (projects, skills, experience, education…)
-      const cand = candidates.find((c) => c.id === +id) || {};
       const allText = [
         cand.text || "",
         ...(cand.projects || []),
@@ -704,9 +659,9 @@ export default function AppCandidates({ jobId }) {
   });
 
   // 2) always sort by badges (no-op if sortConfig is empty)
-  console.log("SortConfig:", sortConfig);
+  //console.log("SortConfig:", sortConfig);
   filtered.forEach((c) => {
-    console.log("Candidate", c.id, "scores:", c.scores);
+    //console.log("Candidate", c.id, "scores:", c.scores);
   });
   const displayed = [...filtered].sort((a, b) => {
     for (const [key, dir] of Object.entries(sortConfig)) {

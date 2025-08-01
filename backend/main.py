@@ -19,6 +19,10 @@ from database import SessionLocal, engine
 from resume_parser import parse_resume
 
 
+import subprocess
+import tempfile
+import json
+
 def anonymize_text(
     full_text: str,
     name: Optional[str],
@@ -45,6 +49,71 @@ def anonymize_text(
             clean = re.sub(re.escape(value), "[REDACTED]", clean, flags=re.IGNORECASE)
     return clean
 
+def calc_uniq_score(
+    db: Session,
+    this_candidate_id: int,
+    this_projects: list[str],
+) -> float:
+    """
+    Computes a 0–100 uniqueness score by
+    TF-IDF (natural) + cosine-similarity (compute-cosine-similarity).
+    """
+    # 1) Load every other candidate’s projects
+    rows = (
+        db.query(models.Candidate.id, models.Candidate.projects)
+          .filter(models.Candidate.id != this_candidate_id)
+         .all()
+    )
+    other_projects = [r.projects or [] for r in rows]
+
+    # 2) Dump into a temp JSON
+    payload = {
+        "thisProjects": this_projects,
+        "otherProjects": other_projects,
+    }
+    with tempfile.NamedTemporaryFile(mode="w+", suffix=".json", delete=False) as tf:
+        json.dump(payload, tf)
+        tf.flush()
+        tmp_path = tf.name
+
+    # 3) Invoke Node helper
+    try:
+        result = subprocess.run(
+            ["node", "calc_uniq.js", tmp_path],
+            capture_output=True,
+            text=True,
+            check=True
+        )
+        score = float(result.stdout.strip())
+    except Exception as e:
+        print("Uniqueness scoring failed:", e)
+        score = 0.0
+
+    return score
+
+def calc_variety_score(this_projects: list[str]) -> float:
+    """
+    Computes a 0–100 variety score by comparing each project
+    to every other in the same candidate via TF-IDF + cosine.
+    """
+    # 1) Dump candidate's own projects into temp JSON
+    with tempfile.NamedTemporaryFile(mode="w+", suffix=".json", delete=False) as tf:
+        json.dump({"projects": this_projects}, tf)
+        tf.flush()
+        tmp_path = tf.name
+
+    # 2) Call Node helper
+    try:
+        result = subprocess.run(
+            ["node", "calc_variety.js", tmp_path],
+            capture_output=True, text=True, check=True
+        )
+        score = float(result.stdout.strip())
+    except Exception as e:
+        print("Variety scoring failed:", e)
+        score = 0.0
+
+    return round(score, 2)
 
 # Load environment variables from .env and configure OpenAI
 env_path = Path(__file__).resolve().parent / ".env"
@@ -161,10 +230,24 @@ async def upload_resumes(
             skills=parsed_data.get("skills", []),
             scores={},
             upload_date=datetime.now(timezone.utc),
-            job_id=job_id
+            job_id=job_id,
+            project_uniqueness=0,
+            project_variety=0
         )
 
         db.add(candidate)
+        db.commit()
+        db.refresh(candidate)
+
+        # now that candidate.id exists, recompute uniqueness
+        uniq = calc_uniq_score(db, candidate.id, candidate.projects)
+        candidate.project_uniqueness = uniq
+        db.commit()
+        db.refresh(candidate)
+
+        # Compute variety across this candidate's own projects
+        variety = calc_variety_score(candidate.projects or [])
+        candidate.project_variety = variety
         db.commit()
         db.refresh(candidate)
 
@@ -214,6 +297,8 @@ def list_candidates(
             "scores": candidate.scores,
             "skills": candidate.skills,
             "upload_date": candidate.upload_date.isoformat(),
+            "project_uniqueness": candidate.project_uniqueness,
+            "project_variety":   candidate.project_variety,
         }
         for candidate in candidates
     ]
@@ -291,7 +376,9 @@ def get_candidate(candidate_id: int, db: Session = Depends(get_db)):
         "scores": candidate.scores,
         "skills": candidate.skills,
         "resume_url": f"/uploads/{candidate.filename}",
-        "upload_date": candidate.upload_date.isoformat()
+        "upload_date": candidate.upload_date.isoformat(),
+        "project_uniqueness": candidate.project_uniqueness,
+        "project_variety":   candidate.project_variety,
     })
 
     return candidate_data

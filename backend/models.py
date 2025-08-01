@@ -95,6 +95,8 @@ class Candidate(Base):
     job_id = Column(Integer, ForeignKey("jobs.id", ondelete="CASCADE"), index=True)
     job = relationship("Job", back_populates="candidates")
 
+    project_uniqueness = Column(Float, nullable=False, default=0)
+    project_variety    = Column(Float, nullable=False, default=0)
 
 class Badge(Base):
     """
