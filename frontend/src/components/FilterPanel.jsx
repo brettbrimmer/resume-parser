@@ -169,7 +169,7 @@ export default function FilterPanel({
               Min GPA</Form.Label>
               <Form.Control
                 type="text"
-                placeholder="e.g. 3.5"
+                placeholder="e.g. 3.2"
                 value={minGpaText}
                 onChange={onMinGpaTextChange}
                 size="sm"
@@ -190,7 +190,7 @@ export default function FilterPanel({
             <div className="p-3 text-muted mb-3">
               (No OpenAI key found. For (AI) Smart Requirements Search, add a{" "}
               <code>.env</code> to root/backend with{" "}
-              OPENAI_KEY="[your_key_here]".)
+              OPENAI_KEY=your_key_here.)
             </div>
           ) : (
             <>

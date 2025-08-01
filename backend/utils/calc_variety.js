@@ -20,31 +20,36 @@ if (projects.length <= 1) {
   process.exit(0);
 }
 
-// Build TF-IDF over each project
-const tfidf = new TfIdf();
-projects.forEach(proj => tfidf.addDocument(proj));
+// Smoothed tf-idf
 
-// Build term→weight maps per project
-const termMaps = projects.map((_, idx) =>
-  tfidf
-    .listTerms(idx)
-    .reduce((map, { term, tfidfWeight }) => {
-      map[term] = tfidfWeight;
-      return map;
-    }, {})
+// raw term-frequency map per project
+function tokenize(text) {
+  return text.toLowerCase().match(/\b\w+\b/g) || [];
+}
+const termMaps = projects.map(proj => {
+  const m = {};
+  tokenize(proj).forEach(t => {
+    m[t] = (m[t] || 0) + 1;
+  });
+  return m;
+});
+
+// document frequency per term
+const df = {};
+termMaps.forEach(m =>
+  Object.keys(m).forEach(t => { df[t] = (df[t] || 0) + 1; })
 );
+const vocab = Object.keys(df);
+const N = termMaps.length;
 
-// Global vocabulary
-const vocab = Object.keys(
-  termMaps.reduce((acc, m) => {
-    Object.keys(m).forEach(t => (acc[t] = true));
-    return acc;
-  }, {})
-);
-
-// Convert each term-map into a dense vector
+// smoothed idf and build TF-IDF vectors
+// idf(t) = log(1 + N/df(t))
+const idf = {};
+vocab.forEach(t => {
+  idf[t] = Math.log(1 + N / df[t]);
+});
 const vectors = termMaps.map(m =>
-  vocab.map(term => m[term] || 0)
+  vocab.map(t => (m[t] || 0) * idf[t])
 );
 
 // Compute all pairwise cosine similarities, skipping any NaN

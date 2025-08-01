@@ -1,4 +1,4 @@
-Resume Parser and Candidate Scoring Platform
+Resume Parser and Candidate Filtering Platform
 
 An intuitive, full-stack web application designed to simplify and streamline candidate management by intelligently parsing resumes, scoring candidates against custom job requirements, and enabling efficient filtering and exporting. Leveraging advanced NLP and AI-based evaluation, this platform helps recruiters objectively identify top talent while ensuring fair and unbiased candidate reviews.
 
@@ -86,6 +86,8 @@ npm run dev
 
 2. Open the frontend app at: http://localhost:5173 (or as indicated in your terminal output)
 
+NOTE: For AI features to work, you must add a .env file to root/backend with your OpenAI key OPEN_AI_KEY=your_key_here. The app will work without the key, you just won't be able to use AI features.
+
 Project Structure
 
 .
@@ -133,7 +135,7 @@ Step 3: Filter Candidates
 Use the left sidebar to filter candidates by keywords, geographical distance, and GPA.
 
 Step 4: (AI) Smart Requirements
-Enter or paste job-specific requirements to generate AI-scored badges.
+Enter or paste job-specific requirements to generate OpenAI-scored badges for every candidate. (Uses anonymized resumes. Would use OpenAI Azure for added security.)
 
 Step 5: Entrepreneurial Badge
 Toggle "Entrepreneurial Badge" to prioritize innovative candidate projects. (Uses NLP instead of AI.)
@@ -151,6 +153,9 @@ Next Steps
 -Additional fallback logic in resume_parser.py for multiple resume formats.
 -Detection of additional section headers and aliases (EXTRACURRICULAR ACTIVIES, LEADERSHIP & ACTIVITIES, etc.)
 -Additional synonym and misspelling detection. These are inherent in the AI Smart Requirements feature but could be added for resume parsing. Might be preferable to have AI perform this task so that the words are changed based on context, and not just string similarity. (For example a non-AI feature might correct "git" to "get".)
--Post-parsing resume editing could be added.
+-The AI badge scoring and details prompts in main.py could be improved. Right now it's very good at scoring and giving details for high and low-scoring resumes, but sometimes for mid-scoring resumes the score and details don't match as well.
+-Currently a newline in the "Add Requirements" box will create an additional requirement, this aspect could be removed.
+-CSV export sometimes doesn't fill in all fields.
+-Post-parse resume editing could be added.
 -Plenty of small improvements could be added like more filters, deleting badges and saved badges, report generation, etc.
 -Resume upload delay could be slightly improved if the "_Entrepreneurship" badge was removed. This badge uses NLP to assign a score to candidates based on Entrepreneurship ability, but the "AI Smart Requirements" search does it just as well, and gives reasons for its scoring. So this feature could be deprecated to improve resume upload speed. Would make a difference on large batches of resumes.

@@ -58,7 +58,7 @@ def calc_uniq_score(
     Computes a 0–100 uniqueness score by
     TF-IDF (natural) + cosine-similarity (compute-cosine-similarity).
     """
-    # 1) Load every other candidate’s projects
+    # Load every other candidate’s projects
     rows = (
         db.query(models.Candidate.id, models.Candidate.projects)
           .filter(models.Candidate.id != this_candidate_id)
@@ -66,7 +66,7 @@ def calc_uniq_score(
     )
     other_projects = [r.projects or [] for r in rows]
 
-    # 2) Dump into a temp JSON
+    # Dump into a temp JSON
     payload = {
         "thisProjects": this_projects,
         "otherProjects": other_projects,
@@ -76,7 +76,7 @@ def calc_uniq_score(
         tf.flush()
         tmp_path = tf.name
 
-    # 3) Invoke Node helper
+    # Invoke Node helper
     try:
         result = subprocess.run(
             ["node", "utils/calc_uniq.js", tmp_path],
@@ -96,13 +96,13 @@ def calc_variety_score(this_projects: list[str]) -> float:
     Computes a 0–100 variety score by comparing each project
     to every other in the same candidate via TF-IDF + cosine.
     """
-    # 1) Dump candidate's own projects into temp JSON
+    # Dump candidate's own projects into temp JSON
     with tempfile.NamedTemporaryFile(mode="w+", suffix=".json", delete=False) as tf:
         json.dump({"projects": this_projects}, tf)
         tf.flush()
         tmp_path = tf.name
 
-    # 2) Call Node helper
+    # Call Node helper
     try:
         result = subprocess.run(
             ["node", "utils/calc_variety.js", tmp_path],
@@ -622,7 +622,7 @@ async def explain_requirement(req: str, resume: str) -> str:
         f"""
         You are evaluating a resume against this job requirement: {req}
 
-        Your output must contain only direct, factual evidence that clearly supports the requirement — nothing else.
+        Your output must contain only direct, factual evidence that clearly supports the requirement - nothing else.
 
         Respond with 1 to 3 bullet points (use the • symbol). Each bullet must describe a **distinct, literal piece of evidence** from the resume that directly supports the requirement.
 

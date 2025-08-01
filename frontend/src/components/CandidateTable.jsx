@@ -29,11 +29,11 @@ export default function CandidatesTable({
   const [sortColumn, setSortColumn] = useState(null);
   const [sortDirection, setSortDirection] = useState("asc");
 
-  // derive the header order from your requirements map
+  // derive the header order from the requirements map
   // this will be ['FirstReq', 'SecondReq', ...]
   const badgeOrder = Object.keys(badgeRequirements || {})
 
-  // now you can safely badgeOrder.map(...) below
+  // safely badgeOrder.map(...) below
 
   // compute sortedCandidates...
   const sortedCandidates = sortColumn
