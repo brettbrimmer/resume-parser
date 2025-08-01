@@ -56,6 +56,11 @@ Ensure the following dependencies are installed on your system:
 
 ## Getting Started
 
+If using Git:
+
+git clone [repository-url]
+cd resume-parser
+
 # Backend Setup:
 
 1. From the project root:
@@ -70,6 +75,7 @@ venv\Scripts\activate
 source venv/bin/activate
 
 3. Install required Python packages:
+python -m spacy download en_core_web_sm
 pip install -r requirements.txt
 
 4. Launch the API server:
@@ -79,6 +85,8 @@ API server available at: http://localhost:8000
 
 # Frontend Setup:
 
+(Open a separate terminal.)
+
 1. From the project root:
 cd frontend
 npm install
@@ -87,6 +95,38 @@ npm run dev
 2. Open the frontend app at: http://localhost:5173 (or as indicated in your terminal output)
 
 NOTE: For AI features to work, you must add a .env file to root/backend with your OpenAI key OPEN_AI_KEY=your_key_here. The app will work without the key, you just won't be able to use AI features.
+
+## Usage Guide
+
+# Step 1: Select a Job
+Click "Create Job", fill in the information, then click "Save".
+
+# Step 2: Upload, View, and Anonymize Resumes
+Click the "Upload Resumes" button then select resumes to upload (.pdf, .docx, images, .txt)
+Click "View" next to a candidate to view their resume.
+Click the "Anonymize Candidates" checkbox to anonymize candidate data.
+
+# Step 3: Filter Candidates
+Use the left sidebar to filter candidates by keywords, geographical distance, and GPA.
+
+# Step 4: (AI) Smart Requirements
+Enter or paste job-specific requirements to generate OpenAI-scored badges for every candidate. (Uses anonymized resumes. In production should use OpenAI Azure for added security.) The AI chooses the badge nickname based on context (3 words max).
+
+Example prompts:
+
+"Is entrepreneurial. A candidate who is entrepreneurial might have personal projects that are not class projects. They might have started their own business, or some other organization. They might have uncommon or rare projects (i.e. projects that are not created from common online tutorials.)"
+
+"The candidate has strong web development skills. A candidate with strong web development skills might have built responsive websites or full-stack web applications beyond course assignments. They may demonstrate experience with modern front-end frameworks (e.g. React, Vue, or Svelte) and back-end technologies (e.g. Node.js, Django, or Flask). They might mention designing RESTful or GraphQL APIs, deploying applications to cloud platforms, or integrating authentication and database services. Strong candidates may also show UI/UX consideration or mobile responsiveness, and may reference GitHub repositories, live demos, or freelance/client work."
+
+# Step 5: Entrepreneurial Badge
+This badge uses NLP, not AI, to rate a candidate's Entrepreneurship ability. Toggle "Entrepreneurial Badge" to prioritize innovative candidate projects. (Uses NLP instead of AI.)
+
+# Step 6: Review and Select
+Star promising candidates for quick identification.
+Use checkboxes and the intuitive tri-state "Select All" for bulk actions.
+
+# Step 7: Export
+Preview full resumes in-app, then export selected candidates directly to CSV for external use.
 
 ## Project Structure
 
@@ -120,38 +160,6 @@ NOTE: For AI features to work, you must add a .env file to root/backend with you
 │   ├── index.html                    - HTML entry point for the web app
 │
 └── resumes.db                       - Database file
-
-Usage Guide
-
-# Step 1: Select a Job
-Click "Create Job", fill in the information, then click "Save".
-
-# Step 2: Upload, View, and Anonymize Resumes
-Click the "Upload Resumes" button then select resumes to upload (.pdf, .docx, images, .txt)
-Click "View" next to a candidate to view their resume.
-Click the "Anonymize Candidates" checkbox to anonymize candidate data.
-
-# Step 3: Filter Candidates
-Use the left sidebar to filter candidates by keywords, geographical distance, and GPA.
-
-# Step 4: (AI) Smart Requirements
-Enter or paste job-specific requirements to generate OpenAI-scored badges for every candidate. (Uses anonymized resumes. In production should use OpenAI Azure for added security.) The AI chooses the badge nickname based on context (3 words max).
-
-Example prompts:
-
-"Is entrepreneurial. A candidate who is entrepreneurial might have personal projects that are not class projects. They might have started their own business, or some other organization. They might have uncommon or rare projects (i.e. projects that are not created from common online tutorials.)"
-
-"The candidate has strong web development skills. A candidate with strong web development skills might have built responsive websites or full-stack web applications beyond course assignments. They may demonstrate experience with modern front-end frameworks (e.g. React, Vue, or Svelte) and back-end technologies (e.g. Node.js, Django, or Flask). They might mention designing RESTful or GraphQL APIs, deploying applications to cloud platforms, or integrating authentication and database services. Strong candidates may also show UI/UX consideration or mobile responsiveness, and may reference GitHub repositories, live demos, or freelance/client work."
-
-# Step 5: Entrepreneurial Badge
-This badge uses NLP, not AI, to rate a candidate's Entrepreneurship ability. Toggle "Entrepreneurial Badge" to prioritize innovative candidate projects. (Uses NLP instead of AI.)
-
-# Step 6: Review and Select
-Star promising candidates for quick identification.
-Use checkboxes and the intuitive tri-state "Select All" for bulk actions.
-
-# Step 7: Export
-Preview full resumes in-app, then export selected candidates directly to CSV for external use.
 
 ## How It Works (Application Flow)
 

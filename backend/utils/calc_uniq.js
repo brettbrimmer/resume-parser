@@ -57,3 +57,5 @@ const meanSim = sims.length
 
 // Uniqueness = (1 − meanSim) × 100
 const uniq = Math.max(0, 1 - meanSim) * 100;
+
+console.log(uniq.toFixed(2));

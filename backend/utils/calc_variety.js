@@ -68,3 +68,6 @@ for (let i = 0; i < vectors.length; i++) {
 const meanSim = count ? sumSim / count : 0;
 const safeMean = Number.isFinite(meanSim) ? meanSim : 0;
 const variety = Math.max(0, 1 - safeMean) * 100;
+
+// Print final score with two decimals
+console.log(variety.toFixed(2));
