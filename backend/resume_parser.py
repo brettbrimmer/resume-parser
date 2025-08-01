@@ -434,7 +434,7 @@ def split_projects_by_bullets(projects_text: str) -> List[str]:
     if not projects_text or not projects_text.strip():
         return []
 
-    # 1) Normalize wraps: re-join lines that start with space or lowercase
+    # Normalize wraps: re-join lines that start with space or lowercase
     raw = projects_text.splitlines()
     normalized: List[str] = []
     for line in raw:

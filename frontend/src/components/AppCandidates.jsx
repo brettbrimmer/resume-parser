@@ -127,7 +127,7 @@ export default function AppCandidates({ jobId }) {
 
   // handler to save a new badge
   const handleSaveBadge = async ({ title, reqText }) => {
-    // 1) POST and grab the new badge back, instead of re-fetching the whole list
+    // POST and grab the new badge back, instead of re-fetching the whole list
   const res = await fetch("/api/badges", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -173,11 +173,9 @@ export default function AppCandidates({ jobId }) {
 
   // AsyncTypeahead loader (only scans small bucket + slices to 10)
   function handleCitySearch(query) {
-    // console.log("Searching cities for:", query);
     setCityLoading(true);
     const key = query.charAt(0).toLowerCase();
     const bucket = prefixMap[key] || cityOptions;
-    // console.log("   bucket size:", bucket.length);
     const matches = bucket
       .filter((lbl) => lbl.toLowerCase().startsWith(query.toLowerCase()))
       .slice(0, 10);
@@ -270,16 +268,16 @@ export default function AppCandidates({ jobId }) {
         (acc, [label, key]) => ({ ...acc, [key]: label }),
         {}
       );
-      // 1) Merge new mappings into existing ones
+      // Merge new mappings into existing ones
    setMapping(prev => ({ ...prev, ...flipped }));
 
-   // 2) Append only brand-new requirement keys
+   // Append only brand-new requirement keys
    setNicknames(prev => [
      ...prev,
      ...Object.keys(flipped).filter(k => !prev.includes(k))
    ]);
 
-   // 3) Merge each candidate’s new scores into existing scores
+   // Merge each candidate’s new scores into existing scores
    setCandidates(prev =>
      prev.map(c => {
        const scored = data.candidates.find(x => x.id === c.id);
@@ -313,19 +311,19 @@ export default function AppCandidates({ jobId }) {
     }
 
     try {
-      // 1) hit the backend delete endpoint
+      // hit the backend delete endpoint
       const response = await axios.delete("/api/candidates", {
         data: { ids: selectedRows },
       });
 
-      // 2) check the response body to see which IDs were truly deleted
-      //    (your backend returns { deleted: [1,2,3] })
+      // check the response body to see which IDs were truly deleted
+      //    (backend returns { deleted: [1,2,3] })
       const { deleted } = response.data;
       if (!Array.isArray(deleted)) {
         throw new Error("Unexpected delete response");
       }
 
-      // 3) now update your React state to remove only those records
+      // now update React state to remove only those records
       setCandidates((prev) => prev.filter((c) => !deleted.includes(c.id)));
       setSelectedRows([]);
     } catch (err) {
@@ -345,7 +343,7 @@ export default function AppCandidates({ jobId }) {
       return alert("No rows selected!");
     }
 
-    // build your rows exactly as before
+    // build the rows
     const rows = sel.map((c) => ({
       ID: c.id,
       Name: c.name,
@@ -593,10 +591,10 @@ export default function AppCandidates({ jobId }) {
     for (const [id, arr] of Object.entries(projMap)) {
 const cand = candidates.find((c) => c.id === +id) || {};
 
-      // 1) & 2) pull from backend (always 80)
+    // pull from backend
     
-    const factor1 = (cand.project_uniqueness ?? 80) / 100;
-    const factor2 = (cand.project_variety   ?? 80) / 100;
+    const factor1 = (cand.project_uniqueness ?? 0) / 100;
+    const factor2 = (cand.project_variety   ?? 0) / 100;
 
       // 3) keyword match over the entire resume text (projects, skills, experience, education…)
       const allText = [
@@ -668,11 +666,7 @@ const cand = candidates.find((c) => c.id === +id) || {};
     return true;
   });
 
-  // 2) always sort by badges (no-op if sortConfig is empty)
-  //console.log("SortConfig:", sortConfig);
-  filtered.forEach((c) => {
-    //console.log("Candidate", c.id, "scores:", c.scores);
-  });
+  // always sort by badges (no-op if sortConfig is empty)
   const displayed = [...filtered].sort((a, b) => {
     for (const [key, dir] of Object.entries(sortConfig)) {
       let aVal, bVal;
@@ -927,7 +921,7 @@ const cand = candidates.find((c) => c.id === +id) || {};
       onSortByBadge={handleBadgeClick}
       // ← map of key → label for each dynamic badge
       badgeRequirements={mapping}
-      // ← these control your “Save Badge” modal
+      // ← these control “Save Badge” modal
       setBadgeToSave={setBadgeToSave}
       setShowSaveModal={setShowSaveModal}
       selectedRows={selectedRows}
@@ -1040,7 +1034,7 @@ const cand = candidates.find((c) => c.id === +id) || {};
               const [title, second, ...rest] = lines;
               // if the second line has a '|', treat it as tech stack
               const tech = second && second.includes("|") ? second : null;
-              // the rest become your “description” array
+              // the rest become the “description” array
               const descLines = tech
                 ? rest
                 : [second, ...rest].filter((l) => l);

@@ -16,7 +16,6 @@ const projects = Array.isArray(raw.projects)
 
 // If 0 or 1 valid project → no variety
 if (projects.length <= 1) {
-  console.log('0.00');
   process.exit(0);
 }
 
@@ -69,6 +68,3 @@ for (let i = 0; i < vectors.length; i++) {
 const meanSim = count ? sumSim / count : 0;
 const safeMean = Number.isFinite(meanSim) ? meanSim : 0;
 const variety = Math.max(0, 1 - safeMean) * 100;
-
-// Print final score with two decimals
-console.log(variety.toFixed(2));

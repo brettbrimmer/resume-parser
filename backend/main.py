@@ -86,7 +86,6 @@ def calc_uniq_score(
         )
         score = float(result.stdout.strip())
     except Exception as e:
-        print("Uniqueness scoring failed:", e)
         score = 0.0
 
     return score
@@ -110,7 +109,6 @@ def calc_variety_score(this_projects: list[str]) -> float:
         )
         score = float(result.stdout.strip())
     except Exception as e:
-        print("Variety scoring failed:", e)
         score = 0.0
 
     return round(score, 2)
@@ -179,10 +177,8 @@ def extract_text(path: str) -> str:
 
     try:
         text = parseFileAtPathToText(path)
-        print(f"Parsed text for {os.path.basename(path)}: {text[:60]}…")
         return text
     except Exception as e:
-        print("Parser error:", e)
         return ""
 
 
@@ -547,8 +543,8 @@ async def generate_nicknames(reqs: List[str]) -> dict[str, str]:
         dict[str, str]: Mapping of full requirement text to generated nicknames.
     """
     prompt = (
-        "You are a JSON generator. Return ONLY a JSON array of objects "
-        "with keys text (original requirement) and nickname (as short a name as logically possible, in Title Casing).\n\n"
+        "You are a JSON generator. Return ONLY a JSON array of objects of length 1. "
+        "with keys text (original requirement) and a logical nickname for the requirement that is 3 words maximum and in Title Casing.\n\n"
         "Each requirement should correspond to one line of text ended by a newline or eof. Do not split a single line of text into multiple requirements.\n\n"
         "Requirements:\n" + "\n".join(f"{i + 1}. {r}" for i, r in enumerate(reqs))
     )
@@ -561,17 +557,14 @@ async def generate_nicknames(reqs: List[str]) -> dict[str, str]:
     )
 
     raw_output = response.choices[0].message.content
-    print("🔍 raw nickname reply:", repr(raw_output))
 
     # Strip optional markdown code fences
     cleaned_output = re.sub(r"^```(?:json)?\n", "", raw_output)
     cleaned_output = re.sub(r"\n```$", "", cleaned_output)
-    print("cleaned nickname reply:", repr(cleaned_output))
 
     try:
         parsed = json.loads(cleaned_output)
     except Exception as e:
-        print("JSON parse failed:", e)
         return {r: r for r in reqs}
 
     return {item["text"]: item["nickname"] for item in parsed}
@@ -696,7 +689,6 @@ async def process_requirements(
                 candidate.phone,
                 candidate.location,
             )
-            print(f"Anonymized resume: {anonymized_resume}")
 
             requirement_scores: dict[str, dict] = {}
 
@@ -725,6 +717,5 @@ async def process_requirements(
 
     except Exception as e:
         import traceback
-        print("Error in /api/requirements:", e)
         traceback.print_exc()
         raise

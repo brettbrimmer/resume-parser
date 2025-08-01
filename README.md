@@ -1,8 +1,8 @@
-Resume Parser and Candidate Filtering Platform
+## Resume Parser and Candidate Filtering Platform
 
 An intuitive, full-stack web application designed to simplify and streamline candidate management by intelligently parsing resumes, scoring candidates against custom job requirements, and enabling efficient filtering and exporting. Leveraging advanced NLP and AI-based evaluation, this platform helps recruiters objectively identify top talent while ensuring fair and unbiased candidate reviews.
 
-Key Features
+## Key Features
 
 Resume Management:
 - Create a job bin with the job's description & location.
@@ -35,7 +35,7 @@ Privacy and Fairness:
 - Anonymization of sensitive candidate information.
 - AI Smart Requirements feature inherently ignores misspellings and detects synonyms (i.e. Visual Studio Code == VS Code).
 
-Technology Stack
+## Technology Stack
 
 Component            Technologies
 ---------            ------------
@@ -45,7 +45,7 @@ Resume Parser        PyMuPDF, easyocr, spacy, dateparser, python-docx
 Scoring & NLP        OpenAI API, natural (provides TfIdf), compute-cosine-similarity, custom NLP, geolib
 CSV Export           PapaParse / File System Access API
 
-Prerequisites
+## Prerequisites
 
 Ensure the following dependencies are installed on your system:
 
@@ -54,9 +54,9 @@ Ensure the following dependencies are installed on your system:
 - npm (comes with Node.js)
 - Optional: Git (for version control)
 
-Getting Started
+## Getting Started
 
-Backend Setup:
+# Backend Setup:
 
 1. From the project root:
 cd backend
@@ -77,7 +77,7 @@ uvicorn main:app --reload --port 8000
 
 API server available at: http://localhost:8000
 
-Frontend Setup:
+# Frontend Setup:
 
 1. From the project root:
 cd frontend
@@ -88,7 +88,7 @@ npm run dev
 
 NOTE: For AI features to work, you must add a .env file to root/backend with your OpenAI key OPEN_AI_KEY=your_key_here. The app will work without the key, you just won't be able to use AI features.
 
-Project Structure
+## Project Structure
 
 .
 ├── backend
@@ -123,31 +123,55 @@ Project Structure
 
 Usage Guide
 
-Step 1: Select a Job
+# Step 1: Select a Job
 Click "Create Job", fill in the information, then click "Save".
 
-Step 2: Upload, View, and Anonymize Resumes
+# Step 2: Upload, View, and Anonymize Resumes
 Click the "Upload Resumes" button then select resumes to upload (.pdf, .docx, images, .txt)
 Click "View" next to a candidate to view their resume.
 Click the "Anonymize Candidates" checkbox to anonymize candidate data.
 
-Step 3: Filter Candidates
+# Step 3: Filter Candidates
 Use the left sidebar to filter candidates by keywords, geographical distance, and GPA.
 
-Step 4: (AI) Smart Requirements
-Enter or paste job-specific requirements to generate OpenAI-scored badges for every candidate. (Uses anonymized resumes. Would use OpenAI Azure for added security.)
+# Step 4: (AI) Smart Requirements
+Enter or paste job-specific requirements to generate OpenAI-scored badges for every candidate. (Uses anonymized resumes. In production should use OpenAI Azure for added security.) The AI chooses the badge nickname based on context (3 words max).
 
-Step 5: Entrepreneurial Badge
-Toggle "Entrepreneurial Badge" to prioritize innovative candidate projects. (Uses NLP instead of AI.)
+Example prompts:
 
-Step 6: Review and Select
+"Is entrepreneurial. A candidate who is entrepreneurial might have personal projects that are not class projects. They might have started their own business, or some other organization. They might have uncommon or rare projects (i.e. projects that are not created from common online tutorials.)"
+
+"The candidate has strong web development skills. A candidate with strong web development skills might have built responsive websites or full-stack web applications beyond course assignments. They may demonstrate experience with modern front-end frameworks (e.g. React, Vue, or Svelte) and back-end technologies (e.g. Node.js, Django, or Flask). They might mention designing RESTful or GraphQL APIs, deploying applications to cloud platforms, or integrating authentication and database services. Strong candidates may also show UI/UX consideration or mobile responsiveness, and may reference GitHub repositories, live demos, or freelance/client work."
+
+# Step 5: Entrepreneurial Badge
+This badge uses NLP, not AI, to rate a candidate's Entrepreneurship ability. Toggle "Entrepreneurial Badge" to prioritize innovative candidate projects. (Uses NLP instead of AI.)
+
+# Step 6: Review and Select
 Star promising candidates for quick identification.
 Use checkboxes and the intuitive tri-state "Select All" for bulk actions.
 
-Step 7: Export
+# Step 7: Export
 Preview full resumes in-app, then export selected candidates directly to CSV for external use.
 
-Next Steps
+## How It Works (Application Flow)
+
+The application launch begins when the browser loads index.html. This file includes the compiled JavaScript and CSS assets produced by Vite. As soon as the assets arrive, main.jsx mounts the root `<App />` component into the DOM and initializes React Router.
+
+Once mounted, the `<App />` component renders the global navigation bar and configures client-side routes for job management and candidate management. React Router directs the user to the JobsPage view by default, without triggering a full page reload.
+
+On JobsPage, the component issues a GET request to `/api/jobs` to retrieve existing hiring bins and displays them in a sidebar. When a new job is created, the page sends a POST request to `/api/jobs`. The FastAPI backend records the job in the SQLite database and returns a unique job identifier. React updates its state and inserts the new job into the table.
+
+Selecting a job by clicking "View" enables the resume upload interface. Uploaded files are streamed to `/api/upload?jobId=<id>`. FastAPI saves each raw file to disk and invokes the resume parsing module. PDFs are handled by PyMuPDF, DOCX files by python-docx, images by easyocr, and spaCy together with dateparser extract structured sections and dates. The parsed JSON output is stored under the job identifier in the database.
+
+Navigating to the CandidatesPage triggers a GET request to `/api/candidates?jobId=<id>`. The backend responds with an array of candidate records containing contact details, GPA, parsed sections, and any precomputed badge scores. The frontend renders these records in an interactive table that supports sorting, pagination, and real-time filtering by keyword, location radius, or GPA threshold.
+
+When AI Smart Requirements are entered, CandidatesPage packages the anonymized resume texts and sends them to `/api/requirements?jobId=<id>`. FastAPI calls the OpenAI API to generate concise badge names, assign each candidate a match score from 0 to 100, and produce supporting evidence snippets. The response updates the table with AI-powered badges that can be hovered for rationale, sorted by score, and saved for reuse.
+
+Separately, when resumes are uploaded, the Entrepreneurial badge (not AI) is computed locally in the browser. (This is for the badge that appears when you click the "Pre-made Badges" checkbox, this is not for the AI badges.) A TF-IDF vectorization and cosine-similarity routine evaluates each candidate’s project descriptions for uniqueness and variety. The resulting metric is mapped onto a 0–33 point entrepreneurial badge, eliminating external API dependencies for that feature.
+
+Throughout every interaction, React hooks and context manage the application state - tracking active filters, starred candidates, anonymization settings, and badge configurations. Each user action invokes either a RESTful API endpoint or a client-side computation, and the UI re-renders automatically. This explicit, end-to-end data flow - from user input through backend processing to UI rendering - ensures the system remains maintainable, testable, and extensible.
+
+## Next Steps
 
 -QA testing for multiple resume formats.
 -Additional fallback logic in resume_parser.py for multiple resume formats.

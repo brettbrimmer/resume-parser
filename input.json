@@ -1,0 +1,8 @@
+{
+  "projMap": {
+    "1": [
+      { "firstLine": "Built API",  "rest": "Used Node, Express, and MongoDB." },
+      { "firstLine": "Deployed CI", "rest": "Set up GitHub Actions for tests." }
+    ]
+  }
+}
